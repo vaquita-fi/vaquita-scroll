@@ -1,0 +1,6 @@
+{
+    "git": {
+      "submodules": true
+    },
+    "buildCommand": "bun run build"
+  }
