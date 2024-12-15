@@ -6,22 +6,25 @@ Protocol Vaquinha is a community savings protocol inspired by the traditional An
 
 ## 🌐 Resources
 
-- 🚀 **Demo:** Check out the live demo of the project [here](https://vaquita-psi.vercel.app/)
+- 🚀 **Demo:** Check out the live demo of the project [here](https://vaquita-op.vercel.app/)
+- 📂 **Repository:** Access the project repo [here](https://github.com/Vaquita-Fi/vaquita-op)
 - 🎥 **Pitch Deck:** This is the pitch deck for the project, providing a concise overview of its key elements. It helps to understand the problem, solution, business model, and overall impact more clearly. [Watch the Pitch Deck](https://www.loom.com/share/15fc8cf534db4c16beb92dab2e8d7879?sid=e9c3014d-ae1e-44f1-90dc-107cba3aa933)
-- 💻 **Sepolia Base contract:** `0x8522D7762A8C3a71ddf5f52b6DA19849BAB87F1d` — View the [Vaquinta Program](https://sepolia.basescan.org/address/0x8522D7762A8C3a71ddf5f52b6DA19849BAB87F1d).
+- 💻 **Optimism Sepolia contract:** `0x1250e296dEfbe47fbFd5c3eD1B8194120f21497B` — View the [Vaquinha Program](https://optimism-sepolia.blockscout.com/address/0x1250e296dEfbe47fbFd5c3eD1B8194120f21497B).
 
   **Methods:**
 
   - 🏁 `initializeRound`: Creates a new Round and adds collateral.
   - 🙋‍♂️ `addPlayer`: Adds a player to the round and their collateral.
   - 💰 `payTurn`: Pays the current turn in the round.
- 
+
+- 💸 **Faucet USDC:** Use the [USDC Faucet](https://optimism-sepolia.blockscout.com/token/0x00D2d1162c689179e8bA7a3b936f80A010A0b5CF?tab=read_write_contract).
+- 💡 **Faucet ETH Sepolia:** Use the [ETH Sepolia Faucet](https://faucet.quicknode.com/optimism/sepolia).
 
 ## Setup
 
 To ensure all components work seamlessly, set the following environment variables in your `.env` file using `.env.local.example` as a reference.
 
-You can find the API key on the [Coinbase Developer Portal's OnchainKit page](https://portal.cdp.coinbase.com/products/onchainkit). If you don't have an account, you will need to create one. 
+You can find the API key on the [Coinbase Developer Portal's OnchainKit page](https://portal.cdp.coinbase.com/products/onchainkit). If you don't have an account, you will need to create one.
 
 You can find your Wallet Connector project ID at [Wallet Connect](https://cloud.walletconnect.com).
 
@@ -32,6 +35,7 @@ NEXT_PUBLIC_CDP_API_KEY="GET_FROM_COINBASE_DEVELOPER_PLATFORM"
 # See https://cloud.walletconnect.com
 NEXT_PUBLIC_WC_PROJECT_ID="GET_FROM_WALLET_CONNECT"
 ```
+
 <br />
 
 ## Locally run
@@ -46,6 +50,7 @@ bun i
 # Run Next app
 bun run dev
 ```
+
 <br />
 
 ## Resources
@@ -58,9 +63,3 @@ bun run dev
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Need more help?
-
-If you have any questions or need help, feel free to reach out to us on [Discord](https://discord.gg/8gW3h6w5) 
-or open a [Github issue](https://github.com/coinbase/onchainkit/issues) or DMs us 
-on X at [@onchainkit](https://x.com/onchainkit), [@zizzamia](https://x.com/zizzamia), [@fkpxls](https://x.com/fkpxls).
