@@ -4,4 +4,5 @@ export * from './group/GroupsPage';
 export * from './group/GroupViewPage';
 export * from './group/MyGroupsPage';
 export * from './header/MainHeader';
+export * from './home/Home';
 export * from './layouts/MainLayout';
