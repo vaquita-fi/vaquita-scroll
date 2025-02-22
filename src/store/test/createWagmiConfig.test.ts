@@ -1,4 +1,4 @@
-import { optimismSepolia } from 'viem/chains';
+import { baseSepolia } from 'viem/chains';
 import { createWagmiConfig } from '../createWagmiConfig';
 import { Environment, EnvironmentKeys } from '../environment';
 
@@ -22,7 +22,7 @@ describe('createWagmiConfig', () => {
     Environment.production,
   ])('returns valid Wagmi config when env=%s', (environment) => {
     process.env[EnvironmentKeys.environment] = environment;
-    const config = createWagmiConfig('https://sepolia.optimism.io');
-    expect(config.chains[0].id).toEqual(optimismSepolia.id);
+    const config = createWagmiConfig('https://sepolia.base.org');
+    expect(config.chains[0].id).toEqual(baseSepolia.id);
   });
 });

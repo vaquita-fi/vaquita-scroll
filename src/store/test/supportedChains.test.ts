@@ -1,29 +1,29 @@
-import { optimismSepolia } from 'viem/chains';
+import { baseSepolia } from 'viem/chains';
 import { Environment } from '../environment';
 import { getChainsForEnvironment } from '../supportedChains';
 
 describe('supportedChains', () => {
   describe('getChainsForEnvironment', () => {
     it('should return testnet for localhost', () => {
-      expect(getChainsForEnvironment(Environment.localhost)).toEqual([optimismSepolia]);
+      expect(getChainsForEnvironment(Environment.localhost)).toEqual([baseSepolia]);
     });
 
     it('should default to localhost', () => {
-      expect(getChainsForEnvironment()).toEqual([optimismSepolia]);
+      expect(getChainsForEnvironment()).toEqual([baseSepolia]);
     });
 
     it('should return mainnet for production', () => {
-      expect(getChainsForEnvironment(Environment.production)).toEqual([optimismSepolia]);
+      expect(getChainsForEnvironment(Environment.production)).toEqual([base]);
     });
   });
 
   describe('getChainById', () => {
     it('should return null if chain is not found', () => {
-      expect(getChainsForEnvironment(Environment.localhost)).toEqual([optimismSepolia]);
+      expect(getChainsForEnvironment(Environment.localhost)).toEqual([baseSepolia]);
     });
 
     it('should return the chain if found', () => {
-      expect(getChainsForEnvironment(Environment.localhost)).toEqual([optimismSepolia]);
+      expect(getChainsForEnvironment(Environment.localhost)).toEqual([baseSepolia]);
     });
   });
 });

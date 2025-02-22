@@ -13,7 +13,7 @@ import type {
 } from "@coinbase/onchainkit/transaction";
 import type { Address, ContractFunctionParameters } from "viem";
 import {
-  OPTIMISM_SEPOLIA_CHAIN_ID,
+  BASE_SEPOLIA_CHAIN_ID,
   mintABI,
   mintContractAddress,
 } from "../constants";
@@ -41,7 +41,7 @@ export default function TransactionWrapper({ address }: { address: Address }) {
       <Transaction
         contracts={contracts}
         className="w-[450px]"
-        chainId={OPTIMISM_SEPOLIA_CHAIN_ID}
+        chainId={BASE_SEPOLIA_CHAIN_ID}
         onError={handleError}
         onSuccess={handleSuccess}
       >

@@ -1,4 +1,4 @@
-import { optimismSepolia } from 'viem/chains';
+import { baseSepolia } from 'viem/chains';
 import VaquitaABI from './VaquitaABI.ts';
 import { useVaquitaContract } from './useVaquitaContract.ts';
 
@@ -7,9 +7,9 @@ describe('useVaquitaContract', () => {
     const contract = useVaquitaContract();
     expect(contract).toEqual({
       abi: VaquitaABI,
-      address: '0x8522D7762A8C3a71ddf5f52b6DA19849BAB87F1d',
+      address: '0x8b8c0E33c0b6C246C5323192789e163bf7B331Ea',
       status: 'ready',
-      supportedChains: [optimismSepolia],
+      supportedChains: [baseSepolia],
     });
   });
 });

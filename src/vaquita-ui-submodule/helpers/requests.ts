@@ -7,7 +7,7 @@ import {
 import { isStringJson } from './object';
 
 export const includeApi = (route: string) => {
-  return `${NEXT_PUBLIC_API}/vaquita/api/v1${route}`;
+  return `${NEXT_PUBLIC_API}${route}`;
 };
 
 export const authorizedRequest = async (url: string, options?: RequestInit) => {

@@ -4,7 +4,7 @@ import { useWagmiConfig } from '@/wagmi';
 import { getPublicClient } from '@wagmi/core';
 import { useCallback } from 'react';
 import { useAccount, useWriteContract } from 'wagmi';
-import { OP_SEPOLIA_USDC, USDC_DECIMALS, VAQUITA_CONTRACT_ADDRESS } from '../../constants';
+import { BASE_SEPOLIA_USDC, USDC_DECIMALS, VAQUITA_CONTRACT_ADDRESS } from '../../constants';
 import erc20Abi from '../ERC20ABI';
 
 const convertFrequencyToTimestamp: any = (period: any): bigint => {
@@ -29,7 +29,7 @@ export const useVaquitaDeposit = () => {
     
     try {
       const hash = await writeContractAsync({
-        address: OP_SEPOLIA_USDC,
+        address: BASE_SEPOLIA_USDC,
         abi: erc20Abi,
         functionName: 'approve',
         args: [ VAQUITA_CONTRACT_ADDRESS, amount ],
@@ -55,7 +55,7 @@ export const useVaquitaDeposit = () => {
       const paymentAmount = BigInt(group.amount * USDC_DECIMALS);
       const numberOfPlayers = group.totalMembers;
       const frequencyOfTurns = convertFrequencyToTimestamp(group.period);
-      const tokenMintAddress = OP_SEPOLIA_USDC;
+      const tokenMintAddress = BASE_SEPOLIA_USDC;
       
       try {
         const approved = await approveTokens(paymentAmount * BigInt(group.totalMembers));

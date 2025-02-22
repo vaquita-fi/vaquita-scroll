@@ -1,7 +1,7 @@
 'use client';
 
 import { createConfig, http } from 'wagmi';
-import { optimismSepolia } from 'wagmi/chains';
+import { baseSepolia } from 'wagmi/chains';
 import { metaMask } from 'wagmi/connectors';
 
 export function createWagmiConfig(rpcUrl: string, projectId?: string) {
@@ -10,17 +10,17 @@ export function createWagmiConfig(rpcUrl: string, projectId?: string) {
     console.log('projectId:', projectId);
   }
 
-  // BSC Testnet RPC URL
-  const bscTestnetUrl = rpcUrl || 'https://sepolia.optimism.io';
+  // Base Testnet RPC URL
+  const baseSepoliaUrl = rpcUrl || 'https://sepolia.base.org';
 
   return createConfig({
-    chains: [optimismSepolia],
+    chains: [baseSepolia],
     connectors: [
       metaMask(),
     ],
     ssr: true,
     transports: {
-      [optimismSepolia.id]: http(bscTestnetUrl),
+      [baseSepolia.id]: http(baseSepoliaUrl),
     },
   });
 }
