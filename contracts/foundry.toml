@@ -10,7 +10,7 @@ evm_version = 'paris'
 [rpc_endpoints]
 base = "https://mainnet.base.org"
 base_sepolia = "https://sepolia.base.org"
-sepolia = "https://rpc.sepolia.dev"
+sepolia = "https://eth-sepolia.g.alchemy.com/v2/${ALCHEMY_API_KEY}"
 
 [etherscan]
 base = { key = "${ETHERSCAN_API_KEY}" }
