@@ -1,8 +1,11 @@
 'use client';
 
 import { createConfig, http } from 'wagmi';
-import { baseSepolia } from 'wagmi/chains';
+import * as viemChains from 'viem/chains';
+import { getChainByName } from '../web3/utils/crypto';
 import { metaMask } from 'wagmi/connectors';
+
+const network = getChainByName(viemChains, process.env.NEXT_PUBLIC_NETWORK!);
 
 export function createWagmiConfig(rpcUrl: string, projectId?: string) {
   // Keep this till we fully deprecated RK inside the template
@@ -10,17 +13,14 @@ export function createWagmiConfig(rpcUrl: string, projectId?: string) {
     console.log('projectId:', projectId);
   }
 
-  // Base Testnet RPC URL
-  const baseSepoliaUrl = rpcUrl || 'https://sepolia.base.org';
-
   return createConfig({
-    chains: [baseSepolia],
+    chains: [network],
     connectors: [
       metaMask(),
     ],
     ssr: true,
     transports: {
-      [baseSepolia.id]: http(baseSepoliaUrl),
+      [network.id]: http(rpcUrl),
     },
   });
 }

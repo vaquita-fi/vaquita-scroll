@@ -84,7 +84,7 @@ export interface GroupWithdrawalDTO {
 }
 
 export interface GroupResponseDTO {
-  id: string;
+  id: `0x${string}`;
   crypto: GroupCrypto;
   name: string;
   amount: number;

@@ -185,8 +185,10 @@ contract Vaquita {
         emit PlayerAdded(roundId, msg.sender, position);
     }
 
-    function payTurn(bytes16 roundId, uint8 turn) external {
+    function payTurn(bytes16 roundId) external {
         Round storage round = _rounds[roundId];
+        uint8 position = round.positions[msg.sender];
+        uint8 turn = _findNextTurn(round.paidTurns[msg.sender], round.numberOfPlayers, position);
         if (round.status != RoundStatus.Active) {
             revert RoundNotActive();
         }
@@ -250,24 +252,6 @@ contract Vaquita {
         if (allTurnsCompleted) {
             round.status = RoundStatus.Completed;
             round.endTimestamp = block.timestamp;
-            
-            // Calculate total interest earned from Aave
-            round.totalInterestEarned = _calculateTotalInterest(round.token, round.totalAmountLocked);
-            
-            // Withdraw all funds from Aave including interest
-            address aTokenAddress = tokenToAToken[address(round.token)];
-            if (aTokenAddress != address(0)) {
-                IAToken aToken = IAToken(aTokenAddress);
-                uint256 aTokenBalance = aToken.balanceOf(address(this));
-                if (aTokenBalance > 0) {
-                    aavePool.withdraw(address(round.token), aTokenBalance, address(this));
-                }
-            }
-            
-            // Calculate and track protocol fee
-            uint256 protocolFee = (round.totalInterestEarned * 10) / 100;
-            protocolFees[address(round.token)] += protocolFee;
-            round.protocolFeeTaken = true;
         }
 
         emit TurnPaid(roundId, msg.sender, turn, status);
@@ -302,6 +286,30 @@ contract Vaquita {
         if (round.withdrawnFunds[msg.sender]) {
             revert FundsAlreadyWithdrawn();
         }
+        
+        // If this is the first withdrawal, calculate and distribute interest
+        if (!round.protocolFeeTaken) {
+            // Calculate total interest earned from Aave
+            round.totalInterestEarned = _calculateTotalInterest(round.token, round.totalAmountLocked);
+            
+            // Withdraw all funds from Aave including interest
+            address aTokenAddress = tokenToAToken[address(round.token)];
+            if (aTokenAddress != address(0)) {
+                IAToken aToken = IAToken(aTokenAddress);
+                uint256 aTokenBalance = aToken.balanceOf(address(this));
+                if (aTokenBalance > 0) {
+                    aavePool.withdraw(address(round.token), aTokenBalance, address(this));
+                }
+            }
+            
+            // Calculate and track protocol fee
+            uint256 protocolFee = (round.totalInterestEarned * 10) / 100;
+            protocolFees[address(round.token)] += protocolFee;
+            round.protocolFeeTaken = true;
+            
+            // Pre-calculate interest distribution factors for all players
+            _calculateInterestDistribution(roundId);
+        }
 
         // Calculate collateral amount
         uint256 collateralAmount = round.paymentAmount * round.numberOfPlayers;
@@ -309,12 +317,8 @@ contract Vaquita {
         // Calculate interest amount based on payment behavior
         uint256 interestAmount = _calculatePlayerInterest(roundId, msg.sender);
         
-        // No need to track protocol fee here, it's already handled when the round completes
-        
-        // No need to withdraw from Aave, as funds are already in the contract
-        uint256 totalWithdraw = collateralAmount + interestAmount;
-
         // Transfer both collateral and interest
+        uint256 totalWithdraw = collateralAmount + interestAmount;
         round.token.safeTransfer(msg.sender, totalWithdraw);
         round.withdrawnFunds[msg.sender] = true;
 
@@ -395,71 +399,99 @@ contract Vaquita {
         return 0;
     }
 
-    function _calculatePlayerInterest(bytes16 roundId, address player) internal view returns (uint256) {
+    // Mapping to store pre-calculated interest amounts for each player
+    mapping(bytes16 => mapping(address => uint256)) private _playerInterestAmounts;
+    
+    function _calculateInterestDistribution(bytes16 roundId) internal {
         Round storage round = _rounds[roundId];
         
         if (round.totalInterestEarned == 0) {
-            return 0;
+            return;
         }
         
         // First, reserve 10% of total interest as protocol profit
         uint256 protocolFee = (round.totalInterestEarned * 10) / 100;
         uint256 distributableInterest = round.totalInterestEarned - protocolFee;
         
-        // Get player's position (lower positions receive funds earlier)
-        uint8 playerPosition = round.positions[player];
+        // Calculate total weight for position-based distribution
+        uint256 totalPositionWeight = (round.numberOfPlayers * (round.numberOfPlayers + 1)) / 2;
         
-        // Position-based adjustment: higher positions get more interest
-        // Formula: position weight = (position + 1) / sum of all positions
-        // This creates a linear distribution where higher positions get more
-        uint256 positionWeight = 0;
-        uint256 totalWeight = 0;
+        // Calculate raw interest amounts based on position and payment behavior
+        uint256[] memory rawInterestAmounts = new uint256[](round.numberOfPlayers);
+        uint256 totalRawInterest = 0;
         
-        // Calculate sum of all position weights (1 + 2 + 3 + ... + numberOfPlayers)
-        // This is the arithmetic sum formula: n(n+1)/2
-        totalWeight = (round.numberOfPlayers * (round.numberOfPlayers + 1)) / 2;
-        
-        // Calculate this player's position weight
-        positionWeight = playerPosition + 1;
-        
-        // Base interest is weighted by position
-        uint256 baseInterest = (distributableInterest * positionWeight) / totalWeight;
-        
-        // Calculate bonus/penalty based on payment behavior
-        uint256 bonusPenaltyFactor = 100; // 100% = no bonus/penalty
-        
-        // Skip player's own turn when calculating bonus/penalty
         for (uint8 i = 0; i < round.numberOfPlayers; i++) {
-            if (i == playerPosition) {
-                continue; // Skip own turn
-            }
+            address player = round.players[i];
+            uint8 playerPosition = round.positions[player];
             
-            PaymentStatus status = round.turns[i].playerPaymentStatus[player];
-            if (status == PaymentStatus.OnTime) {
-                // Bonus for on-time payments: +5% per turn
-                bonusPenaltyFactor += 5;
-            } else if (status == PaymentStatus.Late) {
-                // Penalty for late payments based on how late
-                uint256 lateness = round.turns[i].paymentTimestamp[player] - round.turns[i].cutoffDate;
-                uint256 daysLate = lateness / 86400; // Convert to days
-                
-                // Penalty: -2% per day late, capped at -20% per turn
-                uint256 penalty = daysLate * 2;
-                if (penalty > 20) {
-                    penalty = 20;
+            // Position weight (higher positions get more)
+            uint256 positionWeight = playerPosition + 1;
+            
+            // Base interest is weighted by position
+            uint256 baseInterest = (distributableInterest * positionWeight) / totalPositionWeight;
+            
+            // Calculate bonus/penalty based on payment behavior
+            uint256 bonusPenaltyFactor = 100; // 100% = no bonus/penalty
+            
+            // Skip player's own turn when calculating bonus/penalty
+            for (uint8 j = 0; j < round.numberOfPlayers; j++) {
+                if (j == playerPosition) {
+                    continue; // Skip own turn
                 }
                 
-                bonusPenaltyFactor -= penalty;
+                PaymentStatus status = round.turns[j].playerPaymentStatus[player];
+                if (status == PaymentStatus.OnTime) {
+                    // Bonus for on-time payments: +5% per turn
+                    bonusPenaltyFactor += 5;
+                } else if (status == PaymentStatus.Late) {
+                    // Penalty for late payments based on how late
+                    uint256 lateness = round.turns[j].paymentTimestamp[player] - round.turns[j].cutoffDate;
+                    uint256 daysLate = lateness / 86400; // Convert to days
+                    
+                    // Penalty: -2% per day late, capped at -20% per turn
+                    uint256 penalty = daysLate * 2;
+                    if (penalty > 20) {
+                        penalty = 20;
+                    }
+                    
+                    bonusPenaltyFactor -= penalty;
+                }
+            }
+            
+            // Ensure we don't go below 50% of base interest
+            if (bonusPenaltyFactor < 50) {
+                bonusPenaltyFactor = 50;
+            }
+            
+            // Apply bonus/penalty factor to base interest
+            rawInterestAmounts[i] = (baseInterest * bonusPenaltyFactor) / 100;
+            totalRawInterest += rawInterestAmounts[i];
+        }
+        
+        // Normalize the interest amounts to ensure the total equals distributableInterest
+        for (uint8 i = 0; i < round.numberOfPlayers; i++) {
+            address player = round.players[i];
+            
+            // If totalRawInterest is 0, distribute equally
+            if (totalRawInterest == 0) {
+                _playerInterestAmounts[roundId][player] = distributableInterest / round.numberOfPlayers;
+            } else {
+                // Scale the raw interest amount to ensure total equals distributableInterest
+                _playerInterestAmounts[roundId][player] = (rawInterestAmounts[i] * distributableInterest) / totalRawInterest;
             }
         }
-        
-        // Ensure we don't go below 50% of base interest
-        if (bonusPenaltyFactor < 50) {
-            bonusPenaltyFactor = 50;
+    }
+    
+    function _calculatePlayerInterest(bytes16 roundId, address player) internal view returns (uint256) {
+        // Return the pre-calculated interest amount for this player
+        return _playerInterestAmounts[roundId][player];
+    }
+
+    function _findNextTurn(uint256 number, uint8 numberOfPlayers, uint8 position) public pure returns (uint8) {
+        for (uint8 i = 0; i < numberOfPlayers; i++) {
+            if ((number & (1 << i)) == 0 && i != position) return i;
         }
-        
-        // Apply bonus/penalty factor to base interest
-        return (baseInterest * bonusPenaltyFactor) / 100;
+        return numberOfPlayers; // No 0 found, return highest position in range
     }
 
     function withdrawProtocolFee(address token) external onlyOwner {

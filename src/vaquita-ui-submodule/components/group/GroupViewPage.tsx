@@ -26,17 +26,15 @@ export const GroupViewPage = ({ address }: { address?: AddressType }) => {
   const { groupId } = useParams();
   const { depositCollateralAndJoin } = useVaquitaDeposit();
   const {
-    withdrawalEarnedRound,
-    withdrawalEarnedInterest,
-    withdrawalCollateral,
+    withdrawalTurn,
+    withdrawalFunds,
   } = useVaquitaWithdrawal();
   const {
     getGroup,
     joinGroup,
     disjoinGroup,
     depositGroupCollateral,
-    withdrawalGroupCollateral,
-    withdrawalGroupEarnedInterest,
+    withdrawalGroupFunds,
     withdrawalGroupEarnedRound,
   } = useGroup();
   const {
@@ -100,14 +98,14 @@ export const GroupViewPage = ({ address }: { address?: AddressType }) => {
     setIsLoading(false);
   };
 
-  const handleWithdrawEarnedRound = async () => {
+  const handleWithdrawTurn = async () => {
     setIsLoading(true);
     if (!address) {
       return;
     }
     try {
       const amount = group.amount;
-      const { tx, error, success } = await withdrawalEarnedRound(group);
+      const { tx, error, success } = await withdrawalTurn(group);
       if (!success) {
         logError('transaction error', error);
         throw new Error('transaction error');
@@ -125,52 +123,27 @@ export const GroupViewPage = ({ address }: { address?: AddressType }) => {
     setIsLoading(false);
   };
 
-  const handleWithdrawEarnedInterest = async () => {
+  const handleWithdrawFunds = async () => {
     setIsLoading(true);
     if (!address) {
       return;
     }
     try {
-      const amount = 0;
-      const { tx, error, success } = await withdrawalEarnedInterest(group);
-      if (!success) {
-        logError('transaction error', error);
-        throw new Error('transaction error');
-      }
-      await withdrawalGroupEarnedInterest(group.id, address, tx, amount);
-      await refetch();
-      showNotification(
-        'Withdrawal successful! Your earned interest has been withdrawn.',
-        'success'
-      );
-    } catch (error) {
-      logError('Failed to withdraw your earned interest.', error);
-      showNotification('Failed to withdraw your earned interest.', 'error');
-    }
-    setIsLoading(false);
-  };
-
-  const handleWithdrawCollateral = async () => {
-    setIsLoading(true);
-    if (!address) {
-      return;
-    }
-    try {
-      const { tx, error, success } = await withdrawalCollateral(group);
+      const { tx, error, success } = await withdrawalFunds(group);
       if (!success) {
         logError('transaction error', error);
         throw new Error('transaction error');
       }
       const amount = group.collateralAmount;
-      await withdrawalGroupCollateral(group.id, address, tx, amount);
+      await withdrawalGroupFunds(group.id, address, tx, amount);
       await refetch();
       showNotification(
-        'Withdrawal successful! Your collateral has been withdrawn.',
+        'Withdrawal successful! Your funds has been withdrawn.',
         'success'
       );
     } catch (error) {
-      logError('Failed to withdraw your collateral."', error);
-      showNotification('Failed to withdraw your collateral."', 'error');
+      logError('Failed to withdraw your funds.', error);
+      showNotification('Failed to withdraw your funds.', 'error');
     }
     setIsLoading(false);
   };
@@ -261,38 +234,12 @@ export const GroupViewPage = ({ address }: { address?: AddressType }) => {
                 onAction={
                   group.myWithdrawals.round.enabled &&
                   !group.myWithdrawals.round.successfullyWithdrawn
-                    ? handleWithdrawEarnedRound
+                    ? handleWithdrawTurn
                     : undefined
                 }
               />
               <SummaryAction
-                title="Intersed earned"
-                content={
-                  <p>
-                    {(group.collateralAmount * 0.0003).toFixed(4)}{' '}
-                    {group.crypto}
-                  </p>
-                }
-                actionLabel={
-                  group.myWithdrawals.interest.successfullyWithdrawn
-                    ? 'Withdrawn'
-                    : 'Withdraw'
-                }
-                type={
-                  group.myWithdrawals.interest.enabled &&
-                  !group.myWithdrawals.interest.successfullyWithdrawn
-                    ? 'info'
-                    : 'disabled'
-                }
-                onAction={
-                  group.myWithdrawals.interest.enabled &&
-                  !group.myWithdrawals.interest.successfullyWithdrawn
-                    ? handleWithdrawEarnedInterest
-                    : undefined
-                }
-              />
-              <SummaryAction
-                title="Claim Collateral"
+                title="Claim Funds"
                 content={<p>{group.collateralAmount} USDC</p>}
                 actionLabel={
                   group.myWithdrawals.collateral.successfullyWithdrawn
@@ -306,24 +253,15 @@ export const GroupViewPage = ({ address }: { address?: AddressType }) => {
                     : 'disabled'
                 }
                 onAction={() => {
-                  // if (group.status === GroupStatus.ACTIVE) {
-                  //   showAlertWithConfirmation(
-                  //     'Do you want to Pay?',
-                  //     'Testing',
-                  //     'info',
-                  //     handleWithdrawCollateral,
-                  //     'Pay Now Test'
-                  //   );
-                  // }
                   if (
                     group.myWithdrawals.collateral.enabled &&
                     !group.myWithdrawals.collateral.successfullyWithdrawn
                   ) {
-                    void handleWithdrawCollateral();
+                    void handleWithdrawFunds();
                   } else {
                     showAlert(
                       'Ups',
-                      'The collateral cannot be withdrawn if the Vaquita has not finished yet',
+                      'The funds cannot be withdrawn if the Vaquita has not finished yet',
                       'warning',
                       'Understood'
                     );

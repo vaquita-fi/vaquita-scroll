@@ -4,8 +4,12 @@ import { useWagmiConfig } from '@/wagmi';
 import { getPublicClient } from '@wagmi/core';
 import { useCallback } from 'react';
 import { useAccount, useWriteContract } from 'wagmi';
-import { BASE_SEPOLIA_USDC, USDC_DECIMALS, VAQUITA_CONTRACT_ADDRESS } from '../../constants';
 import erc20Abi from '../ERC20ABI';
+import { uuidToBytes16 } from '../utils/crypto';
+
+const USDC_DECIMALS = Number(process.env.NEXT_PUBLIC_USDC_DECIMALS);
+const USDC_CONTRACT = process.env.NEXT_PUBLIC_USDC_CONTRACT_ADDRESS as `0x${string}`;
+const VAQUITA_CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_VAQUITA_CONTRACT_ADDRESS as `0x${string}`;
 
 const convertFrequencyToTimestamp: any = (period: any): bigint => {
   const SECONDS_PER_DAY = 86400; // 24 hours * 60 minutes * 60 seconds
@@ -29,7 +33,7 @@ export const useVaquitaDeposit = () => {
     
     try {
       const hash = await writeContractAsync({
-        address: BASE_SEPOLIA_USDC,
+        address: USDC_CONTRACT,
         abi: erc20Abi,
         functionName: 'approve',
         args: [ VAQUITA_CONTRACT_ADDRESS, amount ],
@@ -55,7 +59,7 @@ export const useVaquitaDeposit = () => {
       const paymentAmount = BigInt(group.amount * USDC_DECIMALS);
       const numberOfPlayers = group.totalMembers;
       const frequencyOfTurns = convertFrequencyToTimestamp(group.period);
-      const tokenMintAddress = BASE_SEPOLIA_USDC;
+      const tokenMintAddress = USDC_CONTRACT;
       
       try {
         const approved = await approveTokens(paymentAmount * BigInt(group.totalMembers));
@@ -68,12 +72,11 @@ export const useVaquitaDeposit = () => {
           abi: contract.abi,
           functionName: 'initializeRound',
           args: [
-            group.id,
+            uuidToBytes16(group.id),
             paymentAmount,
             tokenMintAddress,
             numberOfPlayers,
-            frequencyOfTurns,
-            group.myPosition - 1,
+            frequencyOfTurns
           ],
         });
         console.log({ hash });
@@ -108,7 +111,7 @@ export const useVaquitaDeposit = () => {
           address: VAQUITA_CONTRACT_ADDRESS,
           abi: contract.abi,
           functionName: 'addPlayer',
-          args: [ group.id, group.myPosition - 1 ],
+          args: [ uuidToBytes16(group.id) ],
         });
         console.log({ hash });
         const receipt = await client.waitForTransactionReceipt({
@@ -145,7 +148,7 @@ export const useVaquitaDeposit = () => {
           address: VAQUITA_CONTRACT_ADDRESS,
           abi: contract.abi,
           functionName: 'payTurn',
-          args: [ group.id, turn ],
+          args: [ uuidToBytes16(group.id) ],
         });
         console.log({ hash });
         const receipt = await client.waitForTransactionReceipt({

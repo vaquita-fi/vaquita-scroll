@@ -191,7 +191,7 @@ export const useGroup = () => {
     []
   );
 
-  const withdrawalGroupCollateral = useCallback(
+  const withdrawalGroupFunds = useCallback(
     async (
       groupId: string,
       publicKey: PublicKey,
@@ -202,30 +202,6 @@ export const useGroup = () => {
         customerPublicKey: publicKey,
         transactionSignature,
         type: GroupWithdrawalType.COLLATERAL,
-        amount,
-      };
-      return await fetch(includeApi(`/group/${groupId}/withdrawal`), {
-        method: 'POST',
-        body: JSON.stringify(payload),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-    },
-    []
-  );
-
-  const withdrawalGroupEarnedInterest = useCallback(
-    async (
-      groupId: string,
-      publicKey: PublicKey,
-      transactionSignature: string,
-      amount: number
-    ) => {
-      const payload: GroupWithdrawalDTO = {
-        customerPublicKey: publicKey,
-        transactionSignature,
-        type: GroupWithdrawalType.INTEREST,
         amount,
       };
       return await fetch(includeApi(`/group/${groupId}/withdrawal`), {
@@ -272,8 +248,7 @@ export const useGroup = () => {
     deleteGroup,
     depositGroupCollateral,
     depositGroupPayment,
-    withdrawalGroupCollateral,
+    withdrawalGroupFunds,
     withdrawalGroupEarnedRound,
-    withdrawalGroupEarnedInterest,
   };
 };

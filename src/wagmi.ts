@@ -7,8 +7,11 @@ import {
 } from '@rainbow-me/rainbowkit/wallets';
 import { useMemo } from 'react';
 import { http, createConfig } from 'wagmi';
-import { baseSepolia } from 'wagmi/chains';
+import * as viemChains from 'viem/chains';
+import { getChainByName } from './web3/utils/crypto';
 import { NEXT_PUBLIC_WC_PROJECT_ID } from './config';
+
+const network = getChainByName(viemChains, process.env.NEXT_PUBLIC_NETWORK!);
 
 export function useWagmiConfig() {
   const projectId = NEXT_PUBLIC_WC_PROJECT_ID ?? '';
@@ -37,13 +40,13 @@ export function useWagmiConfig() {
     );
 
     const wagmiConfig = createConfig({
-      chains: [baseSepolia],
+      chains: [network],
       // turn off injected provider discovery
       multiInjectedProviderDiscovery: false,
       connectors,
       ssr: true,
       transports: {
-        [baseSepolia.id]: http(),
+        [network.id]: http(`https://eth-sepolia.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`),
       },
     });
 

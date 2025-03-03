@@ -1,12 +1,15 @@
-import { baseSepolia, Chain, base } from 'viem/chains';
+import * as viemChains from 'viem/chains';
 import { Environment, getCurrentEnvironment } from './environment';
+import { getChainByName } from '../web3/utils/crypto';
+
+const network = getChainByName(viemChains, process.env.NEXT_PUBLIC_NETWORK!);
 
 // The list of supported Chains for a given environment
-export const SUPPORTED_CHAINS: Record<Environment, [Chain, ...Chain[]]> = {
-  [Environment.localhost]: [baseSepolia],
-  [Environment.development]: [baseSepolia],
-  [Environment.staging]: [baseSepolia],
-  [Environment.production]: [base],
+export const SUPPORTED_CHAINS: Record<Environment, [viemChains.Chain, ...viemChains.Chain[]]> = {
+  [Environment.localhost]: [network],
+  [Environment.development]: [network],
+  [Environment.staging]: [network],
+  [Environment.production]: [network],
 };
 
 /**
@@ -23,5 +26,5 @@ export function getChainsForEnvironment(env?: Environment) {
 
 export function getChainById(chainId: string) {
   const chains = getChainsForEnvironment();
-  return chains?.find((c: Chain) => c.id === Number(chainId)) ?? null;
+  return chains?.find((c: viemChains.Chain) => c.id === Number(chainId)) ?? null;
 }
