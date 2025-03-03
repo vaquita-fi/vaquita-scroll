@@ -8,8 +8,8 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 // Mock Aave Pool for testing
 contract MockAavePool is IPool {
-    mapping(address => uint256) public deposits;
-    mapping(address => mapping(address => uint256)) public userDeposits;
+    mapping(address => uint) public deposits;
+    mapping(address => mapping(address => uint)) public userDeposits;
     
     // Mock implementation for testing
     function supply(address asset, uint256 amount, address onBehalfOf, uint16) external override {
@@ -20,7 +20,7 @@ contract MockAavePool is IPool {
         IERC20(asset).transferFrom(msg.sender, address(this), amount);
     }
     
-    function withdraw(address asset, uint256 amount, address to) external override returns (uint256) {
+    function withdraw(address asset, uint amount, address to) external override returns (uint) {
         require(userDeposits[asset][msg.sender] >= amount, "Insufficient balance");
         
         deposits[asset] -= amount;
@@ -32,12 +32,12 @@ contract MockAavePool is IPool {
         return amount;
     }
     
-    function getReserveNormalizedIncome(address) external pure override returns (uint256) {
+    function getReserveNormalizedIncome(address) external pure override returns (uint) {
         return 1e27; // Default normalized income
     }
     
     // Helper function to simulate interest accrual
-    function addInterest(address asset, uint256 interestAmount) external {
+    function addInterest(address asset, uint interestAmount) external {
         // This would be called by the test to simulate interest accrual
         deposits[asset] += interestAmount;
     }
@@ -55,17 +55,17 @@ contract MockAToken is IAToken, ERC20 {
         return _underlyingAsset;
     }
     
-    function scaledBalanceOf(address user) external view override returns (uint256) {
+    function scaledBalanceOf(address user) external view override returns (uint) {
         return balanceOf(user);
     }
     
     // Explicitly override balanceOf to resolve the conflict
-    function balanceOf(address user) public view override(IAToken, ERC20) returns (uint256) {
+    function balanceOf(address user) public view override(IAToken, ERC20) returns (uint) {
         return super.balanceOf(user);
     }
     
     // Helper function for testing
-    function mint(address to, uint256 amount) external {
+    function mint(address to, uint amount) external {
         _mint(to, amount);
     }
 }
@@ -80,7 +80,7 @@ contract TestUSDC is ERC20 {
         return 6; // USDC has 6 decimals
     }
 
-    function mint(address to, uint256 amount) public {
+    function mint(address to, uint amount) public {
         _mint(to, amount);
     }
 }
@@ -90,7 +90,7 @@ contract VaquitaTestHelper is Vaquita {
     constructor(address _aavePool) Vaquita(_aavePool) {}
     
     // Expose the internal _getRandomPosition function for testing
-    function getRandomPosition(uint8 numberOfPlayers, bytes16 roundId) public view returns (uint8) {
+    function getRandomPosition(uint numberOfPlayers, uint roundId) public view returns (uint) {
         return _getRandomPosition(numberOfPlayers, roundId);
     }
 }
@@ -105,10 +105,10 @@ contract VaquitaTest is Test {
     address public bob = address(2);
     address public charlie = address(3);
     
-    bytes16 public roundId = 0x0123456789abcdef0123456789abcdef;
-    uint256 public paymentAmount = 100 * 10**6; // 100 USDC
-    uint8 public numberOfPlayers = 3;
-    uint256 public frequencyOfPayments = 7 days;
+    uint public roundId = 1;
+    uint public paymentAmount = 100 * 10**6; // 100 USDC
+    uint public numberOfPlayers = 3;
+    uint public frequencyOfPayments = 7 days;
 
     function setUp() public {
         // Deploy mock contracts
@@ -129,32 +129,32 @@ contract VaquitaTest is Test {
         
         // Set up player accounts
         vm.prank(alice);
-        token.approve(address(vaquita), type(uint256).max);
+        token.approve(address(vaquita), type(uint).max);
         vm.prank(bob);
-        token.approve(address(vaquita), type(uint256).max);
+        token.approve(address(vaquita), type(uint).max);
         vm.prank(charlie);
-        token.approve(address(vaquita), type(uint256).max);
+        token.approve(address(vaquita), type(uint).max);
         
         // Approve aToken to spend tokens (for testing)
         vm.prank(address(aavePool));
-        token.approve(address(aToken), type(uint256).max);
+        token.approve(address(aToken), type(uint).max);
     }
 
     function testInitializeRound() public {
         vm.prank(alice);
         vaquita.initializeRound(roundId, paymentAmount, IERC20(address(token)), numberOfPlayers, frequencyOfPayments);
         
-        (uint256 _paymentAmount, address _tokenAddress, uint8 _numberOfPlayers, , uint8 _availableSlots, uint256 _frequencyOfPayments, Vaquita.RoundStatus _status) = vaquita.getRoundInfo(roundId);
+        (uint _paymentAmount, address _tokenAddress, uint _numberOfPlayers, , uint _availableSlots, uint _frequencyOfPayments, Vaquita.RoundStatus _status) = vaquita.getRoundInfo(roundId);
         
         assertEq(_paymentAmount, paymentAmount);
         assertEq(_tokenAddress, address(token));
         assertEq(_numberOfPlayers, numberOfPlayers);
         assertEq(_availableSlots, numberOfPlayers - 1);
         assertEq(_frequencyOfPayments, frequencyOfPayments);
-        assertEq(uint8(_status), uint8(Vaquita.RoundStatus.Pending));
+        assertEq(uint(_status), uint(Vaquita.RoundStatus.Pending));
         
         // Check that alice's position was assigned
-        uint8 alicePosition = vaquita.getPlayerPosition(roundId, alice);
+        uint alicePosition = vaquita.getPlayerPosition(roundId, alice);
         assertLt(alicePosition, numberOfPlayers); // Position should be assigned and valid
     }
 
@@ -165,7 +165,7 @@ contract VaquitaTest is Test {
         vm.prank(bob);
         vaquita.addPlayer(roundId);
         
-        (, , , , uint8 availableSlots, , Vaquita.RoundStatus status) = vaquita.getRoundInfo(roundId);
+        (, , , , uint availableSlots, , Vaquita.RoundStatus status) = vaquita.getRoundInfo(roundId);
         assertEq(availableSlots, 1);
         
         vm.prank(charlie);
@@ -173,7 +173,7 @@ contract VaquitaTest is Test {
         
         (, , , , availableSlots, , status) = vaquita.getRoundInfo(roundId);
         assertEq(availableSlots, 0);
-        assertEq(uint8(status), uint8(Vaquita.RoundStatus.Active));
+        assertEq(uint(status), uint(Vaquita.RoundStatus.Active));
     }
 
     function testPayTurn() public {
@@ -216,7 +216,7 @@ contract VaquitaTest is Test {
         
         // Check that the round is completed
         (, , , , , , Vaquita.RoundStatus status) = vaquita.getRoundInfo(roundId);
-        assertEq(uint8(status), uint8(Vaquita.RoundStatus.Completed));
+        assertEq(uint(status), uint(Vaquita.RoundStatus.Completed));
     }
 
     function testWithdrawTurn() public {
@@ -241,12 +241,12 @@ contract VaquitaTest is Test {
         vm.prank(charlie);
         vaquita.payTurn(roundId);
         
-        uint256 balanceBefore = token.balanceOf(alice);
+        uint balanceBefore = token.balanceOf(alice);
         
         vm.prank(alice);
         vaquita.withdrawTurn(roundId);
         
-        uint256 balanceAfter = token.balanceOf(alice);
+        uint balanceAfter = token.balanceOf(alice);
         assertEq(balanceAfter - balanceBefore, 2 * paymentAmount);
     }
 
@@ -293,15 +293,15 @@ contract VaquitaTest is Test {
         aToken.mint(address(vaquita), 30 * 10**6); // 30 USDC interest
         
         // First withdrawal should trigger interest calculation and distribution
-        uint256 balanceBefore = token.balanceOf(alice);
+        uint balanceBefore = token.balanceOf(alice);
         
         vm.prank(alice);
         vaquita.withdrawFunds(roundId);
         
-        uint256 balanceAfter = token.balanceOf(alice);
+        uint balanceAfter = token.balanceOf(alice);
         
         // Should get back collateral (numberOfPlayers * paymentAmount)
-        uint256 collateral = numberOfPlayers * paymentAmount;
+        uint collateral = numberOfPlayers * paymentAmount;
         
         // The test is failing because we're now taking a 10% protocol fee
         // and distributing interest based on position
@@ -309,12 +309,12 @@ contract VaquitaTest is Test {
         assertGe(balanceAfter - balanceBefore, collateral);
         
         // Test subsequent withdrawals (should not recalculate interest)
-        uint256 bobBalanceBefore = token.balanceOf(bob);
+        uint bobBalanceBefore = token.balanceOf(bob);
         
         vm.prank(bob);
         vaquita.withdrawFunds(roundId);
         
-        uint256 bobBalanceAfter = token.balanceOf(bob);
+        uint bobBalanceAfter = token.balanceOf(bob);
         assertGe(bobBalanceAfter - bobBalanceBefore, collateral);
     }
 
@@ -342,11 +342,11 @@ contract VaquitaTest is Test {
         VaquitaTestHelper testHelper = new VaquitaTestHelper(address(aavePool));
         
         // Test parameters
-        uint8 testNumberOfPlayers = 5;
-        bytes16 testRoundId = bytes16(keccak256(abi.encodePacked("test_round")));
+        uint testNumberOfPlayers = 5;
+        uint testRoundId = 2;
         
         // Get a random position
-        uint8 position = testHelper.getRandomPosition(testNumberOfPlayers, testRoundId);
+        uint position = testHelper.getRandomPosition(testNumberOfPlayers, testRoundId);
         
         // Verify the position is within the valid range [0, testNumberOfPlayers)
         assertTrue(position < testNumberOfPlayers, "Position should be less than testNumberOfPlayers");
@@ -367,18 +367,18 @@ contract VaquitaTest is Test {
         VaquitaTestHelper testHelper = new VaquitaTestHelper(address(aavePool));
         
         // Test parameters
-        uint8 testNumberOfPlayers = 5;
-        uint256 iterations = 100;
+        uint testNumberOfPlayers = 5;
+        uint iterations = 100;
         
         // Array to count occurrences of each position
-        uint256[] memory positionCounts = new uint256[](testNumberOfPlayers);
+        uint[] memory positionCounts = new uint[](testNumberOfPlayers);
         
         // Generate multiple random positions and count occurrences
-        for (uint256 i = 0; i < iterations; i++) {
+        for (uint i = 0; i < iterations; i++) {
             // Use a different roundId for each iteration to get different random values
-            bytes16 testRoundId = bytes16(keccak256(abi.encodePacked("test_round", i)));
+            uint testRoundId = i;
             
-            uint8 position = testHelper.getRandomPosition(testNumberOfPlayers, testRoundId);
+            uint position = testHelper.getRandomPosition(testNumberOfPlayers, testRoundId);
             positionCounts[position]++;
             
             // Verify the position is within the valid range
@@ -387,14 +387,14 @@ contract VaquitaTest is Test {
         
         // Verify that all positions have been generated at least once
         // This is a probabilistic test, but with enough iterations it should pass
-        for (uint8 i = 0; i < testNumberOfPlayers; i++) {
+        for (uint i = 0; i < testNumberOfPlayers; i++) {
             assertTrue(positionCounts[i] > 0, "Each position should be generated at least once");
         }
     }
     
     function testFindNextTurn() public view {
         // Test with player at position 0
-        uint8 position = 0;
+        uint position = 0;
         
         // No turns paid yet (0b000)
         // Should return 1 (not 0, since position 0 is the player's own position)

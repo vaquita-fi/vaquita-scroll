@@ -12,34 +12,34 @@ contract Vaquita {
     enum PaymentStatus { NotPaid, OnTime, Late }
 
     struct Turn {
-        uint256 cutoffDate;
+        uint cutoffDate;
         mapping(address => PaymentStatus) playerPaymentStatus;
-        mapping(address => uint256) paymentTimestamp;
+        mapping(address => uint) paymentTimestamp;
         bool completed;
     }
 
     struct Round {
-        uint256 paymentAmount;
+        uint paymentAmount;
         IERC20 token;
-        uint8 numberOfPlayers;
+        uint numberOfPlayers;
         address[] players;
-        uint256 totalAmountLocked;
-        uint8 availableSlots;
-        uint256 frequencyOfPayments;
+        uint totalAmountLocked;
+        uint availableSlots;
+        uint frequencyOfPayments;
         RoundStatus status;
         mapping(address => bool) withdrawnFunds;
-        mapping(address => uint256) turnAccumulations;
-        mapping(address => uint256) paidTurns;
+        mapping(address => uint) turnAccumulations;
+        mapping(address => uint) paidTurns;
         mapping(address => bool) withdrawnTurns;
-        mapping(address => uint8) positions;
-        uint256 startTimestamp;
-        uint256 endTimestamp;
-        mapping(uint8 => Turn) turns;
-        uint256 totalInterestEarned;
+        mapping(address => uint) positions;
+        uint startTimestamp;
+        uint endTimestamp;
+        mapping(uint => Turn) turns;
+        uint totalInterestEarned;
         bool protocolFeeTaken;
     }
 
-    mapping(bytes16 => Round) public _rounds;
+    mapping(uint => Round) public _rounds;
     
     // Aave Pool contract for yield generation
     IPool public immutable aavePool;
@@ -51,7 +51,7 @@ contract Vaquita {
     address public owner;
     
     // Protocol fees accumulated per token
-    mapping(address => uint256) public protocolFees;
+    mapping(address => uint) public protocolFees;
 
     error RoundAlreadyExists();
     error RoundNotPending();
@@ -69,13 +69,13 @@ contract Vaquita {
     error NotOwner();
     error ZeroAddress();
 
-    event RoundInitialized(bytes16 indexed roundId, address initializer);
-    event PlayerAdded(bytes16 indexed roundId, address player, uint8 position);
-    event TurnPaid(bytes16 indexed roundId, address payer, uint8 turn, PaymentStatus status);
-    event TurnWithdrawn(bytes16 indexed roundId, address player, uint256 amount);
-    event FundsWithdrawn(bytes16 indexed roundId, address player, uint256 collateralAmount, uint256 interestAmount);
+    event RoundInitialized(uint indexed roundId, address initializer);
+    event PlayerAdded(uint indexed roundId, address player, uint position);
+    event TurnPaid(uint indexed roundId, address payer, uint turn, PaymentStatus status);
+    event TurnWithdrawn(uint indexed roundId, address player, uint amount);
+    event FundsWithdrawn(uint indexed roundId, address player, uint collateralAmount, uint interestAmount);
     event ATokenRegistered(address token, address aToken);
-    event ProtocolFeeWithdrawn(address token, uint256 amount);
+    event ProtocolFeeWithdrawn(address token, uint amount);
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
     modifier onlyOwner() {
@@ -102,11 +102,11 @@ contract Vaquita {
     }
 
     function initializeRound(
-        bytes16 roundId,
-        uint256 paymentAmount,
+        uint roundId,
+        uint paymentAmount,
         IERC20 token,
-        uint8 numberOfPlayers,
-        uint256 frequencyOfPayments
+        uint numberOfPlayers,
+        uint frequencyOfPayments
     ) external {
         if (address(_rounds[roundId].token) != address(0)) {
             revert RoundAlreadyExists();
@@ -123,11 +123,11 @@ contract Vaquita {
         round.status = RoundStatus.Pending;
         round.startTimestamp = block.timestamp;
 
-        uint256 amountToLock = paymentAmount * numberOfPlayers;
+        uint amountToLock = paymentAmount * numberOfPlayers;
         token.safeTransferFrom(msg.sender, address(this), amountToLock);
 
         // Generate random position for the player
-        uint8 position = _getRandomPosition(numberOfPlayers, roundId);
+        uint position = _getRandomPosition(numberOfPlayers, roundId);
         
         round.players.push(msg.sender);
         round.positions[msg.sender] = position;
@@ -135,7 +135,7 @@ contract Vaquita {
         round.availableSlots--;
 
         // Setup cutoff dates for each turn
-        for (uint8 i = 0; i < numberOfPlayers; i++) {
+        for (uint i = 0; i < numberOfPlayers; i++) {
             round.turns[i].cutoffDate = round.startTimestamp + (i + 1) * frequencyOfPayments;
         }
 
@@ -146,7 +146,7 @@ contract Vaquita {
         emit PlayerAdded(roundId, msg.sender, position);
     }
 
-    function addPlayer(bytes16 roundId) external {
+    function addPlayer(uint roundId) external {
         Round storage round = _rounds[roundId];
         if (round.status != RoundStatus.Pending) {
             revert RoundNotPending();
@@ -155,14 +155,14 @@ contract Vaquita {
             revert RoundFull();
         }
 
-        uint256 amountToLock = round.paymentAmount * round.numberOfPlayers;
+        uint amountToLock = round.paymentAmount * round.numberOfPlayers;
         round.token.safeTransferFrom(msg.sender, address(this), amountToLock);
 
         // Generate random position for the player
-        uint8 position = _getRandomPosition(round.numberOfPlayers, roundId);
+        uint position = _getRandomPosition(round.numberOfPlayers, roundId);
         
         // Ensure position is not already taken
-        for (uint8 i = 0; i < round.players.length; i++) {
+        for (uint i = 0; i < round.players.length; i++) {
             if (round.positions[round.players[i]] == position) {
                 // If position is taken, find the next available one
                 position = (position + 1) % round.numberOfPlayers;
@@ -185,10 +185,10 @@ contract Vaquita {
         emit PlayerAdded(roundId, msg.sender, position);
     }
 
-    function payTurn(bytes16 roundId) external {
+    function payTurn(uint roundId) external {
         Round storage round = _rounds[roundId];
-        uint8 position = round.positions[msg.sender];
-        uint8 turn = _findNextTurn(round.paidTurns[msg.sender], round.numberOfPlayers, position);
+        uint position = round.positions[msg.sender];
+        uint turn = _findNextTurn(round.paidTurns[msg.sender], round.numberOfPlayers, position);
         if (round.status != RoundStatus.Active) {
             revert RoundNotActive();
         }
@@ -200,7 +200,7 @@ contract Vaquita {
         }
 
         address recipient = address(0);
-        for (uint8 i = 0; i < round.players.length; i++) {
+        for (uint i = 0; i < round.players.length; i++) {
             if (round.positions[round.players[i]] == turn) {
                 recipient = round.players[i];
                 break;
@@ -228,9 +228,9 @@ contract Vaquita {
         round.paidTurns[msg.sender] |= 1 << turn;
 
         // Check if this turn is now completed (all players except the recipient have paid)
-        uint256 expectedPayments = round.numberOfPlayers - 1;
-        uint256 actualPayments = 0;
-        for (uint8 i = 0; i < round.players.length; i++) {
+        uint expectedPayments = round.numberOfPlayers - 1;
+        uint actualPayments = 0;
+        for (uint i = 0; i < round.players.length; i++) {
             if (round.players[i] != recipient && ((round.paidTurns[round.players[i]] & (1 << turn)) != 0)) {
                 actualPayments++;
             }
@@ -242,7 +242,7 @@ contract Vaquita {
 
         // Check if all turns are completed
         bool allTurnsCompleted = true;
-        for (uint8 i = 0; i < round.numberOfPlayers; i++) {
+        for (uint i = 0; i < round.numberOfPlayers; i++) {
             if (!round.turns[i].completed) {
                 allTurnsCompleted = false;
                 break;
@@ -251,13 +251,12 @@ contract Vaquita {
         
         if (allTurnsCompleted) {
             round.status = RoundStatus.Completed;
-            round.endTimestamp = block.timestamp;
         }
 
         emit TurnPaid(roundId, msg.sender, turn, status);
     }
 
-    function withdrawTurn(bytes16 roundId) external {
+    function withdrawTurn(uint roundId) external {
         Round storage round = _rounds[roundId];
         if (round.status != RoundStatus.Active && round.status != RoundStatus.Completed) {
             revert RoundNotActive();
@@ -266,7 +265,7 @@ contract Vaquita {
             revert TurnAlreadyWithdrawn();
         }
 
-        uint256 expectedAmount = round.paymentAmount * (round.numberOfPlayers - 1);
+        uint expectedAmount = round.paymentAmount * (round.numberOfPlayers - 1);
         if (round.turnAccumulations[msg.sender] != expectedAmount) {
             revert InsufficientFunds();
         }
@@ -278,7 +277,7 @@ contract Vaquita {
         emit TurnWithdrawn(roundId, msg.sender, expectedAmount);
     }
 
-    function withdrawFunds(bytes16 roundId) external {
+    function withdrawFunds(uint roundId) external {
         Round storage round = _rounds[roundId];
         if (round.status != RoundStatus.Completed) {
             revert RoundNotCompleted();
@@ -289,6 +288,7 @@ contract Vaquita {
         
         // If this is the first withdrawal, calculate and distribute interest
         if (!round.protocolFeeTaken) {
+            round.endTimestamp = block.timestamp;
             // Calculate total interest earned from Aave
             round.totalInterestEarned = _calculateTotalInterest(round.token, round.totalAmountLocked);
             
@@ -296,14 +296,14 @@ contract Vaquita {
             address aTokenAddress = tokenToAToken[address(round.token)];
             if (aTokenAddress != address(0)) {
                 IAToken aToken = IAToken(aTokenAddress);
-                uint256 aTokenBalance = aToken.balanceOf(address(this));
+                uint aTokenBalance = aToken.balanceOf(address(this));
                 if (aTokenBalance > 0) {
                     aavePool.withdraw(address(round.token), aTokenBalance, address(this));
                 }
             }
             
             // Calculate and track protocol fee
-            uint256 protocolFee = (round.totalInterestEarned * 10) / 100;
+            uint protocolFee = (round.totalInterestEarned * 10) / 100;
             protocolFees[address(round.token)] += protocolFee;
             round.protocolFeeTaken = true;
             
@@ -312,26 +312,26 @@ contract Vaquita {
         }
 
         // Calculate collateral amount
-        uint256 collateralAmount = round.paymentAmount * round.numberOfPlayers;
+        uint collateralAmount = round.paymentAmount * round.numberOfPlayers;
         
         // Calculate interest amount based on payment behavior
-        uint256 interestAmount = _calculatePlayerInterest(roundId, msg.sender);
+        uint interestAmount = _calculatePlayerInterest(roundId, msg.sender);
         
         // Transfer both collateral and interest
-        uint256 totalWithdraw = collateralAmount + interestAmount;
+        uint totalWithdraw = collateralAmount + interestAmount;
         round.token.safeTransfer(msg.sender, totalWithdraw);
         round.withdrawnFunds[msg.sender] = true;
 
         emit FundsWithdrawn(roundId, msg.sender, collateralAmount, interestAmount);
     }
 
-    function getRoundInfo(bytes16 roundId) external view returns (
-        uint256 paymentAmount,
+    function getRoundInfo(uint roundId) external view returns (
+        uint paymentAmount,
         address tokenAddress,
-        uint8 numberOfPlayers,
-        uint256 totalAmountLocked,
-        uint8 availableSlots,
-        uint256 frequencyOfPayments,
+        uint numberOfPlayers,
+        uint totalAmountLocked,
+        uint availableSlots,
+        uint frequencyOfPayments,
         RoundStatus status
     ) {
         Round storage round = _rounds[roundId];
@@ -346,24 +346,24 @@ contract Vaquita {
         );
     }
 
-    function getTurnCutoffDate(bytes16 roundId, uint8 turn) external view returns (uint256) {
+    function getTurnCutoffDate(uint roundId, uint turn) external view returns (uint) {
         return _rounds[roundId].turns[turn].cutoffDate;
     }
 
-    function getPlayerPosition(bytes16 roundId, address player) external view returns (uint8) {
+    function getPlayerPosition(uint roundId, address player) external view returns (uint) {
         return _rounds[roundId].positions[player];
     }
 
-    function getPaymentStatus(bytes16 roundId, uint8 turn, address player) external view returns (PaymentStatus) {
+    function getPaymentStatus(uint roundId, uint turn, address player) external view returns (PaymentStatus) {
         return _rounds[roundId].turns[turn].playerPaymentStatus[player];
     }
 
-    function _getRandomPosition(uint8 numberOfPlayers, bytes16 roundId) internal view returns (uint8) {
-        uint256 randomSeed = uint256(keccak256(abi.encodePacked(block.timestamp, block.prevrandao, msg.sender, roundId)));
-        return uint8(randomSeed % numberOfPlayers);
+    function _getRandomPosition(uint numberOfPlayers, uint roundId) internal view returns (uint) {
+        uint randomSeed = uint(keccak256(abi.encodePacked(block.timestamp, block.prevrandao, msg.sender, roundId)));
+        return uint(randomSeed % numberOfPlayers);
     }
 
-    function _supplyToAave(IERC20 token, uint256 amount) internal {
+    function _supplyToAave(IERC20 token, uint amount) internal {
         address aTokenAddress = tokenToAToken[address(token)];
         if (aTokenAddress != address(0)) {
             // Approve Aave pool to spend the tokens
@@ -374,7 +374,7 @@ contract Vaquita {
         }
     }
 
-    function _withdrawFromAave(IERC20 token, uint256 amount) internal {
+    function _withdrawFromAave(IERC20 token, uint amount) internal {
         address aTokenAddress = tokenToAToken[address(token)];
         if (aTokenAddress != address(0)) {
             // Withdraw from Aave
@@ -382,7 +382,7 @@ contract Vaquita {
         }
     }
 
-    function _calculateTotalInterest(IERC20 token, uint256 principalAmount) internal view returns (uint256) {
+    function _calculateTotalInterest(IERC20 token, uint principalAmount) internal view returns (uint) {
         address aTokenAddress = tokenToAToken[address(token)];
         if (aTokenAddress == address(0)) {
             return 0; // No aToken registered for this token
@@ -390,7 +390,7 @@ contract Vaquita {
         
         // Get current aToken balance
         IAToken aToken = IAToken(aTokenAddress);
-        uint256 aTokenBalance = aToken.balanceOf(address(this));
+        uint aTokenBalance = aToken.balanceOf(address(this));
         
         // Interest is the difference between aToken balance and principal
         if (aTokenBalance > principalAmount) {
@@ -400,9 +400,9 @@ contract Vaquita {
     }
 
     // Mapping to store pre-calculated interest amounts for each player
-    mapping(bytes16 => mapping(address => uint256)) private _playerInterestAmounts;
+    mapping(uint => mapping(address => uint)) private _playerInterestAmounts;
     
-    function _calculateInterestDistribution(bytes16 roundId) internal {
+    function _calculateInterestDistribution(uint roundId) internal {
         Round storage round = _rounds[roundId];
         
         if (round.totalInterestEarned == 0) {
@@ -410,31 +410,31 @@ contract Vaquita {
         }
         
         // First, reserve 10% of total interest as protocol profit
-        uint256 protocolFee = (round.totalInterestEarned * 10) / 100;
-        uint256 distributableInterest = round.totalInterestEarned - protocolFee;
+        uint protocolFee = (round.totalInterestEarned * 10) / 100;
+        uint distributableInterest = round.totalInterestEarned - protocolFee;
         
         // Calculate total weight for position-based distribution
-        uint256 totalPositionWeight = (round.numberOfPlayers * (round.numberOfPlayers + 1)) / 2;
+        uint totalPositionWeight = (round.numberOfPlayers * (round.numberOfPlayers + 1)) / 2;
         
         // Calculate raw interest amounts based on position and payment behavior
-        uint256[] memory rawInterestAmounts = new uint256[](round.numberOfPlayers);
-        uint256 totalRawInterest = 0;
+        uint[] memory rawInterestAmounts = new uint[](round.numberOfPlayers);
+        uint totalRawInterest = 0;
         
-        for (uint8 i = 0; i < round.numberOfPlayers; i++) {
+        for (uint i = 0; i < round.numberOfPlayers; i++) {
             address player = round.players[i];
-            uint8 playerPosition = round.positions[player];
+            uint playerPosition = round.positions[player];
             
             // Position weight (higher positions get more)
-            uint256 positionWeight = playerPosition + 1;
+            uint positionWeight = playerPosition + 1;
             
             // Base interest is weighted by position
-            uint256 baseInterest = (distributableInterest * positionWeight) / totalPositionWeight;
+            uint baseInterest = (distributableInterest * positionWeight) / totalPositionWeight;
             
             // Calculate bonus/penalty based on payment behavior
-            uint256 bonusPenaltyFactor = 100; // 100% = no bonus/penalty
+            uint bonusPenaltyFactor = 100; // 100% = no bonus/penalty
             
             // Skip player's own turn when calculating bonus/penalty
-            for (uint8 j = 0; j < round.numberOfPlayers; j++) {
+            for (uint j = 0; j < round.numberOfPlayers; j++) {
                 if (j == playerPosition) {
                     continue; // Skip own turn
                 }
@@ -445,11 +445,11 @@ contract Vaquita {
                     bonusPenaltyFactor += 5;
                 } else if (status == PaymentStatus.Late) {
                     // Penalty for late payments based on how late
-                    uint256 lateness = round.turns[j].paymentTimestamp[player] - round.turns[j].cutoffDate;
-                    uint256 daysLate = lateness / 86400; // Convert to days
+                    uint lateness = round.turns[j].paymentTimestamp[player] - round.turns[j].cutoffDate;
+                    uint daysLate = lateness / 86400; // Convert to days
                     
                     // Penalty: -2% per day late, capped at -20% per turn
-                    uint256 penalty = daysLate * 2;
+                    uint penalty = daysLate * 2;
                     if (penalty > 20) {
                         penalty = 20;
                     }
@@ -469,7 +469,7 @@ contract Vaquita {
         }
         
         // Normalize the interest amounts to ensure the total equals distributableInterest
-        for (uint8 i = 0; i < round.numberOfPlayers; i++) {
+        for (uint i = 0; i < round.numberOfPlayers; i++) {
             address player = round.players[i];
             
             // If totalRawInterest is 0, distribute equally
@@ -482,20 +482,20 @@ contract Vaquita {
         }
     }
     
-    function _calculatePlayerInterest(bytes16 roundId, address player) internal view returns (uint256) {
+    function _calculatePlayerInterest(uint roundId, address player) internal view returns (uint) {
         // Return the pre-calculated interest amount for this player
         return _playerInterestAmounts[roundId][player];
     }
 
-    function _findNextTurn(uint256 number, uint8 numberOfPlayers, uint8 position) public pure returns (uint8) {
-        for (uint8 i = 0; i < numberOfPlayers; i++) {
+    function _findNextTurn(uint number, uint numberOfPlayers, uint position) public pure returns (uint) {
+        for (uint i = 0; i < numberOfPlayers; i++) {
             if ((number & (1 << i)) == 0 && i != position) return i;
         }
         return numberOfPlayers; // No 0 found, return highest position in range
     }
 
     function withdrawProtocolFee(address token) external onlyOwner {
-        uint256 fee = protocolFees[token];
+        uint fee = protocolFees[token];
         protocolFees[token] = 0;
         IERC20(token).safeTransfer(msg.sender, fee);
         emit ProtocolFeeWithdrawn(token, fee);

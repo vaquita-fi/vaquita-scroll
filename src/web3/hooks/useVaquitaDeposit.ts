@@ -5,7 +5,6 @@ import { getPublicClient } from '@wagmi/core';
 import { useCallback } from 'react';
 import { useAccount, useWriteContract } from 'wagmi';
 import erc20Abi from '../ERC20ABI';
-import { uuidToBytes16 } from '../utils/crypto';
 
 const USDC_DECIMALS = Number(process.env.NEXT_PUBLIC_USDC_DECIMALS);
 const USDC_CONTRACT = process.env.NEXT_PUBLIC_USDC_CONTRACT_ADDRESS as `0x${string}`;
@@ -20,7 +19,7 @@ const convertFrequencyToTimestamp: any = (period: any): bigint => {
 
 export const useVaquitaDeposit = () => {
   const { address } = useAccount();
-  const { writeContract, writeContractAsync } = useWriteContract();
+  const { writeContractAsync } = useWriteContract();
   const contract = useVaquitaContract();
   
   const wagmiConfig = useWagmiConfig();
@@ -72,7 +71,7 @@ export const useVaquitaDeposit = () => {
           abi: contract.abi,
           functionName: 'initializeRound',
           args: [
-            uuidToBytes16(group.id),
+            group.id,
             paymentAmount,
             tokenMintAddress,
             numberOfPlayers,
@@ -111,7 +110,7 @@ export const useVaquitaDeposit = () => {
           address: VAQUITA_CONTRACT_ADDRESS,
           abi: contract.abi,
           functionName: 'addPlayer',
-          args: [ uuidToBytes16(group.id) ],
+          args: [ group.id ],
         });
         console.log({ hash });
         const receipt = await client.waitForTransactionReceipt({
@@ -148,7 +147,7 @@ export const useVaquitaDeposit = () => {
           address: VAQUITA_CONTRACT_ADDRESS,
           abi: contract.abi,
           functionName: 'payTurn',
-          args: [ uuidToBytes16(group.id) ],
+          args: [ group.id ],
         });
         console.log({ hash });
         const receipt = await client.waitForTransactionReceipt({

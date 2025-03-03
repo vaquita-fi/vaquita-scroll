@@ -21,20 +21,20 @@ const abi = [
       },
       {
         "name": "numberOfPlayers",
-        "type": "uint8",
-        "internalType": "uint8"
+        "type": "uint256",
+        "internalType": "uint256"
       },
       {
         "name": "position",
-        "type": "uint8",
-        "internalType": "uint8"
+        "type": "uint256",
+        "internalType": "uint256"
       }
     ],
     "outputs": [
       {
         "name": "",
-        "type": "uint8",
-        "internalType": "uint8"
+        "type": "uint256",
+        "internalType": "uint256"
       }
     ],
     "stateMutability": "pure"
@@ -45,8 +45,8 @@ const abi = [
     "inputs": [
       {
         "name": "",
-        "type": "bytes16",
-        "internalType": "bytes16"
+        "type": "uint256",
+        "internalType": "uint256"
       }
     ],
     "outputs": [
@@ -62,8 +62,8 @@ const abi = [
       },
       {
         "name": "numberOfPlayers",
-        "type": "uint8",
-        "internalType": "uint8"
+        "type": "uint256",
+        "internalType": "uint256"
       },
       {
         "name": "totalAmountLocked",
@@ -72,8 +72,8 @@ const abi = [
       },
       {
         "name": "availableSlots",
-        "type": "uint8",
-        "internalType": "uint8"
+        "type": "uint256",
+        "internalType": "uint256"
       },
       {
         "name": "frequencyOfPayments",
@@ -127,8 +127,8 @@ const abi = [
     "inputs": [
       {
         "name": "roundId",
-        "type": "bytes16",
-        "internalType": "bytes16"
+        "type": "uint256",
+        "internalType": "uint256"
       }
     ],
     "outputs": [],
@@ -140,13 +140,13 @@ const abi = [
     "inputs": [
       {
         "name": "roundId",
-        "type": "bytes16",
-        "internalType": "bytes16"
+        "type": "uint256",
+        "internalType": "uint256"
       },
       {
         "name": "turn",
-        "type": "uint8",
-        "internalType": "uint8"
+        "type": "uint256",
+        "internalType": "uint256"
       },
       {
         "name": "player",
@@ -169,8 +169,8 @@ const abi = [
     "inputs": [
       {
         "name": "roundId",
-        "type": "bytes16",
-        "internalType": "bytes16"
+        "type": "uint256",
+        "internalType": "uint256"
       },
       {
         "name": "player",
@@ -181,8 +181,8 @@ const abi = [
     "outputs": [
       {
         "name": "",
-        "type": "uint8",
-        "internalType": "uint8"
+        "type": "uint256",
+        "internalType": "uint256"
       }
     ],
     "stateMutability": "view"
@@ -193,8 +193,8 @@ const abi = [
     "inputs": [
       {
         "name": "roundId",
-        "type": "bytes16",
-        "internalType": "bytes16"
+        "type": "uint256",
+        "internalType": "uint256"
       }
     ],
     "outputs": [
@@ -210,8 +210,8 @@ const abi = [
       },
       {
         "name": "numberOfPlayers",
-        "type": "uint8",
-        "internalType": "uint8"
+        "type": "uint256",
+        "internalType": "uint256"
       },
       {
         "name": "totalAmountLocked",
@@ -220,8 +220,8 @@ const abi = [
       },
       {
         "name": "availableSlots",
-        "type": "uint8",
-        "internalType": "uint8"
+        "type": "uint256",
+        "internalType": "uint256"
       },
       {
         "name": "frequencyOfPayments",
@@ -242,13 +242,13 @@ const abi = [
     "inputs": [
       {
         "name": "roundId",
-        "type": "bytes16",
-        "internalType": "bytes16"
+        "type": "uint256",
+        "internalType": "uint256"
       },
       {
         "name": "turn",
-        "type": "uint8",
-        "internalType": "uint8"
+        "type": "uint256",
+        "internalType": "uint256"
       }
     ],
     "outputs": [
@@ -266,8 +266,8 @@ const abi = [
     "inputs": [
       {
         "name": "roundId",
-        "type": "bytes16",
-        "internalType": "bytes16"
+        "type": "uint256",
+        "internalType": "uint256"
       },
       {
         "name": "paymentAmount",
@@ -281,8 +281,8 @@ const abi = [
       },
       {
         "name": "numberOfPlayers",
-        "type": "uint8",
-        "internalType": "uint8"
+        "type": "uint256",
+        "internalType": "uint256"
       },
       {
         "name": "frequencyOfPayments",
@@ -312,8 +312,8 @@ const abi = [
     "inputs": [
       {
         "name": "roundId",
-        "type": "bytes16",
-        "internalType": "bytes16"
+        "type": "uint256",
+        "internalType": "uint256"
       }
     ],
     "outputs": [],
@@ -394,8 +394,8 @@ const abi = [
     "inputs": [
       {
         "name": "roundId",
-        "type": "bytes16",
-        "internalType": "bytes16"
+        "type": "uint256",
+        "internalType": "uint256"
       }
     ],
     "outputs": [],
@@ -420,8 +420,8 @@ const abi = [
     "inputs": [
       {
         "name": "roundId",
-        "type": "bytes16",
-        "internalType": "bytes16"
+        "type": "uint256",
+        "internalType": "uint256"
       }
     ],
     "outputs": [],
@@ -452,9 +452,9 @@ const abi = [
     "inputs": [
       {
         "name": "roundId",
-        "type": "bytes16",
+        "type": "uint256",
         "indexed": true,
-        "internalType": "bytes16"
+        "internalType": "uint256"
       },
       {
         "name": "player",
@@ -502,9 +502,9 @@ const abi = [
     "inputs": [
       {
         "name": "roundId",
-        "type": "bytes16",
+        "type": "uint256",
         "indexed": true,
-        "internalType": "bytes16"
+        "internalType": "uint256"
       },
       {
         "name": "player",
@@ -514,9 +514,9 @@ const abi = [
       },
       {
         "name": "position",
-        "type": "uint8",
+        "type": "uint256",
         "indexed": false,
-        "internalType": "uint8"
+        "internalType": "uint256"
       }
     ],
     "anonymous": false
@@ -546,9 +546,9 @@ const abi = [
     "inputs": [
       {
         "name": "roundId",
-        "type": "bytes16",
+        "type": "uint256",
         "indexed": true,
-        "internalType": "bytes16"
+        "internalType": "uint256"
       },
       {
         "name": "initializer",
@@ -565,9 +565,9 @@ const abi = [
     "inputs": [
       {
         "name": "roundId",
-        "type": "bytes16",
+        "type": "uint256",
         "indexed": true,
-        "internalType": "bytes16"
+        "internalType": "uint256"
       },
       {
         "name": "payer",
@@ -577,9 +577,9 @@ const abi = [
       },
       {
         "name": "turn",
-        "type": "uint8",
+        "type": "uint256",
         "indexed": false,
-        "internalType": "uint8"
+        "internalType": "uint256"
       },
       {
         "name": "status",
@@ -596,9 +596,9 @@ const abi = [
     "inputs": [
       {
         "name": "roundId",
-        "type": "bytes16",
+        "type": "uint256",
         "indexed": true,
-        "internalType": "bytes16"
+        "internalType": "uint256"
       },
       {
         "name": "player",
