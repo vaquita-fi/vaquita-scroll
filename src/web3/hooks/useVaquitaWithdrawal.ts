@@ -13,7 +13,7 @@ export const useVaquitaWithdrawal = () => {
   const wagmiConfig = useWagmiConfig();
   const client = getPublicClient(wagmiConfig);
   
-  const withdrawalTurn = useCallback(
+  const withdrawalEarnedRound = useCallback(
     async (
       group: GroupResponseDTO,
     ): Promise<{ tx: string; error: any; success: boolean }> => {
@@ -43,7 +43,7 @@ export const useVaquitaWithdrawal = () => {
     [],
   );
   
-  const withdrawalFunds = useCallback(
+  const withdrawalCollateralAndEarnedInterest = useCallback(
     async (
       group: GroupResponseDTO,
     ): Promise<{ tx: string; error: any; success: boolean }> => {
@@ -74,7 +74,7 @@ export const useVaquitaWithdrawal = () => {
   );
   
   return {
-    withdrawalTurn,
-    withdrawalFunds,
+    withdrawalTurn: withdrawalEarnedRound,
+    withdrawalFunds: withdrawalCollateralAndEarnedInterest,
   };
 };

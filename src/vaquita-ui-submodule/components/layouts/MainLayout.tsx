@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import { MainNavbar } from '../MainNavbar';
+import '../../styles/index.css';
 
 export function MainLayout({
   children,
@@ -10,7 +11,7 @@ export function MainLayout({
 }) {
   return (
     <div className="h-full flex justify-center" style={{ cursor: 'pointer' }}>
-      <div className="w-full h-full bg-bg-100 flex flex-col">
+      <div className="w-full h-full flex flex-col bg-gradient-to-r from-blue-100 to-purple-200">
         <div
           className="hidden lg:block z-10 my-6 rounded-full px-6 xl:px-36"
           // style={{ maxHeight: 'calc(100vh - 5rem)' }}
@@ -23,7 +24,7 @@ export function MainLayout({
         >
           {children}
         </div>
-        <div className="block lg:hidden bg-gray-900 ">
+        <div className="block lg:hidden">
           <MainNavbar walletButtons={walletButtons} />
         </div>
       </div>

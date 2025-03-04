@@ -22,7 +22,7 @@ export const TabTitleHeader = ({ text }: { text: string }) => {
           />
         </button>
       )}
-      <p className="text-xl font-normal text-center text-white">{text}</p>
+      <p className="text-xl font-normal text-center">{text}</p>
       <div className="invisible">
         <Image
           src="/icons/back-arrow.svg"

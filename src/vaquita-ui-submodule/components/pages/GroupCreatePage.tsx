@@ -16,10 +16,10 @@ import {
 import { Button } from '../buttons';
 import { ErrorView } from '../error';
 import { InputSelect, InputText, Option } from '../form';
+import { GroupSummary } from '../group/GroupSummary';
 import { TabTitleHeader } from '../header';
 import { LoadingSpinner } from '../loadingSpinner';
 import { Message } from '../message';
-import { GroupSummary } from './GroupSummary';
 
 const optionsCrypto: Option<GroupCrypto>[] = [
   {
@@ -82,7 +82,6 @@ export const GroupCreatePage = ({ address }: { address?: AddressType }) => {
     period: GroupPeriod.MONTHLY,
     startsOnTimestamp: now.getTime() + ONE_DAY,
   });
-  console.log({ newGroup });
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { depositCollateralAndCreate } = useVaquitaDeposit();
@@ -104,7 +103,8 @@ export const GroupCreatePage = ({ address }: { address?: AddressType }) => {
   const onSave = async () => {
     setLoading(true);
     try {
-      const group = await createGroup(
+      console.info({ newGroup });
+      const response = await createGroup(
         newGroup.name,
         newGroup.amount,
         newGroup.crypto,
@@ -113,9 +113,12 @@ export const GroupCreatePage = ({ address }: { address?: AddressType }) => {
         newGroup.startsOnTimestamp,
         address
       );
-      if (typeof group.id !== 'string') {
+      if (!response.success) {
+        console.error(response);
         throw new Error('group not created');
       }
+      const group = response.content;
+      console.info({ newGroupCreated: group });
       const amount = group.collateralAmount;
       const { tx, error, success } = await depositCollateralAndCreate(group);
       if (!success) {
@@ -159,7 +162,6 @@ export const GroupCreatePage = ({ address }: { address?: AddressType }) => {
               }))
             }
           />
-
           {/* {!newGroup.name && <p className="text-accent-100">Required</p>} */}
         </div>
         <div className="flex gap-2 w-full">

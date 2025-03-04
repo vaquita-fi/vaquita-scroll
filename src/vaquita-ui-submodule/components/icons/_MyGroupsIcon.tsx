@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 
-export const MyGroupsIcon = () => {
+export const _MyGroupsIcon = () => {
   return (
     <svg
       width="30"

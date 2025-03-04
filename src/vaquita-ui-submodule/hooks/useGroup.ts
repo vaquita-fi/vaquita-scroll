@@ -18,6 +18,7 @@ type PublicKey = string;
 export const useGroup = () => {
   const getGroups = useCallback(
     async ({
+      name,
       orderBy,
       crypto,
       myGroups,
@@ -25,14 +26,19 @@ export const useGroup = () => {
       status,
       period,
       amount,
+      minAmount,
+      maxAmount,
     }: {
+      name: string | null;
       orderBy: string;
-      crypto: string;
+      crypto: string | null;
       myGroups?: true;
       publicKey?: PublicKey | null;
-      status?: GroupStatus;
-      period?: GroupPeriod;
-      amount?: number;
+      status: GroupStatus | null;
+      period: GroupPeriod | null;
+      amount: number | null;
+      minAmount: number | null;
+      maxAmount: number | null;
     }) => {
       return cleanRequest<ContentsResponseType<GroupResponseDTO>>(
         await authorizedRequest(
@@ -40,9 +46,12 @@ export const useGroup = () => {
             '/group' +
               `?orderBy=${encodeURIComponent(orderBy)}` +
               `&crypto=${crypto}` +
-              `${period !== GroupPeriod.ALL ? `&period=${period}` : ''}` +
+              `${name ? `&name=${name}` : ''}` +
+              `${period ? `&period=${period}` : ''}` +
               `${myGroups ? `&myGroups=true` : ''}` +
               `${amount ? `&amount=${amount}` : ''}` +
+              `${minAmount ? `&minAmount=${minAmount}` : ''}` +
+              `${maxAmount ? `&maxAmount=${maxAmount}` : ''}` +
               `${publicKey ? `&customerPublicKey=${publicKey}` : ''}` +
               `${status ? `&status=${status}` : ''}`
           )
@@ -78,8 +87,9 @@ export const useGroup = () => {
           'Content-Type': 'application/json',
         },
       });
-      const body = await result.json();
-      return body?.content as GroupResponseDTO;
+      return cleanRequest<ContentResponseType<GroupResponseDTO>>(
+        await result.text()
+      );
     },
     []
   );

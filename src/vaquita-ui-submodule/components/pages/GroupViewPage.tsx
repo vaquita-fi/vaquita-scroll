@@ -13,22 +13,21 @@ import {
 import { useGroup } from '../../hooks';
 import { AddressType, GroupResponseDTO, GroupStatus } from '../../types';
 import { Button, ShareButton } from '../buttons';
-import { TabTitleHeader } from '../header';
+import { ErrorView } from '../error';
+import { GroupCard } from '../group/GroupCard';
+import { GroupTablePayments } from '../group/GroupTablePayments';
 import { LoadingSpinner } from '../loadingSpinner';
 import { Message } from '../message';
 import { BuildingStatus } from '../status';
 import { SummaryAction } from '../summaryAction';
-import { GroupSummary } from './GroupSummary';
 
 export const GroupViewPage = ({ address }: { address?: AddressType }) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const { groupId } = useParams();
   const { depositCollateralAndJoin } = useVaquitaDeposit();
-  const {
-    withdrawalTurn,
-    withdrawalFunds,
-  } = useVaquitaWithdrawal();
+  const { withdrawalEarnedRound, withdrawalCollateralAndEarnedInterest } =
+    useVaquitaWithdrawal();
   const {
     getGroup,
     joinGroup,
@@ -52,6 +51,9 @@ export const GroupViewPage = ({ address }: { address?: AddressType }) => {
 
   const loading = isPendingData || isLoadingData || isFetchingData;
 
+  if (!address) {
+    return <ErrorView />;
+  }
   if (isLoading) {
     return <LoadingSpinner />;
   }
@@ -105,7 +107,7 @@ export const GroupViewPage = ({ address }: { address?: AddressType }) => {
     }
     try {
       const amount = group.amount;
-      const { tx, error, success } = await withdrawalTurn(group);
+      const { tx, error, success } = await withdrawalEarnedRound(group);
       if (!success) {
         logError('transaction error', error);
         throw new Error('transaction error');
@@ -129,7 +131,8 @@ export const GroupViewPage = ({ address }: { address?: AddressType }) => {
       return;
     }
     try {
-      const { tx, error, success } = await withdrawalFunds(group);
+      const { tx, error, success } =
+        await withdrawalCollateralAndEarnedInterest(group);
       if (!success) {
         logError('transaction error', error);
         throw new Error('transaction error');
@@ -163,11 +166,12 @@ export const GroupViewPage = ({ address }: { address?: AddressType }) => {
 
   return (
     <>
-      <TabTitleHeader text="Group Information" />
+      {/*<TabTitleHeader text="Group Information" />*/}
       {loading && <LoadingSpinner />}
       {!loading && data && (
         <div className="flex flex-col gap-2">
-          {data && <GroupSummary {...group} />}
+          {data && <GroupCard {...group} />}
+          {/*{data && <GroupSummary {...group} />}*/}
           {!isActive && !isConcluded && group.slots > 0 && (
             <BuildingStatus
               value1={step1}
@@ -314,6 +318,15 @@ export const GroupViewPage = ({ address }: { address?: AddressType }) => {
               }}
             /> */}
           </div>
+          {!loading && data && (
+            <div className="rounded-lg overflow-hidden">
+              <GroupTablePayments
+                address={address}
+                group={data?.content}
+                refetch={refetch}
+              />
+            </div>
+          )}
         </div>
       )}
     </>

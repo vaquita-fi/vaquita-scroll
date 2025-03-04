@@ -8,17 +8,23 @@ import {
   AddressType,
   GroupCrypto,
   GroupFilters,
-  GroupPeriod,
+  GroupStatus,
 } from '../../types';
-import { GroupFiltersHead } from './GroupFiltersHead';
-import { ListGroups } from './ListGroups';
+import { GroupFiltersHead } from '../group/GroupFiltersHead';
+import { ListGroups } from '../group/ListGroups';
 
 export const GroupsPage = ({ address }: { address?: AddressType }) => {
   const [filters, setFilters] = useState<GroupFilters>({
-    period: GroupPeriod.ALL,
+    name: null,
+    period: null,
     orderBy: '+amount',
     crypto: GroupCrypto.USDC,
-    amount: 0,
+    amount: null,
+    minAmount: null,
+    maxAmount: null,
+    pending: false,
+    active: false,
+    completed: false,
   });
   const { getGroups } = useGroup();
   const { isPending, isLoading, data } = useQuery({
@@ -27,10 +33,20 @@ export const GroupsPage = ({ address }: { address?: AddressType }) => {
     queryFn: () =>
       getGroups({
         publicKey: address,
+        name: filters.name,
         crypto: filters.crypto,
         orderBy: filters.orderBy,
         amount: filters.amount,
         period: filters.period,
+        minAmount: filters.minAmount,
+        maxAmount: filters.maxAmount,
+        status: filters.pending
+          ? GroupStatus.PENDING
+          : filters.completed
+          ? GroupStatus.CONCLUDED
+          : filters.active
+          ? GroupStatus.ACTIVE
+          : null,
       }),
   });
 

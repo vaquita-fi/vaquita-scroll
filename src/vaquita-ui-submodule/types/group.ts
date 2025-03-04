@@ -13,7 +13,6 @@ export enum GroupCrypto {
 export enum GroupPeriod {
   MONTHLY = 'monthly',
   WEEKLY = 'weekly',
-  ALL = 'all',
 }
 
 export interface GroupMember {
@@ -84,7 +83,7 @@ export interface GroupWithdrawalDTO {
 }
 
 export interface GroupResponseDTO {
-  id: BigInt;
+  id: string;
   crypto: GroupCrypto;
   name: string;
   amount: number;
@@ -117,8 +116,14 @@ export interface GroupResponseDTO {
 }
 
 export interface GroupFilters {
-  period: GroupPeriod;
+  name: string | null;
+  period: GroupPeriod | null;
   orderBy: string;
-  crypto: GroupCrypto;
-  amount: number;
+  crypto: GroupCrypto | null;
+  amount: number | null;
+  minAmount: number | null;
+  maxAmount: number | null;
+  pending: boolean | null;
+  active: boolean | null;
+  completed: boolean | null;
 }

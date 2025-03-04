@@ -54,7 +54,7 @@ export const useVaquitaDeposit = () => {
     async (
       group: GroupResponseDTO,
     ): Promise<{ tx: string; error: any; success: boolean }> => {
-      console.log({ group });
+      console.info('depositCollateralAndCreate', { group });
       const paymentAmount = BigInt(group.amount * USDC_DECIMALS);
       const numberOfPlayers = group.totalMembers;
       const frequencyOfTurns = convertFrequencyToTimestamp(group.period);
@@ -75,7 +75,7 @@ export const useVaquitaDeposit = () => {
             paymentAmount,
             tokenMintAddress,
             numberOfPlayers,
-            frequencyOfTurns
+            frequencyOfTurns,
           ],
         });
         console.log({ hash });

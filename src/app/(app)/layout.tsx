@@ -1,8 +1,10 @@
 'use client';
 
+import '@/vaquita-ui-submodule/styles/commons.css';
 import LoginButton from '@/components/LoginButton';
 import SignupButton from '@/components/SignupButton';
 import { MainLayout } from '@/vaquita-ui-submodule/components';
+import './styles.css';
 import React from 'react';
 import { useAccount } from 'wagmi';
 

@@ -2,7 +2,6 @@ import { useVaquitaDeposit } from '@/web3/hooks';
 import React, { useState } from 'react';
 import { getPaymentsTable, logError, showNotification } from '../../helpers';
 import { useGroup } from '../../hooks';
-import { Button } from '../buttons';
 import { ErrorView } from '../error';
 import { LoadingSpinner } from '../loadingSpinner';
 import { GroupTablePaymentsProps } from './types';
@@ -60,16 +59,16 @@ export function GroupTablePayments({
 
   return (
     <>
-      <div className="grid grid-cols-[1fr_2fr_2fr_2fr] py-4 px-1 text-sm font-semibold gap-2 text-accent-100">
+      <div className="grid grid-cols-[1fr_2fr_2fr] py-4 px-1 text-sm font-semibold gap-2 style-bg-accent-dark">
         <span className="pl-1">Nro</span>
         <span>Amount</span>
         <span>Payment Deadline</span>
-        <span>Status</span>
+        {/*<span>Status</span>*/}
       </div>
       {items.map(({ round, amount, paymentDeadlineTimestamp, status }, i) => {
         return (
           <div
-            className="grid grid-cols-[1fr_2fr_2fr_2fr] py-4 px-1 text-sm gap-2 bg-bg-200 hover:bg-bg-300 transition-colors duration-300 text-accent-100"
+            className="grid grid-cols-[1fr_2fr_2fr] py-4 px-1 text-sm gap-2 transition-colors duration-300 text-accent-100 style-bg-accent"
             key={round}
           >
             <div className="pl-3 self-center">{i + 1}</div>
@@ -81,20 +80,20 @@ export function GroupTablePayments({
                 ? '-'
                 : new Date(paymentDeadlineTimestamp).toDateString()}
             </div>
-            <div className="self-center">
-              {status === 'Paid' ? (
-                <span className="text-success-green">Paid</span>
-              ) : round === group.myPosition ? (
-                "It's your round"
-              ) : (
-                <Button
-                  label={status}
-                  type={getStatusType(status)}
-                  onClick={() => handleTurnPayment(round, i)}
-                  disabled={status !== 'Pay'}
-                />
-              )}
-            </div>
+            {/*<div className="self-center">*/}
+            {/*  {status === 'Paid' ? (*/}
+            {/*    <span className="text-success-green">Paid</span>*/}
+            {/*  ) : round === group.myPosition ? (*/}
+            {/*    "It's your round"*/}
+            {/*  ) : (*/}
+            {/*    <Button*/}
+            {/*      label={status}*/}
+            {/*      type={getStatusType(status)}*/}
+            {/*      onClick={() => handleTurnPayment(round, i)}*/}
+            {/*      disabled={status !== 'Pay'}*/}
+            {/*    />*/}
+            {/*  )}*/}
+            {/*</div>*/}
           </div>
         );
       })}

@@ -69,7 +69,8 @@ export const Button = ({
   className,
   icon,
 }: IButtonComponent) => {
-  const buttonStyles = getButtonStyles(type);
+  // const buttonStyles = getButtonStyles(type);
+  const buttonStyles = '';
   const sizeStyles = getSizeStyles(size);
   const IconComponent = getIcon(icon);
 

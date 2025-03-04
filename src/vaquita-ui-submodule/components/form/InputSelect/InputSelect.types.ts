@@ -1,9 +1,9 @@
-export interface Option<T extends string | number = string> {
+export interface Option<T extends string | number | null = string> {
   value: T;
   text: string;
 }
 
-export interface Props<T extends string | number> {
+export interface Props<T extends string | number | null> {
   label: string;
   options: Option<T>[];
   defaultValue?: T;

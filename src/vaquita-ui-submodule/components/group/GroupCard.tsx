@@ -1,15 +1,21 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { GroupCrypto, GroupStatus } from '../../types';
 import { Button } from '../buttons';
+import {
+  DateOutlineIcon,
+  LockOutlineIcon,
+  PeopleOutlineIcon,
+  RenewOutlineIcon,
+} from '../icons';
 
 interface Props {
-  groupId: string;
+  id: string;
   crypto: GroupCrypto;
   name: string;
   amount: number;
+  collateralAmount: number;
   totalMembers: number;
   slots: number;
   period: 'monthly' | 'weekly' | 'all';
@@ -20,67 +26,61 @@ interface Props {
 export function GroupCard({
   name,
   amount,
+  collateralAmount,
   startsOnTimestamp,
   period,
   totalMembers,
   slots,
-  groupId,
+  id,
   crypto,
   status,
 }: Props) {
-  const handleViewDetails = (groupId: string) => {
-    console.log(groupId);
-  };
-
   return (
-    <div className="flex justify-between bg-bg-200 px-5 pt-4 pb-6 rounded-lg">
-      <div className="w-2/3">
-        <p className="text-primary-200 text-xl">{name}</p>
-        <p className="text-accent-100 text-2xl">
-          {amount} <span className="text-lg">{crypto}</span>
-        </p>
-        <p className="flex">
-          <span className="text-accent-200 mr-1">{period}</span>
-          <Image
-            src="/icons/date-active.svg"
-            alt="members"
-            width={12}
-            height={12}
-          />
-        </p>
-      </div>
-      <div className="flex flex-col justify-center items-end w-1/3 gap-1">
-        <div className="flex items-center gap-1">
-          <p className="text-accent-100">
-            {totalMembers - slots} / {totalMembers}
-          </p>
-          <Image
-            src="/icons/person-active.svg"
-            alt="members"
-            width={14}
-            height={14}
-          />
-        </div>
-        {status !== GroupStatus.ACTIVE && (
-          <div className="flex items-center gap-1 text-sm">
-            {/* <p className="text-accent-100">
-              {getRelativeTime(startsOnTimestamp - Date.now())}
-            </p> */}
+    <div className="flex flex-col justify-between style-stand-out style-border px-5 pt-4 pb-6 rounded-lg gap-2">
+      <p className="text-2xl font-bold">{name}</p>
+      <div className="flex flex-col">
+        <div className="flex justify-between text-lg">
+          <div className="flex items-center gap-1">
+            <RenewOutlineIcon />
+            <p>
+              {amount} <span className="">{crypto}</span>
+            </p>
           </div>
-        )}
-        <Link
-          href={`/groups/${groupId}?myGroups=true`}
-          passHref
-          style={{ display: 'contents' }}
-        >
-          <Button
-            label="View"
-            type="outline-primary"
-            onClick={() => handleViewDetails(groupId)}
-            className="w-full"
-          />
-        </Link>
+          <div className="flex items-center gap-1">
+            <LockOutlineIcon />
+            <p>
+              {+collateralAmount.toFixed(2)} <span className="">{crypto}</span>
+            </p>
+          </div>
+        </div>
+        <div className="flex justify-between color-secondary text-sm">
+          <div className="flex items-center gap-1">
+            <DateOutlineIcon />
+            <p>
+              {amount} <span className="">{period}</span>
+            </p>
+          </div>
+        </div>
+        <div className="flex justify-between color-secondary text-sm">
+          <div className="flex items-center gap-1">
+            <PeopleOutlineIcon />
+            <p>
+              {totalMembers - slots} / {totalMembers} Participants
+            </p>
+          </div>
+        </div>
       </div>
+      <Link
+        href={`/groups/${id}?myGroups=true`}
+        passHref
+        style={{ display: 'contents' }}
+      >
+        <Button
+          label="View Details"
+          type="outline-primary"
+          className="w-full style-primary-button hover-effect"
+        />
+      </Link>
     </div>
   );
 }

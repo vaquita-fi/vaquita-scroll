@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import { VaquitaParachute } from '@/vaquita-ui-submodule/components/icons';
 import React from 'react';
 import { GroupResponseDTO } from '../../types';
 import { LoadingSpinner } from '../loadingSpinner';
@@ -20,22 +20,19 @@ export const ListGroups = ({
       {loading && <LoadingSpinner />}
       {isEmpty && (
         <div className="flex flex-col items-center justify-center py-8 h-3/4">
-          <Image
-            src="/icons/empty.svg"
-            alt="Lista vacía"
-            width={100}
-            height={100}
-            className="mb-4"
-          />
-          <p className=" text-center">
+          <VaquitaParachute />
+          <p className="text-center">
             {myGroups ? (
               <>
-                {"You haven't created any groups yet."} <br />
-                Start one now!
+                <span className="text-lg">{"You don't have a group"}</span>
+                <br />
+                <span className="c-text-light">Start one now!</span>
               </>
             ) : (
               <>
-                There are no groups yet. <br /> Come back soon!
+                <span className="text-lg">There are no groups yet</span>
+                <br />
+                <span className="c-text-light">Come back soon!</span>
               </>
             )}
           </p>
@@ -56,14 +53,16 @@ export const ListGroups = ({
                 period,
                 status,
                 slots,
+                collateralAmount,
               }) => (
                 <div key={id}>
                   <GroupCard
-                    groupId={id}
+                    id={id}
                     startsOnTimestamp={startsOnTimestamp}
                     totalMembers={totalMembers}
                     slots={slots}
                     amount={amount}
+                    collateralAmount={collateralAmount}
                     crypto={crypto}
                     name={name}
                     period={period}

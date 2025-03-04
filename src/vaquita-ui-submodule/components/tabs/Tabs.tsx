@@ -48,22 +48,31 @@ export const Tabs = <T extends string = string>({
   };
 
   return (
-    <div className="flex overflow-auto justify-around">
+    <div className="flex overflow-auto justify-around style-opaque rounded-xl">
       {tabs.map((tab) => (
         <button
           key={tab.value}
           onClick={() => handleTabClick(tab.value)}
           className={`relative w-full px-4 py-2 ${
-            currentTab === tab.value ? 'text-accent-100' : 'text-accent-200'
+            // currentTab === tab.value ? 'text-accent-100' : 'text-accent-200'
+            ''
           }`}
         >
           {tab.label}
           {currentTab === tab.value && (
-            <motion.span
+            <motion.div
               layoutId="undeline"
-              className={`absolute bottom-0 left-0 w-full h-0.5 bg-primary-200`}
-              style={{ bottom: '0.05rem' }}
-            ></motion.span>
+              className={`absolute bottom-0 left-0 style-accent rounded-xl`}
+              style={{
+                height: '100%',
+                width: '100%',
+                alignItems: 'center',
+                display: 'flex',
+                justifyContent: 'center',
+              }}
+            >
+              {tab.label}
+            </motion.div>
           )}
         </button>
       ))}

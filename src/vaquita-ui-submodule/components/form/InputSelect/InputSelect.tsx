@@ -1,5 +1,5 @@
-import { TiArrowSortedDown } from 'react-icons/ti';
 import { useId } from 'react';
+import { TiArrowSortedDown } from 'react-icons/ti';
 import { Props } from './InputSelect.types';
 
 const SIZE_SELECT = {
@@ -14,7 +14,7 @@ const SIZE_SELECT = {
 //   large: 'text-sm mb-2',
 // };
 
-export default function InputSelect<T extends string | number = string>({
+export default function InputSelect<T extends string | number | null = string>({
   label,
   options,
   defaultValue,
