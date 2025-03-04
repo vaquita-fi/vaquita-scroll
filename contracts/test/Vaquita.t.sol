@@ -300,8 +300,8 @@ contract VaquitaTest is Test {
         
         uint balanceAfter = token.balanceOf(alice);
         
-        // Should get back collateral (numberOfPlayers * paymentAmount)
-        uint collateral = numberOfPlayers * paymentAmount;
+        // Should get back collateral (numberOfPlayers -1) * paymentAmount
+        uint collateral = (numberOfPlayers - 1) * paymentAmount;
         
         // The test is failing because we're now taking a 10% protocol fee
         // and distributing interest based on position

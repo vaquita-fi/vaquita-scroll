@@ -36,6 +36,7 @@ contract Vaquita {
         uint endTimestamp;
         mapping(uint => Turn) turns;
         uint totalInterestEarned;
+        uint protocolFee;
         bool protocolFeeTaken;
     }
 
@@ -123,7 +124,7 @@ contract Vaquita {
         round.status = RoundStatus.Pending;
         round.startTimestamp = block.timestamp;
 
-        uint amountToLock = paymentAmount * numberOfPlayers;
+        uint amountToLock = paymentAmount * (numberOfPlayers - 1);
         token.safeTransferFrom(msg.sender, address(this), amountToLock);
 
         // Generate random position for the player
@@ -155,7 +156,7 @@ contract Vaquita {
             revert RoundFull();
         }
 
-        uint amountToLock = round.paymentAmount * round.numberOfPlayers;
+        uint amountToLock = round.paymentAmount * (round.numberOfPlayers - 1);
         round.token.safeTransferFrom(msg.sender, address(this), amountToLock);
 
         // Generate random position for the player
@@ -305,6 +306,7 @@ contract Vaquita {
             // Calculate and track protocol fee
             uint protocolFee = (round.totalInterestEarned * 10) / 100;
             protocolFees[address(round.token)] += protocolFee;
+            round.protocolFee = protocolFee;
             round.protocolFeeTaken = true;
             
             // Pre-calculate interest distribution factors for all players
@@ -312,7 +314,7 @@ contract Vaquita {
         }
 
         // Calculate collateral amount
-        uint collateralAmount = round.paymentAmount * round.numberOfPlayers;
+        uint collateralAmount = round.paymentAmount * (round.numberOfPlayers - 1);
         
         // Calculate interest amount based on payment behavior
         uint interestAmount = _calculatePlayerInterest(roundId, msg.sender);
@@ -410,7 +412,7 @@ contract Vaquita {
         }
         
         // First, reserve 10% of total interest as protocol profit
-        uint protocolFee = (round.totalInterestEarned * 10) / 100;
+        uint protocolFee = round.protocolFee;
         uint distributableInterest = round.totalInterestEarned - protocolFee;
         
         // Calculate total weight for position-based distribution

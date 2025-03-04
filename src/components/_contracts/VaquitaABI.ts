@@ -101,6 +101,11 @@ const abi = [
         "internalType": "uint256"
       },
       {
+        "name": "protocolFee",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
         "name": "protocolFeeTaken",
         "type": "bool",
         "internalType": "bool"
