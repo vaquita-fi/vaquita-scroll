@@ -104,7 +104,6 @@ export const MainNavbar = ({ walletButtons }: { walletButtons: ReactNode }) => {
       <div className="hidden lg:flex space-x-1 wallets-buttons">
         <Button
           label="Create Group"
-          type="primary"
           size="small"
           className="mr-2"
           onClick={() => router.push('/my-groups/create')}

@@ -9,4 +9,4 @@
 	url = https://github.com/vectorized/solady
 [submodule "src/vaquita-ui-submodule"]
 	path = src/vaquita-ui-submodule
-	url = https://github.com/OscarGauss/vaquita-ui-submodule.git
+	url = https://github.com/vaquita-fi/vaquita-ui-submodule.git

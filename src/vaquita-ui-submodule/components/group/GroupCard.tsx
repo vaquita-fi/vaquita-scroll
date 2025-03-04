@@ -71,7 +71,6 @@ export function GroupCard(props: Props) {
       </div>
       <Button
         label="View Details"
-        type="outline-primary"
         className="w-full style-primary-button hover-effect"
         onClick={() => onClick?.(id)}
       />

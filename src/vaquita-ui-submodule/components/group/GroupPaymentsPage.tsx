@@ -26,12 +26,12 @@ export const GroupPaymentsPage = ({ address }: { address?: AddressType }) => {
     content: GroupResponseDTO;
   }>({
     enabled: !!address,
-    queryKey: ['group', address],
+    queryKey: [ 'group', address ],
     queryFn: () => getGroup(groupId as string, address!),
   });
-
+  
   const loading = isPendingData || isLoadingData || isFetchingData;
-
+  
   if (loading) {
     return <LoadingSpinner />;
   }
@@ -41,7 +41,7 @@ export const GroupPaymentsPage = ({ address }: { address?: AddressType }) => {
   if (!address) {
     return <ErrorView />;
   }
-
+  
   return (
     <>
       <TabTitleHeader text="Group Information" />
@@ -58,7 +58,6 @@ export const GroupPaymentsPage = ({ address }: { address?: AddressType }) => {
         <div className="flex flex-col gap-5 my-5 justify-between">
           <Button
             label="Back"
-            type="secondary"
             size="large"
             onClick={() => router.back()}
           />
