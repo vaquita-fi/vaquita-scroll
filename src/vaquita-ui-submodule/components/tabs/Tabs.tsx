@@ -11,28 +11,25 @@ interface ITab<T> {
 
 interface TabsComponentProps<T> {
   tabs: ITab<T>[];
-  onTabClick: (tabValue: T) => void;
-  currentTab: T;
 }
 
 export const Tabs = <T extends string = string>({
-  tabs,
-  onTabClick,
-  currentTab,
-}: TabsComponentProps<T>) => {
+                                                  tabs,
+                                                }: TabsComponentProps<T>) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-
+  const currentTab = searchParams.get('tab');
+  
   const createQueryString = useCallback(
     (name: string, value: T) => {
       const params = new URLSearchParams(searchParams);
       params.set(name, value as string);
       return params.toString();
     },
-    [searchParams]
+    [ searchParams ],
   );
-
+  
   useEffect(() => {
     if (!searchParams.get('tab')) {
       const defaultTab = tabs[0]?.value;
@@ -40,13 +37,13 @@ export const Tabs = <T extends string = string>({
         router.replace(`${pathname}?${createQueryString('tab', defaultTab)}`);
       }
     }
-  }, [searchParams, pathname, router, tabs, createQueryString]);
-
+  }, [ searchParams, pathname, router, tabs, createQueryString ]);
+  
   const handleTabClick = (tabValue: T) => {
     router.push(`${pathname}?${createQueryString('tab', tabValue)}`);
-    onTabClick(tabValue);
+    // onTabClick(tabValue);
   };
-
+  
   return (
     <div className="flex overflow-auto justify-around style-opaque rounded-xl">
       {tabs.map((tab) => (
@@ -62,7 +59,7 @@ export const Tabs = <T extends string = string>({
           {currentTab === tab.value && (
             <motion.div
               layoutId="undeline"
-              className={`absolute bottom-0 left-0 style-accent rounded-xl`}
+              className={`absolute bottom-0 left-0 style-primary-button rounded-xl`}
               style={{
                 height: '100%',
                 width: '100%',

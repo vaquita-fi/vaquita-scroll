@@ -1,19 +1,14 @@
-import Image from 'next/image';
 import React from 'react';
-import { Completed } from './Completed';
+import { StatusCompletedProps } from './StatusCompleted.types';
 
-const StatusCompleted = ({ nameStatus }: Completed) => {
+const StatusCompleted = ({ step, nameStatus }: StatusCompletedProps) => {
   return (
     <div className="flex justify-evenly w-full">
       <div className="flex items-center flex-col text-center">
-        <Image
-          src="/icons/circle-status-completed.svg"
-          alt="Group Active"
-          width={28}
-          height={28}
-          className="pb-2"
-        />
-        <span className="text-sm text-primary-200">{nameStatus}</span>
+        <div className="w-[34px] h-[34px] flex items-center justify-center border border-black border-b-2 rounded-full text-lg font-bold bg-white">
+          {step}
+        </div>
+        <span className="text-sm">{nameStatus}</span>
       </div>
     </div>
   );

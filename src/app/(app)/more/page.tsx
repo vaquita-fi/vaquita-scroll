@@ -2,8 +2,7 @@
 
 import LoginButton from '@/components/LoginButton';
 import SignupButton from '@/components/SignupButton';
-import { MyGroupsPage } from '@/vaquita-ui-submodule/components';
-import { MainHeader } from '@/vaquita-ui-submodule/components/header';
+import { MainHeader, MorePage } from '@/vaquita-ui-submodule/components';
 import React from 'react';
 import { useAccount } from 'wagmi';
 
@@ -20,7 +19,7 @@ const Page = () => {
           </>
         }
       />
-      <MyGroupsPage address={address} />
+      <MorePage />
     </>
   );
 };

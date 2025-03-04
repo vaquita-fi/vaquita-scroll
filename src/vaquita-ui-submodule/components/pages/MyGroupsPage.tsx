@@ -2,30 +2,17 @@
 
 import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { RE_FETCH_INTERVAL } from '../../constants';
 import { useGroup } from '../../hooks';
-import {
-  AddressType,
-  GroupCrypto,
-  GroupFilters,
-  GroupStatus,
-} from '../../types';
+import { AddressType, GroupCrypto, GroupFilters, GroupStatus } from '../../types';
 import { GroupFiltersHead } from '../group/GroupFiltersHead';
 import { ListGroups } from '../group/ListGroups';
 
-enum MyGroupsTab {
-  PENDING = GroupStatus.PENDING,
-  ACTIVE = GroupStatus.ACTIVE,
-  CONCLUDED = GroupStatus.CONCLUDED,
-}
-
 export const MyGroupsPage = ({ address }: { address?: AddressType }) => {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const tab = searchParams.get('tab');
-  const [filters, setFilters] = useState<GroupFilters>({
+  const [ filters, setFilters ] = useState<GroupFilters>({
     name: null,
     period: null,
     orderBy: '+amount',
@@ -41,7 +28,7 @@ export const MyGroupsPage = ({ address }: { address?: AddressType }) => {
   const { isPending, isLoading, isFetching, data } = useQuery({
     refetchInterval: RE_FETCH_INTERVAL,
     enabled: !!address,
-    queryKey: ['groups', address, filters],
+    queryKey: [ 'groups', address, filters ],
     queryFn: () =>
       getGroups({
         myGroups: true,
@@ -56,13 +43,13 @@ export const MyGroupsPage = ({ address }: { address?: AddressType }) => {
         status: filters.pending
           ? GroupStatus.PENDING
           : filters.completed
-          ? GroupStatus.CONCLUDED
-          : filters.active
-          ? GroupStatus.ACTIVE
-          : null,
+            ? GroupStatus.CONCLUDED
+            : filters.active
+              ? GroupStatus.ACTIVE
+              : null,
       }),
   });
-
+  
   if (!address) {
     return (
       <>
@@ -72,9 +59,9 @@ export const MyGroupsPage = ({ address }: { address?: AddressType }) => {
       </>
     );
   }
-
+  
   const loading = isPending || isLoading; // || isFetching;
-
+  
   return (
     <>
       {/*<Tabs tabs={tabs} onTabClick={setCurrentTab} currentTab={currentTab} />*/}
@@ -112,6 +99,7 @@ export const MyGroupsPage = ({ address }: { address?: AddressType }) => {
       <ListGroups
         groups={data?.success ? data.contents : []}
         loading={loading}
+        address={address}
         myGroups
       />
     </>

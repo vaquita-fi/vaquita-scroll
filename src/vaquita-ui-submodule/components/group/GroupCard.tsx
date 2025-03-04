@@ -1,14 +1,8 @@
 'use client';
 
-import Link from 'next/link';
 import { GroupCrypto, GroupStatus } from '../../types';
 import { Button } from '../buttons';
-import {
-  DateOutlineIcon,
-  LockOutlineIcon,
-  PeopleOutlineIcon,
-  RenewOutlineIcon,
-} from '../icons';
+import { DateOutlineIcon, LockOutlineIcon, PeopleOutlineIcon, RenewOutlineIcon } from '../icons';
 
 interface Props {
   id: string;
@@ -21,20 +15,25 @@ interface Props {
   period: 'monthly' | 'weekly' | 'all';
   startsOnTimestamp: number;
   status: GroupStatus;
+  onClick?: (groupId: string) => void;
 }
 
-export function GroupCard({
-  name,
-  amount,
-  collateralAmount,
-  startsOnTimestamp,
-  period,
-  totalMembers,
-  slots,
-  id,
-  crypto,
-  status,
-}: Props) {
+export function GroupCard(props: Props) {
+  
+  const {
+    name,
+    amount,
+    collateralAmount,
+    startsOnTimestamp,
+    period,
+    totalMembers,
+    slots,
+    id,
+    crypto,
+    status,
+    onClick,
+  } = props;
+  
   return (
     <div className="flex flex-col justify-between style-stand-out style-border px-5 pt-4 pb-6 rounded-lg gap-2">
       <p className="text-2xl font-bold">{name}</p>
@@ -70,17 +69,12 @@ export function GroupCard({
           </div>
         </div>
       </div>
-      <Link
-        href={`/groups/${id}?myGroups=true`}
-        passHref
-        style={{ display: 'contents' }}
-      >
-        <Button
-          label="View Details"
-          type="outline-primary"
-          className="w-full style-primary-button hover-effect"
-        />
-      </Link>
+      <Button
+        label="View Details"
+        type="outline-primary"
+        className="w-full style-primary-button hover-effect"
+        onClick={() => onClick?.(id)}
+      />
     </div>
   );
 }

@@ -2,28 +2,29 @@ import { useVaquitaDeposit } from '@/web3/hooks';
 import React, { useState } from 'react';
 import { getPaymentsTable, logError, showNotification } from '../../helpers';
 import { useGroup } from '../../hooks';
+import { Button } from '../buttons';
 import { ErrorView } from '../error';
 import { LoadingSpinner } from '../loadingSpinner';
 import { GroupTablePaymentsProps } from './types';
 
 export function GroupTablePayments({
-  group,
-  refetch,
-  address,
-}: GroupTablePaymentsProps) {
-  const [isLoading, setIsLoading] = useState(false);
+                                     group,
+                                     refetch,
+                                     address,
+                                   }: GroupTablePaymentsProps) {
+  const [ isLoading, setIsLoading ] = useState(false);
   const { depositRoundPayment } = useVaquitaDeposit();
   const { depositGroupPayment } = useGroup();
-
+  
   if (isLoading) {
     return <LoadingSpinner />;
   }
   if (!address) {
     return <ErrorView />;
   }
-
+  
   const { items } = getPaymentsTable(group);
-
+  
   const getStatusType = (status: string): string => {
     switch (status) {
       case 'Pay':
@@ -34,7 +35,7 @@ export function GroupTablePayments({
         return 'disabled';
     }
   };
-
+  
   const handleTurnPayment = async (round: number, turn: number) => {
     setIsLoading(true);
     try {
@@ -46,29 +47,29 @@ export function GroupTablePayments({
       }
       await depositGroupPayment(group.id, address, tx, round, amount);
       await refetch();
-      showNotification("Payment successful! You've paid your turn.", 'success');
+      showNotification('Payment successful! You\'ve paid your turn.', 'success');
     } catch (error) {
       logError('Payment unsuccessful. Please check and try again.', error);
       showNotification(
         'Payment unsuccessful. Please check and try again.',
-        'error'
+        'error',
       );
     }
     setIsLoading(false);
   };
-
+  
   return (
-    <>
-      <div className="grid grid-cols-[1fr_2fr_2fr] py-4 px-1 text-sm font-semibold gap-2 style-bg-accent-dark">
-        <span className="pl-1">Nro</span>
-        <span>Amount</span>
-        <span>Payment Deadline</span>
-        {/*<span>Status</span>*/}
+    <div className="rounded-xl border border-black style-stand-out">
+      <div className="grid grid-cols-[1fr_2fr_2fr_2fr] py-2 px-1 text-sm font-semibold gap-2 bg-primary border-b-2 border-black rounded-xl">
+        <span className="self-center">Nro</span>
+        <span className="self-center">Amount</span>
+        <span className="self-center">Payment Deadline</span>
+        <span className="self-center">Status</span>
       </div>
       {items.map(({ round, amount, paymentDeadlineTimestamp, status }, i) => {
         return (
           <div
-            className="grid grid-cols-[1fr_2fr_2fr] py-4 px-1 text-sm gap-2 transition-colors duration-300 text-accent-100 style-bg-accent"
+            className="grid grid-cols-[1fr_2fr_2fr_2fr] py-4 px-1 text-sm gap-2 transition-colors duration-300"
             key={round}
           >
             <div className="pl-3 self-center">{i + 1}</div>
@@ -80,23 +81,23 @@ export function GroupTablePayments({
                 ? '-'
                 : new Date(paymentDeadlineTimestamp).toDateString()}
             </div>
-            {/*<div className="self-center">*/}
-            {/*  {status === 'Paid' ? (*/}
-            {/*    <span className="text-success-green">Paid</span>*/}
-            {/*  ) : round === group.myPosition ? (*/}
-            {/*    "It's your round"*/}
-            {/*  ) : (*/}
-            {/*    <Button*/}
-            {/*      label={status}*/}
-            {/*      type={getStatusType(status)}*/}
-            {/*      onClick={() => handleTurnPayment(round, i)}*/}
-            {/*      disabled={status !== 'Pay'}*/}
-            {/*    />*/}
-            {/*  )}*/}
-            {/*</div>*/}
+            <div className="self-center">
+              {status === 'Paid' ? (
+                <span className="text-success-green">Paid</span>
+              ) : round === group.myPosition ? (
+                'It\'s your round'
+              ) : (
+                <Button
+                  label={status}
+                  onClick={() => handleTurnPayment(round, i)}
+                  disabled={status !== 'Pay'}
+                  className="style-primary-button bg-success"
+                />
+              )}
+            </div>
           </div>
         );
       })}
-    </>
+    </div>
   );
 }

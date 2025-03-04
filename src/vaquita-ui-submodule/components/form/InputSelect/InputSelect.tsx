@@ -14,17 +14,20 @@ const SIZE_SELECT = {
 //   large: 'text-sm mb-2',
 // };
 
-export default function InputSelect<T extends string | number | null = string>({
-  label,
-  options,
-  defaultValue,
-  value,
-  onChange,
-  size = 'medium',
-  className,
-}: Props<T>) {
+export default function InputSelect<T extends string | number | undefined = string>(props: Props<T>) {
+  
+  const {
+    label,
+    options,
+    defaultValue,
+    value,
+    onChange,
+    size = 'medium',
+    className,
+  } = props;
+  
   const id = useId();
-
+  
   return (
     <div className={'flex flex-col w-full gap-1 ' + className}>
       {/* <label className={'text-accent-100 ' + SIZE_LABEL[size]} htmlFor={id}>
@@ -38,7 +41,7 @@ export default function InputSelect<T extends string | number | null = string>({
             SIZE_SELECT[size] +
             ' focus-within:border-primary-200 hover:border-primary-200 transition-colors duration-500'
           }
-          defaultValue={defaultValue} // Usa defaultValue aquí
+          defaultValue={defaultValue}
           value={value}
           onChange={({ target }) => onChange?.(target.value as T)}
         >
@@ -46,7 +49,7 @@ export default function InputSelect<T extends string | number | null = string>({
             Order by
           </option>
           {options.map((option) => (
-            <option value={option.value} key={option.value}>
+            <option value={option.value ?? undefined} key={option.value}>
               {option.text}
             </option>
           ))}

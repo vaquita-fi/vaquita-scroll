@@ -13,42 +13,44 @@ interface BuildingStatusProps {
 }
 
 export const BuildingStatus = ({
-  value1,
-  label1,
-  value2,
-  label2,
-  value3,
-  label3,
-}: BuildingStatusProps) => {
+                                 value1,
+                                 label1,
+                                 value2,
+                                 label2,
+                                 value3,
+                                 label3,
+                               }: BuildingStatusProps) => {
   return (
-    <div className="flex text-accent-200 my-4 ">
+    <div className="flex my-4 ">
       {value1 ? (
         <>
-          <StatusCompleted nameStatus={label1} />
+          <StatusCompleted nameStatus={label1} step="1" />
         </>
       ) : (
         <>
-          <StatusStarted nameStatus={label1} />
+          <StatusStarted nameStatus={label1} step="1" />
         </>
       )}
-      <Divider className={value1 ? 'border-primary-200' : ''} />
+      {/*<Divider className={value1 ? 'border-primary-200' : ''} />*/}
+      <Divider className="border-black" />
       {value2 ? (
         <>
-          <StatusCompleted nameStatus={label2} />
+          <StatusCompleted nameStatus={label2} step="2" />
         </>
       ) : (
         <>
-          <StatusStarted nameStatus={label2} />
+          <StatusStarted nameStatus={label2} step="2" />
         </>
       )}
-      <Divider className={value2 ? 'border-primary-200' : ''} />
+      {/*<Divider className={value2 ? 'border-primary-200' : ''} />*/}
+      <Divider className="border-black" />
       {value3 ? (
         <>
-          <StatusCompleted nameStatus={label3} />
+          <StatusCompleted nameStatus={label3} step="3" />
         </>
       ) : (
         <>
-          <StatusStarted nameStatus={label3} />
+          <StatusStarted nameStatus={label3} step="3" />
         </>
       )}
     </div>

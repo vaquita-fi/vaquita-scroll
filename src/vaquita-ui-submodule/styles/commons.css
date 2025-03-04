@@ -1,103 +1,113 @@
 .style-stand-out {
-  background-color: #FFFBF5;
-  color: #000000;
+    background-color: #FFFBF5;
+    color: #000000;
 }
 
 .style-border {
-  border: 1px solid #000000;
-  border-bottom: 2px solid #000000;
+    border: 1px solid #000000;
+    border-bottom: 2px solid #000000;
 }
 
 .style-primary-button {
-  background: #FF9B00;
-  border: 1px solid #000000;
-  border-bottom: 4px solid #000000;
-  font-weight: bold;
+    background: var(--color-primary);
+    border: 1px solid #000000;
+    border-bottom: 4px solid #000000;
+    font-weight: bold;
 }
 
 .color-secondary {
-  color: #4E4C4C;
+    color: #4E4C4C;
 }
 
 /*OLD*/
 :root {
-  --color-text: #191001;
-  --color-text-light: #656466;
-  --color-text-lightest: #B5B5B5;
+    --color-text: #191001;
+    --color-text-light: #656466;
+    --color-text-lightest: #B5B5B5;
 
-  --color-background: #FFFEFC;
+    --color-background: #FFFEFC;
 
-  --color-background-accent: #FFFBF5;
-  --color-background-accent-text: var(--color-text);
+    --color-background-accent: #FFFBF5;
+    --color-background-accent-text: var(--color-text);
 
-  --color-background-accent-dark: #FFF6E6;
-  /*--color-background-accent-dark-text: #B5B5B5;*/
-  --color-background-accent-dark-text: var(--color-text);
+    --color-background-accent-dark: #FFF6E6;
+    /*--color-background-accent-dark-text: #B5B5B5;*/
+    --color-background-accent-dark-text: var(--color-text);
 
 
-  --color-accent: #F7BC5C;
-  --color-accent-text: white;
+    --color-primary: #FF9B00;
 
-  --color-accent-light: #F9D078;
-  --color-accent-light-text: var(--color-text);
+    --color-accent: #F7BC5C;
+    --color-accent-text: white;
 
-  --color-success: #00D18C;
+    --color-accent-light: #F9D078;
+    --color-accent-light-text: var(--color-text);
 
-  --color-opaque: rgba(217, 217, 217, 0.42);
+    --color-success: #00D18C;
+
+    --color-opaque: rgba(217, 217, 217, 0.42);
 }
 
 .bg {
-  background-color: var(--color-background);
+    background-color: var(--color-background);
 }
 
 .style-bg-accent {
-  background-color: var(--color-background-accent);
-  color: var(--color-background-accent-text);
+    background-color: var(--color-background-accent);
+    color: var(--color-background-accent-text);
 }
 
 .style-bg-accent-dark {
-  background-color: var(--color-background-accent-dark);
-  color: var(--color-background-accent-dark-text);
+    background-color: var(--color-background-accent-dark);
+    color: var(--color-background-accent-dark-text);
 }
 
 .c-accent {
-  color: var(--color-accent);
+    color: var(--color-accent);
 }
 
 .c-text-light {
-  color: var(--color-text-light);
+    color: var(--color-text-light);
 }
 
 .c-text-lightest {
-  color: var(--color-text-lightest);
+    color: var(--color-text-lightest);
 }
 
 .style-accent {
-  background-color: var(--color-accent);
-  color: var(--color-accent-text);
+    background-color: var(--color-accent);
+    color: var(--color-accent-text);
 
-  &.hover-effect {
-    &:hover {
-      background-color: var(--color-accent-light);
+    &.hover-effect {
+        &:hover {
+            background-color: var(--color-accent-light);
+        }
     }
-  }
 }
 
 .style-accent-light {
-  background-color: var(--color-accent-light);
-  color: var(--color-accent-light-text);
+    background-color: var(--color-accent-light);
+    color: var(--color-accent-light-text);
 
-  &.hover-effect {
-    &:hover {
-      background-color: var(--color-accent);
+    &.hover-effect {
+        &:hover {
+            background-color: var(--color-accent);
+        }
     }
-  }
 }
 
 .style-opaque {
-  background-color: var(--color-opaque);
+    background-color: var(--color-opaque);
 }
 
 .c-success {
-  color: var(--color-success);
+    color: var(--color-success);
+}
+
+.bg-success {
+    background-color: var(--color-success);
+}
+
+.bg-primary {
+    background-color: var(--color-primary);
 }

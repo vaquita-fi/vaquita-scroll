@@ -1,19 +1,19 @@
 export enum GroupStatus {
-  PENDING = "pending",
-  ACTIVE = "active",
-  CONCLUDED = "concluded",
-  ABANDONED = "abandoned",
+  PENDING = 'pending',
+  ACTIVE = 'active',
+  CONCLUDED = 'concluded',
+  ABANDONED = 'abandoned',
 }
 
 export enum GroupCrypto {
-  USDC = "USDC",
-  SOL = "SOL",
+  USDC = 'USDC',
+  SOL = 'SOL',
 }
 
 export enum GroupPeriod {
-  MONTHLY = "monthly",
-  WEEKLY = "weekly",
-  ALL = "all",
+  MONTHLY = 'monthly',
+  WEEKLY = 'weekly',
+  ALL = 'all',
 }
 
 export interface GroupMember {
@@ -53,12 +53,12 @@ export interface GroupBaseDocument {
 export interface GroupCreateDTO
   extends Pick<
     GroupBaseDocument,
-    | "name"
-    | "amount"
-    | "crypto"
-    | "totalMembers"
-    | "period"
-    | "startsOnTimestamp"
+    | 'name'
+    | 'amount'
+    | 'crypto'
+    | 'totalMembers'
+    | 'period'
+    | 'startsOnTimestamp'
   > {
   customerPublicKey: string;
 }
@@ -71,9 +71,9 @@ export interface GroupDepositDTO {
 }
 
 export enum GroupWithdrawalType {
-  COLLATERAL = "collateral",
-  INTEREST = "interest",
-  ROUND = "round",
+  COLLATERAL = 'collateral',
+  INTEREST = 'interest',
+  ROUND = 'round',
 }
 
 export interface GroupWithdrawalDTO {
@@ -81,38 +81,6 @@ export interface GroupWithdrawalDTO {
   transactionSignature: string;
   type: GroupWithdrawalType;
   amount: number;
-}
-
-export interface GroupResponseDTO {
-  id: BigInt;
-  crypto: GroupCrypto;
-  name: string;
-  amount: number;
-  collateralAmount: number;
-  myDeposits: {
-    [key: number]: {
-      amount: number;
-      round: number; // 0: collateral, [1, N] rounds
-      timestamp: number;
-      successfullyDeposited: boolean;
-    };
-  };
-  totalMembers: number;
-  slots: number;
-  period: GroupPeriod;
-  currentPosition: number;
-  myPosition: number;
-  startsOnTimestamp: number;
-  status: GroupStatus;
-  isOwner: boolean;
-  myWithdrawals: {
-    [key in GroupWithdrawalType]: {
-      amount: number;
-      type: GroupWithdrawalType;
-      timestamp: number;
-      successfullyWithdrawn: boolean;
-    };
-  };
 }
 
 export interface GroupFilters {

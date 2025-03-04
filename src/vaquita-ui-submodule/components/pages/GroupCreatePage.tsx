@@ -7,12 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { ONE_DAY } from '../../constants';
 import { logError, showNotification } from '../../helpers';
 import { useGroup } from '../../hooks';
-import {
-  AddressType,
-  GroupCreateDTO,
-  GroupCrypto,
-  GroupPeriod,
-} from '../../types';
+import { AddressType, GroupCreateDTO, GroupCrypto, GroupPeriod } from '../../types';
 import { Button } from '../buttons';
 import { ErrorView } from '../error';
 import { InputSelect, InputText, Option } from '../form';
@@ -72,7 +67,7 @@ const messageText =
 
 export const GroupCreatePage = ({ address }: { address?: AddressType }) => {
   const now = new Date();
-  const [newGroup, setNewGroup] = useState<
+  const [ newGroup, setNewGroup ] = useState<
     Omit<GroupCreateDTO, 'customerPublicKey' | 'transactionSignature'>
   >({
     name: '',
@@ -82,7 +77,7 @@ export const GroupCreatePage = ({ address }: { address?: AddressType }) => {
     period: GroupPeriod.MONTHLY,
     startsOnTimestamp: now.getTime() + ONE_DAY,
   });
-  const [loading, setLoading] = useState(false);
+  const [ loading, setLoading ] = useState(false);
   const router = useRouter();
   const { depositCollateralAndCreate } = useVaquitaDeposit();
   const { createGroup, depositGroupCollateral, deleteGroup } = useGroup();
@@ -90,16 +85,16 @@ export const GroupCreatePage = ({ address }: { address?: AddressType }) => {
     if (!address) {
       router.push('/groups');
     }
-  }, [router, address]);
-
+  }, [ router, address ]);
+  
   if (loading) {
     return <LoadingSpinner />;
   }
-
+  
   if (!address) {
     return <ErrorView />;
   }
-
+  
   const onSave = async () => {
     setLoading(true);
     try {
@@ -111,7 +106,7 @@ export const GroupCreatePage = ({ address }: { address?: AddressType }) => {
         newGroup.totalMembers,
         newGroup.period,
         newGroup.startsOnTimestamp,
-        address
+        address,
       );
       if (!response.success) {
         console.error(response);
@@ -135,7 +130,7 @@ export const GroupCreatePage = ({ address }: { address?: AddressType }) => {
     }
     setLoading(false);
   };
-
+  
   const filterDateTime = (time: Date) => {
     const selectedDate = new Date(time);
     return (
@@ -143,7 +138,7 @@ export const GroupCreatePage = ({ address }: { address?: AddressType }) => {
       selectedDate.getTime() - ONE_DAY * 7 <= now.getTime()
     );
   };
-
+  
   return (
     <>
       <TabTitleHeader text="Create new group" />
@@ -174,7 +169,7 @@ export const GroupCreatePage = ({ address }: { address?: AddressType }) => {
               placeHolder="e.g. 300"
               onChange={(amount) => {
                 const updatedAmount = amount === undefined ? 0 : amount;
-
+                
                 setNewGroup((prevState) => ({
                   ...prevState,
                   amount: Math.round(updatedAmount),
@@ -258,13 +253,12 @@ export const GroupCreatePage = ({ address }: { address?: AddressType }) => {
         <div className="flex flex-col gap-2 mt-1 mb-4 justify-between">
           <Button
             label="Create and deposit collateral"
-            type="primary"
             size="large"
             onClick={onSave}
             disabled={!(newGroup.name.length > 2 && newGroup.amount > 0)}
           />
           <Link href="/my-groups" className="contents">
-            <Button label="Cancel" type="secondary" size="large" />
+            <Button label="Cancel" size="large" />
           </Link>
         </div>
       </div>

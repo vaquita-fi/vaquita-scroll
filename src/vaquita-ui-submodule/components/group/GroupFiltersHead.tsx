@@ -4,14 +4,7 @@ import {
   BiSortUpOutlineIcon,
   FilterOutlineIcon,
 } from '@/vaquita-ui-submodule/components/icons';
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  useDisclosure,
-} from '@nextui-org/react';
+import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@nextui-org/react';
 import React, { Dispatch, SetStateAction } from 'react';
 import { GroupFilters, GroupPeriod } from '../../types';
 import { InputSelect, RangeSlider } from '../form';
@@ -54,7 +47,7 @@ const sortingOptions = [
 const periodOptions = [
   {
     text: 'All Period',
-    value: null,
+    value: undefined,
   },
   {
     text: 'Monthly',
@@ -109,10 +102,10 @@ export default function CloseButton({ onClick }: { onClick: () => void }) {
 }
 
 export const GroupFiltersHead = ({
-  withStatus,
-  filters,
-  setFilters,
-}: {
+                                   withStatus,
+                                   filters,
+                                   setFilters,
+                                 }: {
   withStatus?: boolean;
   filters: GroupFilters;
   setFilters: Dispatch<SetStateAction<GroupFilters>>;
@@ -127,11 +120,11 @@ export const GroupFiltersHead = ({
     onOpen: onOpenSort,
     onOpenChange: onOpenChangeSort,
   } = useDisclosure();
-
+  
   const toggleCheckbox = (key: keyof GroupFilters) => {
     setFilters((prev) => ({ ...prev, [key]: !prev[key] }));
   };
-
+  
   return (
     <div className="flex gap-2 justify-center items-center py-2">
       <input
@@ -150,12 +143,12 @@ export const GroupFiltersHead = ({
         <FilterOutlineIcon size={30} />
       </button>
       <div className="hidden md:flex gap-2 w-1/4">
-        <InputSelect<GroupPeriod | null>
+        <InputSelect<GroupPeriod | undefined>
           label="Filter by period"
           options={periodOptions}
           value={filters.period ?? undefined}
           onChange={(period) =>
-            setFilters((prevState) => ({ ...prevState, period }))
+            setFilters((prevState) => ({ ...prevState, period: period ?? null }))
           }
           size="small"
           className="flex-1 "
@@ -281,12 +274,12 @@ export const GroupFiltersHead = ({
                   }
                 />
                 {(withStatus
-                  ? [
+                    ? [
                       { label: 'Pending rounds', key: 'pending' },
                       { label: 'Active rounds', key: 'active' },
                       { label: 'Completed rounds', key: 'completed' },
                     ]
-                  : []
+                    : []
                 ).map(({ label, key }) => (
                   <div key={key} className="flex justify-between items-center">
                     <span className="text-sm">{label}</span>

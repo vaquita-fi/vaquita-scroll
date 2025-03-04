@@ -14,7 +14,7 @@ export const MainNavbar = ({ walletButtons }: { walletButtons: ReactNode }) => {
   const myGroups = useSearchParams().get('myGroups');
   const router = useRouter();
   const getIconColor = (isActive: boolean) => 'currentColor';
-
+  
   const links: {
     label: string;
     path: string;
@@ -50,11 +50,11 @@ export const MainNavbar = ({ walletButtons }: { walletButtons: ReactNode }) => {
     {
       label: 'More',
       path: '/more',
-      isActive: false,
+      isActive: mainPath === '/more',
       icon: ({ isActive }) => <MoreIcon fill={getIconColor(isActive)} />,
     },
   ];
-
+  
   return (
     <nav className="bottom-0 w-full style-stand-out dark shadow-top-custom lg:rounded-full lg:shadow-bottom-custom lg:flex lg:items-center lg:gap-6 lg:px-4">
       <div className="flex items-center flex-1 gap-6">
@@ -100,7 +100,7 @@ export const MainNavbar = ({ walletButtons }: { walletButtons: ReactNode }) => {
           })}
         </ul>
       </div>
-
+      
       <div className="hidden lg:flex space-x-1 wallets-buttons">
         <Button
           label="Create Group"

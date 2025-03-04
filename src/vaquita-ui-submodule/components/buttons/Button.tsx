@@ -1,14 +1,15 @@
-import React from 'react';
+import React, { CSSProperties, ReactNode } from 'react';
 import { FaEdit, FaPlus, FaTrash } from 'react-icons/fa'; // Import the icons you need
 
 interface IButtonComponent {
-  label: string;
-  type: string;
+  label: string | ReactNode;
+  // type: string;
   disabled?: boolean;
   onClick?: () => void;
   size?: 'small' | 'medium' | 'large';
   className?: string;
   icon?: 'plus' | 'trash' | 'edit'; // Define the allowed icons
+  style?: CSSProperties;
 }
 
 const getButtonStyles = (type: string) => {
@@ -61,19 +62,20 @@ const getIcon = (icon?: string) => {
 };
 
 export const Button = ({
-  label,
-  type,
-  disabled = false,
-  size = 'medium',
-  onClick,
-  className,
-  icon,
-}: IButtonComponent) => {
+                         label,
+                         // type,
+                         disabled = false,
+                         size = 'medium',
+                         onClick,
+                         className,
+                         icon,
+                         style,
+                       }: IButtonComponent) => {
   // const buttonStyles = getButtonStyles(type);
   const buttonStyles = '';
   const sizeStyles = getSizeStyles(size);
   const IconComponent = getIcon(icon);
-
+  
   return (
     <button
       className={
@@ -83,9 +85,10 @@ export const Button = ({
       }
       disabled={disabled}
       onClick={onClick}
+      style={style}
     >
       {IconComponent && <span className="mx-2">{IconComponent}</span>}
-      <span className="text-base mr-2">{label}</span>
+      <span className="text-base">{label}</span>
     </button>
   );
 };

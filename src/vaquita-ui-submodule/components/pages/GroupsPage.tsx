@@ -4,17 +4,12 @@ import { useQuery } from '@tanstack/react-query';
 import React, { useState } from 'react';
 import { RE_FETCH_INTERVAL } from '../../constants';
 import { useGroup } from '../../hooks';
-import {
-  AddressType,
-  GroupCrypto,
-  GroupFilters,
-  GroupStatus,
-} from '../../types';
+import { AddressType, GroupCrypto, GroupFilters, GroupStatus } from '../../types';
 import { GroupFiltersHead } from '../group/GroupFiltersHead';
 import { ListGroups } from '../group/ListGroups';
 
 export const GroupsPage = ({ address }: { address?: AddressType }) => {
-  const [filters, setFilters] = useState<GroupFilters>({
+  const [ filters, setFilters ] = useState<GroupFilters>({
     name: null,
     period: null,
     orderBy: '+amount',
@@ -29,7 +24,7 @@ export const GroupsPage = ({ address }: { address?: AddressType }) => {
   const { getGroups } = useGroup();
   const { isPending, isLoading, data } = useQuery({
     refetchInterval: RE_FETCH_INTERVAL,
-    queryKey: ['groups', filters, address],
+    queryKey: [ 'groups', filters, address ],
     queryFn: () =>
       getGroups({
         publicKey: address,
@@ -43,20 +38,20 @@ export const GroupsPage = ({ address }: { address?: AddressType }) => {
         status: filters.pending
           ? GroupStatus.PENDING
           : filters.completed
-          ? GroupStatus.CONCLUDED
-          : filters.active
-          ? GroupStatus.ACTIVE
-          : null,
+            ? GroupStatus.CONCLUDED
+            : filters.active
+              ? GroupStatus.ACTIVE
+              : null,
       }),
   });
-
+  
   const loading = isPending || isLoading; // || isFetching;
   const groups = data?.success ? data?.contents : [];
-
+  
   return (
     <>
       <GroupFiltersHead filters={filters} setFilters={setFilters} />
-      <ListGroups groups={groups} loading={loading} />
+      <ListGroups groups={groups} loading={loading} address={address} />
     </>
   );
 };

@@ -1,5 +1,5 @@
 import { useVaquitaContract } from '@/components/_contracts/useVaquitaContract';
-import { GroupResponseDTO } from '@/types';
+import { GroupResponseDTO } from '@/vaquita-ui-submodule/types';
 import { useWagmiConfig } from '@/wagmi';
 import { getPublicClient } from '@wagmi/core';
 import { useCallback } from 'react';
@@ -29,6 +29,7 @@ export const useVaquitaDeposit = () => {
     if (!address) {
       throw new Error('No account connected');
     }
+    console.info('approveTokens', { amount });
     
     try {
       const hash = await writeContractAsync({
@@ -37,12 +38,12 @@ export const useVaquitaDeposit = () => {
         functionName: 'approve',
         args: [ VAQUITA_CONTRACT_ADDRESS, amount ],
       });
-      console.log({ hash });
+      console.info('approveTokens', { hash });
       const receipt = await client.waitForTransactionReceipt({
         hash,
         confirmations: 5,
       });
-      console.log({ receipt });
+      console.info('approveTokens', { receipt });
       return true;
     } catch (error) {
       console.error('Error approving tokens:', error);
@@ -55,8 +56,9 @@ export const useVaquitaDeposit = () => {
       group: GroupResponseDTO,
     ): Promise<{ tx: string; error: any; success: boolean }> => {
       console.info('depositCollateralAndCreate', { group });
+      const groupId = BigInt(`0x${group.id}`);
       const paymentAmount = BigInt(group.amount * USDC_DECIMALS);
-      const numberOfPlayers = group.totalMembers;
+      const numberOfPlayers = BigInt(group.totalMembers);
       const frequencyOfTurns = convertFrequencyToTimestamp(group.period);
       const tokenMintAddress = USDC_CONTRACT;
       
@@ -71,19 +73,19 @@ export const useVaquitaDeposit = () => {
           abi: contract.abi,
           functionName: 'initializeRound',
           args: [
-            group.id,
+            groupId,
             paymentAmount,
             tokenMintAddress,
             numberOfPlayers,
             frequencyOfTurns,
           ],
         });
-        console.log({ hash });
+        console.info('depositCollateralAndCreate', { hash });
         const receipt = await client.waitForTransactionReceipt({
           hash,
           confirmations: 5,
         });
-        console.log({ receipt });
+        console.info('depositCollateralAndCreate', { receipt });
         return { tx: hash, error: null, success: true };
       } catch (error) {
         console.error('Error in depositCollateralAndCreate:', error);
@@ -97,7 +99,8 @@ export const useVaquitaDeposit = () => {
     async (
       group: GroupResponseDTO,
     ): Promise<{ tx: string; error: any; success: boolean }> => {
-      console.log({ group });
+      console.info('depositCollateralAndJoin', { group });
+      const groupId = BigInt(`0x${group.id}`);
       const paymentAmount = BigInt(group.amount * USDC_DECIMALS);
       
       try {
@@ -110,14 +113,14 @@ export const useVaquitaDeposit = () => {
           address: VAQUITA_CONTRACT_ADDRESS,
           abi: contract.abi,
           functionName: 'addPlayer',
-          args: [ group.id ],
+          args: [ groupId ],
         });
-        console.log({ hash });
+        console.info('depositCollateralAndJoin', { hash });
         const receipt = await client.waitForTransactionReceipt({
           hash,
           confirmations: 5,
         });
-        console.log({ receipt });
+        console.info('depositCollateralAndJoin', { receipt });
         return { tx: hash, error: null, success: true };
       } catch (error) {
         console.error('Error in depositCollateralAndJoin:', error);
@@ -132,7 +135,8 @@ export const useVaquitaDeposit = () => {
       group: GroupResponseDTO,
       turn: number,
     ): Promise<{ tx: string; error: any; success: boolean }> => {
-      console.log({ group, turn });
+      console.info('depositRoundPayment', { group, turn });
+      const groupId = BigInt(`0x${group.id}`);
       const paymentAmount = BigInt(group.amount * USDC_DECIMALS);
       
       try {
@@ -147,14 +151,14 @@ export const useVaquitaDeposit = () => {
           address: VAQUITA_CONTRACT_ADDRESS,
           abi: contract.abi,
           functionName: 'payTurn',
-          args: [ group.id ],
+          args: [ groupId ],
         });
-        console.log({ hash });
+        console.info('depositRoundPayment', { hash });
         const receipt = await client.waitForTransactionReceipt({
           hash,
           confirmations: 5,
         });
-        console.log({ receipt });
+        console.info('depositRoundPayment', { receipt });
         return { tx: hash, error: null, success: true };
       } catch (error) {
         console.error('Error in depositRoundPayment:', error);
