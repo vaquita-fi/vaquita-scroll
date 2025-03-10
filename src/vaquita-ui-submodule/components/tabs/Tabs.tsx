@@ -19,8 +19,8 @@ export const Tabs = <T extends string = string>({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const currentTab = searchParams.get('tab');
-  
+  const currentTab = tabs.find(({ value }) => value === searchParams.get('tab'))?.value;
+  const firstTab = tabs[0]?.value;
   const createQueryString = useCallback(
     (name: string, value: T) => {
       const params = new URLSearchParams(searchParams);
@@ -31,17 +31,13 @@ export const Tabs = <T extends string = string>({
   );
   
   useEffect(() => {
-    if (!searchParams.get('tab')) {
-      const defaultTab = tabs[0]?.value;
-      if (defaultTab) {
-        router.replace(`${pathname}?${createQueryString('tab', defaultTab)}`);
-      }
+    if (!currentTab && firstTab) {
+      router.replace(`${pathname}?${createQueryString('tab', firstTab)}`);
     }
-  }, [ searchParams, pathname, router, tabs, createQueryString ]);
+  }, [ searchParams, pathname, router, currentTab, firstTab, createQueryString ]);
   
   const handleTabClick = (tabValue: T) => {
     router.push(`${pathname}?${createQueryString('tab', tabValue)}`);
-    // onTabClick(tabValue);
   };
   
   return (

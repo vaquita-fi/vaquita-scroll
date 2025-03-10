@@ -1,5 +1,5 @@
 {
-  "name": "vaquita-op",
+  "name": "vaquita-base",
   "private": true,
   "version": "0.1.2",
   "scripts": {
