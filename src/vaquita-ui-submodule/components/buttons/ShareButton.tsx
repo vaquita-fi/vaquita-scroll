@@ -5,11 +5,11 @@ interface ShareButtonProps {
   groupName: string;
 }
 
-export const ShareButton: React.FC<ShareButtonProps> = ({ groupName }) => {
+export const ShareButton = ({ groupName }: ShareButtonProps) => {
   const handleShare = () => {
     const url = window.location.href;
     const message = `It’s time to save with Vaquita! Join the ${groupName} group. ${url}`;
-
+    
     if (navigator.share) {
       navigator
         .share({
@@ -24,7 +24,7 @@ export const ShareButton: React.FC<ShareButtonProps> = ({ groupName }) => {
       window.open(fallbackUrl, '_blank');
     }
   };
-
+  
   return (
     <Button
       size="lg"

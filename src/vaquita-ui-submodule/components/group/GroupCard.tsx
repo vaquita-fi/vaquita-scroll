@@ -14,7 +14,7 @@ interface Props {
   slots: number;
   period: 'monthly' | 'weekly' | 'all';
   startsOnTimestamp: number;
-  status: GroupStatus;
+  status?: GroupStatus;
   onClick?: (groupId: string) => void;
 }
 
@@ -24,19 +24,24 @@ export function GroupCard(props: Props) {
     name,
     amount,
     collateralAmount,
-    startsOnTimestamp,
     period,
     totalMembers,
     slots,
     id,
     crypto,
-    status,
     onClick,
+    status,
   } = props;
   
   return (
     <div className="flex flex-col justify-between style-stand-out style-border px-5 pt-4 pb-6 rounded-lg gap-2">
-      <p className="text-2xl font-bold">{name}</p>
+      <div className="flex justify-between text-lg">
+        <p className="text-2xl font-bold">{name}</p>
+        <div className="flex gap-1 items-center">
+          <div className={'style-border w-[20px] h-[20px] rounded-full ' + (status === GroupStatus.ACTIVE ? 'bg-success' : status === GroupStatus.PENDING ? 'bg-warning' : 'bg-opaque')} />
+          <p className="capitalize">{status}</p>
+        </div>
+      </div>
       <div className="flex flex-col">
         <div className="flex justify-between text-lg">
           <div className="flex items-center gap-1">

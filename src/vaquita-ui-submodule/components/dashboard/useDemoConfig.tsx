@@ -3,16 +3,16 @@ import React from 'react';
 //
 
 const options = {
-  elementType: ['line', 'area', 'bar'],
-  primaryAxisType: ['linear', 'time', 'log', 'band'],
-  secondaryAxisType: ['linear', 'time', 'log', 'band'],
-  primaryAxisPosition: ['top', 'left', 'right', 'bottom'],
-  secondaryAxisPosition: ['top', 'left', 'right', 'bottom'],
-  secondaryAxisStack: [true, false],
-  primaryAxisShow: [true, false],
-  secondaryAxisShow: [true, false],
-  interactionMode: ['primary', 'closest'],
-  tooltipGroupingMode: ['single', 'primary', 'secondary', 'series'],
+  elementType: [ 'line', 'area', 'bar' ],
+  primaryAxisType: [ 'linear', 'time', 'log', 'band' ],
+  secondaryAxisType: [ 'linear', 'time', 'log', 'band' ],
+  primaryAxisPosition: [ 'top', 'left', 'right', 'bottom' ],
+  secondaryAxisPosition: [ 'top', 'left', 'right', 'bottom' ],
+  secondaryAxisStack: [ true, false ],
+  primaryAxisShow: [ true, false ],
+  secondaryAxisShow: [ true, false ],
+  interactionMode: [ 'primary', 'closest' ],
+  tooltipGroupingMode: [ 'single', 'primary', 'secondary', 'series' ],
   tooltipAnchor: [
     'closest',
     'top',
@@ -39,7 +39,7 @@ const options = {
     'bottomRight',
     'center',
   ],
-  snapCursor: [true, false],
+  snapCursor: [ true, false ],
 } as const;
 
 type DataType = 'time' | 'ordinal' | 'linear';
@@ -56,29 +56,29 @@ type TooltipGroupingMode = (typeof options)['tooltipGroupingMode'][number];
 const optionKeys = Object.keys(options) as (keyof typeof options)[];
 
 export function useDemoConfig({
-  series,
-  datums = 10,
-  useR,
-  show = [],
-  count = 1,
-  resizable = true,
-  canRandomize = true,
-  dataType = 'time',
-  elementType = 'line',
-  primaryAxisType = 'time',
-  secondaryAxisType = 'linear',
-  primaryAxisPosition = 'bottom',
-  secondaryAxisPosition = 'left',
-  primaryAxisStack = false,
-  secondaryAxisStack = true,
-  primaryAxisShow = true,
-  secondaryAxisShow = true,
-  tooltipAnchor = 'closest',
-  tooltipAlign = 'auto',
-  interactionMode = 'primary',
-  tooltipGroupingMode = 'primary',
-  snapCursor = true,
-}: {
+                                series,
+                                datums = 10,
+                                useR,
+                                show = [],
+                                count = 1,
+                                resizable = true,
+                                canRandomize = true,
+                                dataType = 'time',
+                                elementType = 'line',
+                                primaryAxisType = 'time',
+                                secondaryAxisType = 'linear',
+                                primaryAxisPosition = 'bottom',
+                                secondaryAxisPosition = 'left',
+                                primaryAxisStack = false,
+                                secondaryAxisStack = true,
+                                primaryAxisShow = true,
+                                secondaryAxisShow = true,
+                                tooltipAnchor = 'closest',
+                                tooltipAlign = 'auto',
+                                interactionMode = 'primary',
+                                tooltipGroupingMode = 'primary',
+                                snapCursor = true,
+                              }: {
   series: number;
   datums?: number;
   useR?: boolean;
@@ -102,7 +102,7 @@ export function useDemoConfig({
   tooltipGroupingMode?: TooltipGroupingMode;
   snapCursor?: boolean;
 }) {
-  const [state, setState] = React.useState({
+  const [ state, setState ] = React.useState({
     count,
     resizable,
     canRandomize,
@@ -124,20 +124,20 @@ export function useDemoConfig({
     datums,
     data: makeDataFrom(dataType, series, datums, useR),
   });
-
+  
   React.useEffect(() => {
     setState((old) => ({
       ...old,
       data: makeDataFrom(dataType, series, datums, useR),
     }));
-  }, [count, dataType, datums, series, useR]);
-
+  }, [ count, dataType, datums, series, useR ]);
+  
   const randomizeData = () =>
     setState((old) => ({
       ...old,
       data: makeDataFrom(dataType, series, datums, useR),
     }));
-
+  
   const Options = optionKeys
     .filter((option) => show.indexOf(option) > -1)
     .map((option) => (
@@ -155,6 +155,7 @@ export function useDemoConfig({
             }))
           }
         >
+          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any*/}
           {options[option].map((d: any) => (
             <option value={d as string} key={d.toString()}>
               {d.toString()}
@@ -164,7 +165,7 @@ export function useDemoConfig({
         <br />
       </div>
     ));
-
+  
   return {
     ...state,
     randomizeData,
@@ -176,7 +177,7 @@ function makeDataFrom(
   dataType: DataType,
   series: number,
   datums: number,
-  useR?: boolean
+  useR?: boolean,
 ) {
   return [
     ...new Array(series || Math.max(Math.round(Math.random() * 5), 1)),
@@ -187,7 +188,7 @@ export function makeSeries(
   i: number,
   dataType: DataType,
   datums: number,
-  useR?: boolean
+  useR?: boolean,
 ) {
   const start = 0;
   const startDate = new Date();
@@ -205,9 +206,9 @@ export function makeSeries(
   const nullChance = 0;
   return {
     label: `Series ${i + 1}`,
-    data: [...new Array(length)].map((_, i) => {
+    data: [ ...new Array(length) ].map((_, i) => {
       let x;
-
+      
       if (dataType === 'ordinal') {
         x = `Ordinal Group ${start + i}`;
       } else if (dataType === 'time') {
@@ -220,22 +221,22 @@ export function makeSeries(
       } else {
         x = start + i;
       }
-
+      
       const distribution = 1.1;
-
+      
       const y =
         Math.random() < nullChance
           ? null
           : min + Math.round(Math.random() * (max - min));
-
+      
       const r = !useR
         ? undefined
         : rMax -
-          Math.floor(
-            Math.log(Math.random() * (distribution ** rMax - rMin) + rMin) /
-              Math.log(distribution)
-          );
-
+        Math.floor(
+          Math.log(Math.random() * (distribution ** rMax - rMin) + rMin) /
+          Math.log(distribution),
+        );
+      
       return {
         primary: x,
         secondary: y,

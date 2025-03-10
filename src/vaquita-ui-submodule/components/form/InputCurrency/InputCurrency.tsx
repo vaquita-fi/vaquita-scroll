@@ -33,16 +33,16 @@ export interface CurrencyInputTextProps<T extends string | number = string> {
 }
 
 export function CurrencyInputText<T extends string | number = string>({
-  label,
-  value,
-  optionValue,
-  options,
-  onChange,
-  onChangeOption,
-  className,
-  size = 'medium',
-  placeHolder,
-}: CurrencyInputTextProps<T>) {
+                                                                        // label,
+                                                                        // value,
+                                                                        optionValue,
+                                                                        options,
+                                                                        onChange,
+                                                                        onChangeOption,
+                                                                        className,
+                                                                        size = 'medium',
+                                                                        placeHolder,
+                                                                      }: CurrencyInputTextProps<T>) {
   const id = useId();
   return (
     <div className={'flex flex-col gap-1 ' + className}>

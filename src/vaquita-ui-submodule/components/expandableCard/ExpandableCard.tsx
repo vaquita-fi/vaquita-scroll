@@ -8,18 +8,18 @@ type ExpandableCardProps = {
   onAction: () => void;
 };
 
-export const ExpandableCard: React.FC<ExpandableCardProps> = ({
-  title,
-  content,
-  actionLabel,
-  onAction,
-}) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-
+export const ExpandableCard = ({
+                                 title,
+                                 content,
+                                 actionLabel,
+                                 onAction,
+                               }: ExpandableCardProps) => {
+  const [ isExpanded, setIsExpanded ] = useState(false);
+  
   const handleToggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
-
+  
   return (
     <div className="p-4 rounded-lg shadow-lg border-dashed border-2 border-bg-300">
       <details

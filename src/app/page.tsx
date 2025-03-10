@@ -2,23 +2,22 @@
 
 import LoginButton from '@/components/LoginButton';
 import SignupButton from '@/components/SignupButton';
-import { Home } from '@/vaquita-ui-submodule/components';
+import { MainLayout } from '@/vaquita-ui-submodule/components';
 import React from 'react';
 import { useAccount } from 'wagmi';
 
 export default function Page() {
-  const { address, isConnected } = useAccount();
-  
+  const { address } = useAccount();
   return (
-    <Home
-      walletButton={<SignupButton />}
+    <MainLayout
       walletButtons={
         <>
           <SignupButton />
           {!address && <LoginButton />}
         </>
       }
-      isConnected={isConnected}
-    />
+    >
+      {<div>home</div>}
+    </MainLayout>
   );
 }

@@ -10,6 +10,7 @@ const USDC_DECIMALS = Number(process.env.NEXT_PUBLIC_USDC_DECIMALS);
 const USDC_CONTRACT = process.env.NEXT_PUBLIC_USDC_CONTRACT_ADDRESS as `0x${string}`;
 const VAQUITA_CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_VAQUITA_CONTRACT_ADDRESS as `0x${string}`;
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const convertFrequencyToTimestamp: any = (period: any): bigint => {
   const SECONDS_PER_DAY = 86400; // 24 hours * 60 minutes * 60 seconds
   const frequencyInDays = period === 'weekly' ? 7 : 30;
@@ -54,7 +55,8 @@ export const useVaquitaDeposit = () => {
   const depositCollateralAndCreate = useCallback(
     async (
       group: GroupResponseDTO,
-    ): Promise<{ tx: string; error: any; success: boolean }> => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ): Promise<{ tx: string; error: any; success: boolean; receipt: any; }> => {
       console.info('depositCollateralAndCreate', { group });
       const groupId = BigInt(`0x${group.id}`);
       const paymentAmount = BigInt(group.amount * USDC_DECIMALS);
@@ -86,10 +88,10 @@ export const useVaquitaDeposit = () => {
           confirmations: 5,
         });
         console.info('depositCollateralAndCreate', { receipt });
-        return { tx: hash, error: null, success: true };
+        return { tx: hash, receipt, error: null, success: true };
       } catch (error) {
         console.error('Error in depositCollateralAndCreate:', error);
-        return { tx: '', error, success: false };
+        return { tx: '', receipt: null, error, success: false };
       }
     },
     [ approveTokens, writeContractAsync, contract.abi ],
@@ -98,7 +100,8 @@ export const useVaquitaDeposit = () => {
   const depositCollateralAndJoin = useCallback(
     async (
       group: GroupResponseDTO,
-    ): Promise<{ tx: string; error: any; success: boolean }> => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ): Promise<{ tx: string; receipt: any; error: any; success: boolean }> => {
       console.info('depositCollateralAndJoin', { group });
       const groupId = BigInt(`0x${group.id}`);
       const paymentAmount = BigInt(group.amount * USDC_DECIMALS);
@@ -121,10 +124,10 @@ export const useVaquitaDeposit = () => {
           confirmations: 5,
         });
         console.info('depositCollateralAndJoin', { receipt });
-        return { tx: hash, error: null, success: true };
+        return { tx: hash, receipt, error: null, success: true };
       } catch (error) {
         console.error('Error in depositCollateralAndJoin:', error);
-        return { tx: '', error, success: false };
+        return { tx: '', receipt: null, error, success: false };
       }
     },
     [ approveTokens, writeContractAsync, contract.abi ],
@@ -134,6 +137,7 @@ export const useVaquitaDeposit = () => {
     async (
       group: GroupResponseDTO,
       turn: number,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ): Promise<{ tx: string; error: any; success: boolean }> => {
       console.info('depositRoundPayment', { group, turn });
       const groupId = BigInt(`0x${group.id}`);

@@ -10,9 +10,10 @@ import { FindGroupsIcon, HomeIcon, MoreIcon, MyGroupsIcon } from '../icons';
 export const MainNavbar = ({ walletButtons }: { walletButtons: ReactNode }) => {
   const pathname = usePathname();
   const pathSegments = pathname.split('/').filter((segment) => segment);
-  const mainPath = '/' + pathSegments[0];
+  const mainPath = '/' + (pathSegments[0] ?? '');
   const myGroups = useSearchParams().get('myGroups');
   const router = useRouter();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const getIconColor = (isActive: boolean) => 'currentColor';
   
   const links: {
@@ -23,8 +24,8 @@ export const MainNavbar = ({ walletButtons }: { walletButtons: ReactNode }) => {
   }[] = [
     {
       label: 'Home',
-      path: '/home',
-      isActive: mainPath === '/home',
+      path: '/',
+      isActive: mainPath === '/home' || mainPath == '/',
       icon: ({ isActive }) => <HomeIcon fill={getIconColor(isActive)} />,
     },
     {

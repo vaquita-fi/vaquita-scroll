@@ -1,37 +1,27 @@
-import {
-  BiSortDownOutlineIcon,
-  BiSortOutlineIcon,
-  BiSortUpOutlineIcon,
-  FilterOutlineIcon,
-} from "@/vaquita-ui-submodule/components/icons";
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  useDisclosure,
-} from "@nextui-org/react";
-import React, { Dispatch, SetStateAction } from "react";
-import { GroupFilters, GroupPeriod } from "../../types";
-import { InputSelect, RangeSlider } from "../form";
+import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@nextui-org/react';
+import { useRouter } from 'next/navigation';
+import React, { Dispatch, SetStateAction } from 'react';
+import { GroupFilters, GroupPeriod } from '../../types';
+import { Button } from '../buttons';
+import { InputSelect, RangeSlider } from '../form';
+import { BiSortDownOutlineIcon, BiSortOutlineIcon, BiSortUpOutlineIcon, FilterOutlineIcon } from '../icons';
 
 const sortingOptions = [
   {
-    text: "Amount ↑",
-    value: "+amount",
+    text: 'Amount ↑',
+    value: '+amount',
   },
   {
-    text: "Amount ↓",
-    value: "-amount",
+    text: 'Amount ↓',
+    value: '-amount',
   },
   {
-    text: "Date ↑",
-    value: "+date",
+    text: 'Date ↑',
+    value: '+date',
   },
   {
-    text: "Date ↓",
-    value: "-date",
+    text: 'Date ↓',
+    value: '-date',
   },
   // {
   //   text: 'Slots ↑',
@@ -42,26 +32,26 @@ const sortingOptions = [
   //   value: '-slots',
   // },
   {
-    text: "Total Members ↑",
-    value: "+totalMembers",
+    text: 'Total Members ↑',
+    value: '+totalMembers',
   },
   {
-    text: "Total Members ↓",
-    value: "-totalMembers",
+    text: 'Total Members ↓',
+    value: '-totalMembers',
   },
 ];
 
 const periodOptions = [
   {
-    text: "All Period",
+    text: 'All Period',
     value: undefined,
   },
   {
-    text: "Monthly",
+    text: 'Monthly',
     value: GroupPeriod.MONTHLY,
   },
   {
-    text: "Weekly",
+    text: 'Weekly',
     value: GroupPeriod.WEEKLY,
   },
 ];
@@ -101,48 +91,57 @@ export default function CloseButton({ onClick }: { onClick: () => void }) {
     <button
       onClick={onClick}
       className="absolute right-4 top-4 w-6 h-6 flex items-center justify-center rounded-full style-primary-button transition-all"
-      style={{ borderBottomWidth: 1, fontWeight: "normal" }}
+      style={{ borderBottomWidth: 1, fontWeight: 'normal' }}
     >
       <X />
     </button>
   );
 }
 
-export const GroupFiltersHead = ({
-  withStatus,
-  filters,
-  setFilters,
-}: {
+interface GroupFiltersHeadProps {
   withStatus?: boolean;
   filters: GroupFilters;
   setFilters: Dispatch<SetStateAction<GroupFilters>>;
-}) => {
+  withCreateGroupButton?: boolean;
+}
+
+export const GroupFiltersHead = ({ withStatus, filters, setFilters, withCreateGroupButton }: GroupFiltersHeadProps) => {
+  
   const {
     isOpen: isOpenFilter,
     onOpen: onOpenFilter,
     onOpenChange: onOpenChangeFilter,
   } = useDisclosure();
+  const router = useRouter();
   const {
     isOpen: isOpenSort,
     onOpen: onOpenSort,
     onOpenChange: onOpenChangeSort,
   } = useDisclosure();
-
+  
   const toggleCheckbox = (key: keyof GroupFilters) => {
     setFilters((prev) => ({ ...prev, [key]: !prev[key] }));
   };
-
+  
   return (
     <div className="flex gap-2 justify-center items-center py-2">
-      <input
-        className="w-full h-[30px] px-4 border border-black rounded-xl bg-transparent text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-300"
-        min={0}
-        placeholder="Search by name"
-        autoComplete="off"
-        onChange={({ target }) =>
-          setFilters((prevState) => ({ ...prevState, name: target.value }))
-        }
-      />
+      {withCreateGroupButton ? (
+        <Button
+          className="w-full style-primary-button hover-effect"
+          onClick={() => router.push('/my-groups/create')}
+          label="Create New Group"
+        />
+      ) : (
+        <input
+          className="w-full h-[30px] px-4 border border-black rounded-xl bg-transparent text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-300"
+          min={0}
+          placeholder="Search by name"
+          autoComplete="off"
+          onChange={({ target }) =>
+            setFilters((prevState) => ({ ...prevState, name: target.value }))
+          }
+        />
+      )}
       <button className="block md:hidden text-xl" onClick={onOpenSort}>
         <BiSortOutlineIcon size={30} />
       </button>
@@ -182,11 +181,11 @@ export const GroupFiltersHead = ({
         onOpenChange={onOpenChangeSort}
         backdrop="opaque"
         style={{
-          marginBottom: "0px",
+          marginBottom: '0px',
         }}
         className="rounded-none rounded-t-lg"
         classNames={{
-          base: "style-stand-out",
+          base: 'style-stand-out',
         }}
         hideCloseButton
       >
@@ -199,9 +198,9 @@ export const GroupFiltersHead = ({
               </ModalHeader>
               <ModalBody>
                 {[
-                  { label: "Collateral amount", key: "amount" },
-                  { label: "Period payment", key: "period" },
-                  { label: "Number of participants", key: "totalMembers" },
+                  { label: 'Collateral amount', key: 'amount' },
+                  { label: 'Period payment', key: 'period' },
+                  { label: 'Number of participants', key: 'totalMembers' },
                 ].map(({ label, key }) => (
                   <div key={key} className="flex justify-between items-center">
                     <span className="text-sm">{label}</span>
@@ -215,8 +214,8 @@ export const GroupFiltersHead = ({
                         }
                         className={`w-6 h-6 flex items-center justify-center rounded-md border border-black ${
                           filters.orderBy === `+${key}`
-                            ? "style-primary-button"
-                            : ""
+                            ? 'style-primary-button'
+                            : ''
                         }`}
                         style={{ borderBottomWidth: 1 }}
                       >
@@ -231,8 +230,8 @@ export const GroupFiltersHead = ({
                         }
                         className={`w-6 h-6 flex items-center justify-center rounded-md border border-black ${
                           filters.orderBy === `-${key}`
-                            ? "style-primary-button"
-                            : ""
+                            ? 'style-primary-button'
+                            : ''
                         }`}
                         style={{ borderBottomWidth: 1 }}
                       >
@@ -253,11 +252,11 @@ export const GroupFiltersHead = ({
         onOpenChange={onOpenChangeFilter}
         backdrop="opaque"
         style={{
-          marginBottom: "0px",
+          marginBottom: '0px',
         }}
         className="rounded-none rounded-t-lg"
         classNames={{
-          base: "style-stand-out",
+          base: 'style-stand-out',
         }}
         hideCloseButton
       >
@@ -284,12 +283,12 @@ export const GroupFiltersHead = ({
                   }
                 />
                 {(withStatus
-                  ? [
-                      { label: "Pending rounds", key: "pending" },
-                      { label: "Active rounds", key: "active" },
-                      { label: "Completed rounds", key: "completed" },
+                    ? [
+                      { label: 'Pending rounds', key: 'pending' },
+                      { label: 'Active rounds', key: 'active' },
+                      { label: 'Completed rounds', key: 'completed' },
                     ]
-                  : []
+                    : []
                 ).map(({ label, key }) => (
                   <div key={key} className="flex justify-between items-center">
                     <span className="text-sm">{label}</span>
@@ -297,8 +296,8 @@ export const GroupFiltersHead = ({
                       onClick={() => toggleCheckbox(key as keyof GroupFilters)}
                       className={`w-6 h-6 flex items-center justify-center rounded-md border border-black ${
                         filters[key as keyof GroupFilters]
-                          ? "style-primary-button"
-                          : "bg-white"
+                          ? 'style-primary-button'
+                          : 'bg-white'
                       }`}
                       style={{ borderBottomWidth: 1 }}
                     >

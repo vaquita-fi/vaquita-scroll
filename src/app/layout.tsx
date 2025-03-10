@@ -31,11 +31,6 @@ export const metadata: Metadata = {
     images: [ `${NEXT_PUBLIC_URL}/vibes/vibes-19.png` ],
   },
 };
-const links: { label: string; path: string }[] = [
-  { label: 'Join Group', path: '/groups' },
-  { label: 'My Groups', path: '/my-groups' },
-  { label: 'Profile', path: '/profile' },
-];
 
 export default function RootLayout({
                                      children,
@@ -47,9 +42,7 @@ export default function RootLayout({
     <body>
     <NextUIProvider className="h-full">
       <ReactQueryProvider>
-        {/*<UiLayout links={links}>*/}
         <OnchainProviders>{children}</OnchainProviders>
-        {/*</UiLayout>*/}
       </ReactQueryProvider>
     </NextUIProvider>
     </body>

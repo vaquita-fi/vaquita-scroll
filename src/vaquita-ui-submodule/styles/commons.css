@@ -43,7 +43,8 @@
     --color-accent-light: #F9D078;
     --color-accent-light-text: var(--color-text);
 
-    --color-success: #00D18C;
+    --color-success: #28A745;
+    --color-warning: #FFC107;
 
     --color-opaque: rgba(217, 217, 217, 0.42);
 }
@@ -96,7 +97,7 @@
     }
 }
 
-.style-opaque {
+.bg-opaque {
     background-color: var(--color-opaque);
 }
 
@@ -106,6 +107,10 @@
 
 .bg-success {
     background-color: var(--color-success);
+}
+
+.bg-warning {
+    background-color: var(--color-warning);
 }
 
 .bg-primary {

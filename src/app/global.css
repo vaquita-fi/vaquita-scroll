@@ -13,3 +13,24 @@
 div[data-rk] {
     height: 100%;
 }
+
+.wallets-buttons {
+
+    > div > div[data-testid="ockConnectWallet_Container"] > button {
+        height: 2.5rem;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        border: 1px solid #000000 !important;
+        border-bottom: 4px solid #000000 !important;
+        background: var(--color-primary) !important;
+        color: inherit !important;
+
+        &.ockConnectWallet_Container {
+            background: transparent !important;
+        }
+
+        * {
+            color: inherit !important;
+        }
+    }
+}

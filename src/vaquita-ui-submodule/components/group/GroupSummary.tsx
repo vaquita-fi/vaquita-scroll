@@ -4,14 +4,14 @@ import { GroupCrypto, GroupStatus } from '../../types';
 import { Summary } from '../Summary';
 
 export const GroupSummary = ({
-  crypto,
-  name,
-  amount,
-  totalMembers,
-  period,
-  startsOnTimestamp,
-  status,
-}: {
+                               crypto,
+                               name,
+                               amount,
+                               totalMembers,
+                               period,
+                               startsOnTimestamp,
+                               status,
+                             }: {
   crypto: GroupCrypto;
   name: string;
   amount: number;
@@ -20,7 +20,7 @@ export const GroupSummary = ({
   startsOnTimestamp: number;
   status?: GroupStatus;
 }) => {
-  console.log({ startsOnTimestamp });
+  
   return (
     <Summary
       itemsSummary={[

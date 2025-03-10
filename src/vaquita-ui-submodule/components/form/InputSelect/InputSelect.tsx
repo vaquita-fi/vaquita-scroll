@@ -17,7 +17,7 @@ const SIZE_SELECT = {
 export default function InputSelect<T extends string | number | undefined = string>(props: Props<T>) {
   
   const {
-    label,
+    // label,
     options,
     defaultValue,
     value,

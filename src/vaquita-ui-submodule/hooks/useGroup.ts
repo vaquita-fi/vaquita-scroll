@@ -18,17 +18,17 @@ type PublicKey = string;
 export const useGroup = () => {
   const getGroups = useCallback(
     async ({
-      name,
-      orderBy,
-      crypto,
-      myGroups,
-      publicKey,
-      status,
-      period,
-      amount,
-      minAmount,
-      maxAmount,
-    }: {
+             name,
+             orderBy,
+             crypto,
+             myGroups,
+             publicKey,
+             status,
+             period,
+             amount,
+             minAmount,
+             maxAmount,
+           }: {
       name: string | null;
       orderBy: string;
       crypto: string | null;
@@ -44,23 +44,23 @@ export const useGroup = () => {
         await authorizedRequest(
           includeApi(
             '/group' +
-              `?orderBy=${encodeURIComponent(orderBy)}` +
-              `&crypto=${crypto}` +
-              `${name ? `&name=${name}` : ''}` +
-              `${period ? `&period=${period}` : ''}` +
-              `${myGroups ? `&myGroups=true` : ''}` +
-              `${amount ? `&amount=${amount}` : ''}` +
-              `${minAmount ? `&minAmount=${minAmount}` : ''}` +
-              `${maxAmount ? `&maxAmount=${maxAmount}` : ''}` +
-              `${publicKey ? `&customerPublicKey=${publicKey}` : ''}` +
-              `${status ? `&status=${status}` : ''}`
-          )
-        )
+            `?orderBy=${encodeURIComponent(orderBy)}` +
+            `&crypto=${crypto}` +
+            `${name ? `&name=${name}` : ''}` +
+            `${period ? `&period=${period}` : ''}` +
+            `${myGroups ? `&myGroups=true` : ''}` +
+            `${amount ? `&amount=${amount}` : ''}` +
+            `${minAmount ? `&minAmount=${minAmount}` : ''}` +
+            `${maxAmount ? `&maxAmount=${maxAmount}` : ''}` +
+            `${publicKey ? `&customerPublicKey=${publicKey}` : ''}` +
+            `${status ? `&status=${status}` : ''}`,
+          ),
+        ),
       );
     },
-    []
+    [],
   );
-
+  
   const createGroup = useCallback(
     async (
       name: string,
@@ -69,7 +69,7 @@ export const useGroup = () => {
       totalMembers: number,
       period: GroupPeriod,
       startsOnTimestamp: number,
-      publicKey: PublicKey
+      publicKey: PublicKey,
     ) => {
       const newGroupPayload: GroupCreateDTO = {
         name: name,
@@ -80,62 +80,64 @@ export const useGroup = () => {
         startsOnTimestamp: startsOnTimestamp,
         customerPublicKey: publicKey,
       };
-      const result = await fetch(includeApi('/group/create'), {
-        method: 'POST',
-        body: JSON.stringify(newGroupPayload),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      
       return cleanRequest<ContentResponseType<GroupResponseDTO>>(
-        await result.text()
+        await authorizedRequest(
+          includeApi(
+            '/group/create',
+          ),
+          { method: 'POST', body: JSON.stringify(newGroupPayload) },
+        ),
       );
     },
-    []
+    [],
   );
-
+  
   const deleteGroup = useCallback(async (groupId: string) => {
     return await fetch(includeApi(`/group/${groupId}`), {
       method: 'DELETE',
     });
   }, []);
-
+  
   const getGroup = useCallback(
     async (
       groupId: string,
-      publicKey?: PublicKey
-    ): Promise<{ content: GroupResponseDTO }> => {
-      const result = await fetch(
-        includeApi(`/group/${groupId}?customerPublicKey=${publicKey}`),
-        { method: 'GET' }
+      publicKey?: PublicKey,
+    ) => {
+      return cleanRequest<ContentResponseType<GroupResponseDTO>>(
+        await authorizedRequest(
+          includeApi(
+            `/group/${groupId}?customerPublicKey=${publicKey}`,
+          ),
+        ),
       );
-      return await result.json();
     },
-    []
+    [],
   );
-
+  
   const joinGroup = useCallback(
-    async (groupId: string, publicKey: PublicKey) => {
+    async (groupId: string, publicKey: PublicKey, playerAddedDataLog: string) => {
       const payload = {
         customerPublicKey: publicKey,
+        playerAddedDataLog,
       };
       return cleanRequest<ContentResponseType<GroupResponseDTO>>(
-        await authorizedRequest(includeApi(`/group/${groupId}/join`), {
+        await authorizedRequest(includeApi(`/group/${groupId}/enroll`), {
           method: 'POST',
           body: JSON.stringify(payload),
           headers: {
             'Content-Type': 'application/json',
           },
-        })
+        }),
       );
     },
-    []
+    [],
   );
-
+  
   const disjoinGroup = useCallback(
     async (
       groupId: string,
-      publicKey: PublicKey
+      publicKey: PublicKey,
     ): Promise<GroupResponseDTO> => {
       const payload = {
         customerPublicKey: publicKey,
@@ -149,15 +151,15 @@ export const useGroup = () => {
       });
       return await result.json();
     },
-    []
+    [],
   );
-
+  
   const depositGroupCollateral = useCallback(
     async (
       groupId: string,
       publicKey: PublicKey,
       transactionSignature: string,
-      amount: number
+      amount: number,
     ) => {
       const payload: GroupDepositDTO = {
         customerPublicKey: publicKey,
@@ -173,16 +175,16 @@ export const useGroup = () => {
         },
       });
     },
-    []
+    [],
   );
-
+  
   const depositGroupPayment = useCallback(
     async (
       groupId: string,
       publicKey: PublicKey,
       transactionSignature: string,
       round: number,
-      amount: number
+      amount: number,
     ) => {
       const payload: GroupDepositDTO = {
         customerPublicKey: publicKey,
@@ -198,15 +200,15 @@ export const useGroup = () => {
         },
       });
     },
-    []
+    [],
   );
-
+  
   const withdrawalGroupFunds = useCallback(
     async (
       groupId: string,
       publicKey: PublicKey,
       transactionSignature: string,
-      amount: number
+      amount: number,
     ) => {
       const payload: GroupWithdrawalDTO = {
         customerPublicKey: publicKey,
@@ -222,15 +224,15 @@ export const useGroup = () => {
         },
       });
     },
-    []
+    [],
   );
-
+  
   const withdrawalGroupEarnedRound = useCallback(
     async (
       groupId: string,
       publicKey: PublicKey,
       transactionSignature: string,
-      amount: number
+      amount: number,
     ) => {
       const payload: GroupWithdrawalDTO = {
         customerPublicKey: publicKey,
@@ -246,9 +248,9 @@ export const useGroup = () => {
         },
       });
     },
-    []
+    [],
   );
-
+  
   return {
     getGroups,
     getGroup,

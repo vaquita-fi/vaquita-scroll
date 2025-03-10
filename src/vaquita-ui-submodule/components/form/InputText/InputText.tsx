@@ -8,15 +8,14 @@ const SIZE = {
 };
 
 export default function InputText<T extends string | number = string>({
-  label,
-  type = 'text',
-  value,
-  onChange,
-  className,
-  placeHolder,
-  size = 'medium',
-  maxLength = 20,
-}: Props<T>) {
+                                                                        type = 'text',
+                                                                        value,
+                                                                        onChange,
+                                                                        className,
+                                                                        placeHolder,
+                                                                        size = 'medium',
+                                                                        maxLength = 20,
+                                                                      }: Props<T>) {
   const id = useId();
   return (
     <div className={'flex flex-col w-full ' + className}>
@@ -37,7 +36,7 @@ export default function InputText<T extends string | number = string>({
         maxLength={maxLength}
         onChange={({ target }) =>
           onChange?.(
-            (type === 'number' ? target.valueAsNumber : target.value) as T
+            (type === 'number' ? target.valueAsNumber : target.value) as T,
           )
         }
       />

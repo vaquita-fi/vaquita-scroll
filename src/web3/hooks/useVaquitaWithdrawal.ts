@@ -16,6 +16,7 @@ export const useVaquitaWithdrawal = () => {
   const withdrawalEarnedRound = useCallback(
     async (
       group: GroupResponseDTO,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ): Promise<{ tx: string; error: any; success: boolean }> => {
       console.info('withdrawalEarnedRound', { group });
       const groupId = BigInt(`0x${group.id}`);
@@ -42,6 +43,7 @@ export const useVaquitaWithdrawal = () => {
   const withdrawalCollateralAndEarnedInterest = useCallback(
     async (
       group: GroupResponseDTO,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ): Promise<{ tx: string; error: any; success: boolean }> => {
       console.info('withdrawalCollateralAndEarnedInterest', { group });
       const groupId = BigInt(`0x${group.id}`);

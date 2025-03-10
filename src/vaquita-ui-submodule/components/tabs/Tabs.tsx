@@ -45,7 +45,7 @@ export const Tabs = <T extends string = string>({
   };
   
   return (
-    <div className="flex overflow-auto justify-around style-opaque rounded-xl">
+    <div className="flex overflow-auto justify-around bg-opaque rounded-xl">
       {tabs.map((tab) => (
         <button
           key={tab.value}

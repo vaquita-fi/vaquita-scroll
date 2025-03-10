@@ -1,30 +1,24 @@
-"use client";
+'use client';
 
-import { useVaquitaDeposit } from "@/web3/hooks";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import { ONE_DAY } from "../../constants";
-import { logError, showNotification } from "../../helpers";
-import { useGroup } from "../../hooks";
-import {
-  AddressType,
-  GroupCreateDTO,
-  GroupCrypto,
-  GroupPeriod,
-} from "../../types";
-import { Button } from "../buttons";
-import { ErrorView } from "../error";
-import { InputSelect, InputText, Option } from "../form";
-import { GroupSummary } from "../group/GroupSummary";
-import { TabTitleHeader } from "../header";
-import { LoadingSpinner } from "../loadingSpinner";
-import { Message } from "../message";
-import { Input } from "@nextui-org/react";
+import { TitleLayout } from '@/vaquita-ui-submodule/components/layouts/TitleLayout';
+import { useVaquitaDeposit } from '@/web3/hooks';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import { ONE_DAY } from '../../constants';
+import { logError, showNotification } from '../../helpers';
+import { useGroup } from '../../hooks';
+import { AddressType, GroupCreateDTO, GroupCrypto, GroupPeriod } from '../../types';
+import { Button } from '../buttons';
+import { InputSelect, InputText, Option } from '../form';
+import { GroupSummary } from '../group/GroupSummary';
+import { TabTitleHeader } from '../header';
+import { LoadingBackdropSpinner } from '../loadingSpinner';
+import { Message } from '../message';
 
 const optionsCrypto: Option<GroupCrypto>[] = [
   {
-    text: "USDC",
+    text: 'USDC',
     value: GroupCrypto.USDC,
   },
   // {
@@ -35,72 +29,72 @@ const optionsCrypto: Option<GroupCrypto>[] = [
 
 const optionsMembers: Option<number>[] = [
   {
-    text: "2",
+    text: '2',
     value: 2,
   },
   {
-    text: "3",
+    text: '3',
     value: 3,
   },
   {
-    text: "4",
+    text: '4',
     value: 4,
   },
   {
-    text: "5",
+    text: '5',
     value: 5,
   },
   {
-    text: "6",
+    text: '6',
     value: 6,
   },
   {
-    text: "8",
+    text: '8',
     value: 8,
   },
   {
-    text: "10",
+    text: '10',
     value: 10,
   },
   {
-    text: "12",
+    text: '12',
     value: 12,
   },
 ];
 
 const messageText =
-  "It is necessary to deposit the collateral to ensure that each person can participate in the group, and to guarantee that everyone will pay appropriately";
+  'It is necessary to deposit the collateral to ensure that each person can participate in the group, and to guarantee that everyone will pay appropriately';
 
 export const GroupCreatePage = ({ address }: { address?: AddressType }) => {
   const now = new Date();
-  const [newGroup, setNewGroup] = useState<
-    Omit<GroupCreateDTO, "customerPublicKey" | "transactionSignature">
+  const [ newGroup, setNewGroup ] = useState<
+    Omit<GroupCreateDTO, 'customerPublicKey' | 'transactionSignature'>
   >({
-    name: "",
+    name: '',
     amount: 0,
     crypto: GroupCrypto.USDC,
     totalMembers: 2,
     period: GroupPeriod.MONTHLY,
     startsOnTimestamp: now.getTime() + ONE_DAY,
   });
-  const [loading, setLoading] = useState(false);
+  const [ loading, setLoading ] = useState(false);
   const router = useRouter();
   const { depositCollateralAndCreate } = useVaquitaDeposit();
-  const { createGroup, depositGroupCollateral, deleteGroup } = useGroup();
+  const { createGroup, depositGroupCollateral, deleteGroup, joinGroup } = useGroup();
   useEffect(() => {
     if (!address) {
-      router.push("/groups");
+      router.push('/groups');
     }
-  }, [router, address]);
-
-  if (loading) {
-    return <LoadingSpinner />;
-  }
-
+  }, [ router, address ]);
+  
   if (!address) {
-    return <ErrorView />;
+    return (
+      <TitleLayout>
+        <p>Please select a wallet</p>
+      </TitleLayout>
+    );
   }
-
+  
   const onSave = async () => {
     setLoading(true);
     try {
@@ -112,41 +106,44 @@ export const GroupCreatePage = ({ address }: { address?: AddressType }) => {
         newGroup.totalMembers,
         newGroup.period,
         newGroup.startsOnTimestamp,
-        address
+        address,
       );
       if (!response.success) {
         console.error(response);
-        throw new Error("group not created");
+        throw new Error('group not created');
       }
       const group = response.content;
       console.info({ newGroupCreated: group });
       const amount = group.collateralAmount;
-      const { tx, error, success } = await depositCollateralAndCreate(group);
+      const { tx, receipt, error, success } = await depositCollateralAndCreate(group);
       if (!success) {
         await deleteGroup(group.id);
-        logError("transaction error", error);
-        throw new Error("transaction error");
+        logError('transaction error', error);
+        throw new Error('transaction error');
       }
+      const playerAddedDataLog = receipt?.logs?.[10]?.data ?? '';
+      await joinGroup(group.id, address, playerAddedDataLog);
       await depositGroupCollateral(group.id, address, tx, amount);
-      router.push("/my-groups?tab=pending");
-      showNotification("Group created successfully!", "success");
+      router.push('/my-groups?tab=pending');
+      showNotification('Group created successfully!', 'success');
     } catch (error) {
-      logError("Failed to create group.", error);
-      showNotification("Failed to create group.", "error");
+      logError('Failed to create group.', error);
+      showNotification('Failed to create group.', 'error');
     }
     setLoading(false);
   };
-
-  const filterDateTime = (time: Date) => {
-    const selectedDate = new Date(time);
-    return (
-      selectedDate.getTime() >= now.getTime() &&
-      selectedDate.getTime() - ONE_DAY * 7 <= now.getTime()
-    );
-  };
-
+  
+  // const filterDateTime = (time: Date) => {
+  //   const selectedDate = new Date(time);
+  //   return (
+  //     selectedDate.getTime() >= now.getTime() &&
+  //     selectedDate.getTime() - ONE_DAY * 7 <= now.getTime()
+  //   );
+  // };
+  
   return (
     <div>
+      {loading && <LoadingBackdropSpinner />}
       <div className="flex flex-col justify-between style-stand-out style-border px-5 pt-4 pb-6 rounded-lg gap-2">
         <TabTitleHeader text="Create new group" />
         <div className="flex flex-col justify-center gap-2">
@@ -176,7 +173,7 @@ export const GroupCreatePage = ({ address }: { address?: AddressType }) => {
                 placeHolder="e.g. 300"
                 onChange={(amount) => {
                   const updatedAmount = amount === undefined ? 0 : amount;
-
+                  
                   setNewGroup((prevState) => ({
                     ...prevState,
                     amount: Math.round(updatedAmount),
@@ -206,11 +203,11 @@ export const GroupCreatePage = ({ address }: { address?: AddressType }) => {
                 label="Payment period"
                 options={[
                   {
-                    text: "Monthly",
+                    text: 'Monthly',
                     value: GroupPeriod.MONTHLY,
                   },
                   {
-                    text: "Weekly",
+                    text: 'Weekly',
                     value: GroupPeriod.WEEKLY,
                   },
                 ]}
@@ -257,7 +254,7 @@ export const GroupCreatePage = ({ address }: { address?: AddressType }) => {
         <div className="mb-1">
           <GroupSummary {...newGroup} />
         </div>
-
+        
         <Message messageText={messageText} />
         <div className="flex flex-col gap-2 mt-1 mb-4 justify-between">
           <Button

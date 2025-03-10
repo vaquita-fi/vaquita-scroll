@@ -1,36 +1,45 @@
 import React, { useMemo, useState } from 'react';
 import { AxisOptions, Chart } from 'react-charts';
-import { makeSeries, useDemoConfig } from './useDemoConfig';
+import { makeSeries } from './useDemoConfig';
+
+type Data = {
+  label: string
+  data: {
+    primary: string | number | Date | null
+    secondary: number | null
+    radius: number | undefined
+  }[]
+}[];
 
 export const Statistics = () => {
-  const [graphSelectTab, setGraphSelectTab] = useState<number>(0);
-
-  const { data, randomizeData } = useDemoConfig({
-    series: 10,
-    dataType: 'time',
-  });
-
+  const [ graphSelectTab, setGraphSelectTab ] = useState<number>(0);
+  
+  // const { data, randomizeData } = useDemoConfig({
+  //   series: 10,
+  //   dataType: 'time',
+  // });
+  
   const primaryAxis = useMemo<
-    AxisOptions<(typeof data)[number]['data'][number]>
+    AxisOptions<Data[number]['data'][number]>
   >(
     () => ({
       getValue: (datum) => datum.primary as unknown as Date,
     }),
-    []
+    [],
   );
-
+  
   const secondaryAxes = useMemo<
-    AxisOptions<(typeof data)[number]['data'][number]>[]
+    AxisOptions<Data[number]['data'][number]>[]
   >(
     () => [
       {
         getValue: (datum) => datum.secondary,
       },
     ],
-    []
+    [],
   );
-
-  const datas = [makeSeries(1, 'time', 14)];
+  
+  const datas = [ makeSeries(1, 'time', 14) ];
   return (
     <div>
       <h1 className="text-lg font-medium">Statistics</h1>

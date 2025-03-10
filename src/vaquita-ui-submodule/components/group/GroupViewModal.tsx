@@ -19,7 +19,7 @@ export const GroupViewModal = ({ groupId, onClose, address }: {
     >
       <ModalContent
         as={motion.div}
-        // @ts-ignore
+        // @ts-expect-error because ModalContent doesn't recognize the properties of the motion.div
         initial={{ x: '100%' }}
         animate={{ x: 0 }}
         exit={{ x: '100%' }}

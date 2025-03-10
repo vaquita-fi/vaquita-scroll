@@ -4,11 +4,11 @@ import { useQuery } from '@tanstack/react-query';
 import { useParams, useRouter } from 'next/navigation';
 import React from 'react';
 import { useGroup } from '../../hooks';
-import { AddressType, GroupResponseDTO } from '../../types';
+import { AddressType } from '../../types';
 import { Button } from '../buttons';
 import { ErrorView } from '../error';
 import { TabTitleHeader } from '../header';
-import { LoadingSpinner } from '../loadingSpinner';
+import { LoadingBackdropSpinner } from '../loadingSpinner';
 import { GroupTablePayments } from './GroupTablePayments';
 
 export const GroupPaymentsPage = ({ address }: { address?: AddressType }) => {
@@ -22,9 +22,7 @@ export const GroupPaymentsPage = ({ address }: { address?: AddressType }) => {
     data,
     error,
     refetch,
-  } = useQuery<{
-    content: GroupResponseDTO;
-  }>({
+  } = useQuery({
     enabled: !!address,
     queryKey: [ 'group', address ],
     queryFn: () => getGroup(groupId as string, address!),
@@ -33,19 +31,19 @@ export const GroupPaymentsPage = ({ address }: { address?: AddressType }) => {
   const loading = isPendingData || isLoadingData || isFetchingData;
   
   if (loading) {
-    return <LoadingSpinner />;
+    return <LoadingBackdropSpinner />;
   }
   if (!data) {
-    return <LoadingSpinner />;
+    return <LoadingBackdropSpinner />;
   }
-  if (!address) {
+  if (!address || !data?.success) {
     return <ErrorView />;
   }
   
   return (
     <>
       <TabTitleHeader text="Group Information" />
-      {loading && <LoadingSpinner />}
+      {loading && <LoadingBackdropSpinner />}
       {error && !loading && !data && <ErrorView />}
       {!loading && data && (
         <GroupTablePayments

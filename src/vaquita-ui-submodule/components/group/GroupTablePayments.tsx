@@ -4,7 +4,7 @@ import { getPaymentsTable, logError, showNotification } from '../../helpers';
 import { useGroup } from '../../hooks';
 import { Button } from '../buttons';
 import { ErrorView } from '../error';
-import { LoadingSpinner } from '../loadingSpinner';
+import { LoadingBackdropSpinner } from '../loadingSpinner';
 import { GroupTablePaymentsProps } from './types';
 
 export function GroupTablePayments({
@@ -16,25 +16,22 @@ export function GroupTablePayments({
   const { depositRoundPayment } = useVaquitaDeposit();
   const { depositGroupPayment } = useGroup();
   
-  if (isLoading) {
-    return <LoadingSpinner />;
-  }
   if (!address) {
     return <ErrorView />;
   }
   
   const { items } = getPaymentsTable(group);
   
-  const getStatusType = (status: string): string => {
-    switch (status) {
-      case 'Pay':
-        return 'success';
-      case 'Pending':
-        return 'muted';
-      default:
-        return 'disabled';
-    }
-  };
+  // const getStatusType = (status: string): string => {
+  //   switch (status) {
+  //     case 'Pay':
+  //       return 'success';
+  //     case 'Pending':
+  //       return 'muted';
+  //     default:
+  //       return 'disabled';
+  //   }
+  // };
   
   const handleTurnPayment = async (round: number, turn: number) => {
     setIsLoading(true);
@@ -60,6 +57,7 @@ export function GroupTablePayments({
   
   return (
     <div className="rounded-xl border border-black style-stand-out">
+      {isLoading && <LoadingBackdropSpinner />}
       <div className="grid grid-cols-[1fr_2fr_2fr_2fr] py-2 px-1 text-sm font-semibold gap-2 bg-primary border-b-2 border-black rounded-xl">
         <span className="self-center">Nro</span>
         <span className="self-center">Amount</span>

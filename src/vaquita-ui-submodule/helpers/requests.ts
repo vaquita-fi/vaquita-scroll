@@ -1,9 +1,5 @@
 import { NEXT_PUBLIC_API } from '../env';
-import {
-  ContentResponseType,
-  ContentsResponseType,
-  ErrorResponseType,
-} from '../types';
+import { ContentResponseType, ContentsResponseType, ErrorResponseType } from '../types';
 import { isStringJson } from './object';
 
 export const includeApi = (route: string) => {
@@ -12,13 +8,13 @@ export const includeApi = (route: string) => {
 
 export const authorizedRequest = async (url: string, options?: RequestInit) => {
   const { method, body, signal, headers, cache, next } = options || {};
-
+  
   const requestHeaders = new Headers(headers ?? {});
-
+  
   if (!(body instanceof FormData)) {
     requestHeaders.set('Content-Type', 'application/json');
   }
-
+  
   return await fetch(url, {
     method: method ? method : 'GET',
     headers: requestHeaders,
@@ -28,12 +24,12 @@ export const authorizedRequest = async (url: string, options?: RequestInit) => {
     cache,
     next,
   })
-    .then((response: any) => {
+    .then((response) => {
       return response.text();
     })
     .catch((error) => {
       console.warn('error on fetch', { url, error });
-
+      
       if (signal?.aborted) {
         return JSON.stringify({
           success: false,
@@ -46,7 +42,7 @@ export const authorizedRequest = async (url: string, options?: RequestInit) => {
           ],
         } as ErrorResponseType);
       }
-
+      
       return JSON.stringify({
         success: false,
         message: 'error on response',
@@ -63,9 +59,10 @@ export const authorizedRequest = async (url: string, options?: RequestInit) => {
 };
 
 export const cleanRequest = <
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   T extends ContentResponseType<any> | ContentsResponseType<any>
 >(
-  responseText: string
+  responseText: string,
 ): ErrorResponseType | T => {
   if (!isStringJson(responseText)) {
     // this occurs when the endpoint don't exits or server is down
@@ -140,7 +137,7 @@ export const cleanRequest = <
       return response;
     }
   }
-
+  
   const response: ErrorResponseType = {
     success: false,
     message: 'no valid response',
@@ -152,7 +149,7 @@ export const cleanRequest = <
       },
     ],
   };
-
+  
   console.error({
     message: 'success false on cleaning request',
     responseText,

@@ -1,16 +1,15 @@
-import { useId } from 'react';
 import DatePicker from 'react-datepicker';
 import { Props } from './InputDate.types';
 
 export default function InputDate({
-  label,
-  value,
-  onChange,
-  filterTime,
-  filterDate,
-}: Props) {
-  const id = useId();
-
+                                    // label,
+                                    value,
+                                    onChange,
+                                    filterTime,
+                                    filterDate,
+                                  }: Props) {
+  // const id = useId();
+  
   return (
     <div className="flex flex-col w-full text-white">
       {/* <label className="text-sm mb-0.5 mb-2 text-accent-100" htmlFor={id}>

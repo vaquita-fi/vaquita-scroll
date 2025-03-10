@@ -12,30 +12,30 @@ interface IButtonComponent {
   style?: CSSProperties;
 }
 
-const getButtonStyles = (type: string) => {
-  switch (type) {
-    case 'primary':
-      return 'bg-primary-200 text-black hover:bg-primary-100';
-    case 'secondary':
-      return 'bg-bg-200 text-white hover:bg-bg-300';
-    case 'outline':
-      return 'border border-accent-200 text-accent-200 hover:bg-accent-100';
-    case 'outline-primary':
-      return 'border border-primary-100 text-primary-200 hover:bg-primary-100 hover:text-accent-100';
-    case 'danger':
-      return 'border border-error-red text-error-red hover:bg-error-red hover:text-white';
-    case 'disabled':
-      return 'bg-accent-200 text-black cursor-not-allowed';
-    case 'info':
-      return 'border border-primary-200 text-white hover:bg-primary-200 hover:text-white';
-    case 'success':
-      return 'bg-success-green text-white hover:bg-[#00a87d]';
-    case 'muted':
-      return 'border border-accent-200 text-accent-200 ';
-    default:
-      return 'bg-gray-200 text-black border-gray-400 hover:bg-gray-300';
-  }
-};
+// const getButtonStyles = (type: string) => {
+//   switch (type) {
+//     case 'primary':
+//       return 'bg-primary-200 text-black hover:bg-primary-100';
+//     case 'secondary':
+//       return 'bg-bg-200 text-white hover:bg-bg-300';
+//     case 'outline':
+//       return 'border border-accent-200 text-accent-200 hover:bg-accent-100';
+//     case 'outline-primary':
+//       return 'border border-primary-100 text-primary-200 hover:bg-primary-100 hover:text-accent-100';
+//     case 'danger':
+//       return 'border border-error-red text-error-red hover:bg-error-red hover:text-white';
+//     case 'disabled':
+//       return 'bg-accent-200 text-black cursor-not-allowed';
+//     case 'info':
+//       return 'border border-primary-200 text-white hover:bg-primary-200 hover:text-white';
+//     case 'success':
+//       return 'bg-success-green text-white hover:bg-[#00a87d]';
+//     case 'muted':
+//       return 'border border-accent-200 text-accent-200 ';
+//     default:
+//       return 'bg-gray-200 text-black border-gray-400 hover:bg-gray-300';
+//   }
+// };
 
 const getSizeStyles = (size: 'small' | 'medium' | 'large') => {
   switch (size) {

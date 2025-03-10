@@ -2,7 +2,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import React from 'react';
 import { AddressType, GroupResponseDTO } from '../../types';
 import { VaquitaParachute } from '../icons';
-import { LoadingSpinner } from '../loadingSpinner';
+import { LoadingBackdropSpinner } from '../loadingSpinner';
 import { GroupCard } from './GroupCard';
 import { GroupViewModal } from './GroupViewModal';
 
@@ -22,7 +22,7 @@ export const ListGroups = ({
   const searchParams = useSearchParams();
   
   const groupId = searchParams.get('groupId');
-  console.log({ groups, groupId });
+  
   return (
     <>
       {groupId && address && (
@@ -36,7 +36,7 @@ export const ListGroups = ({
           }}
         />
       )}
-      {loading && <LoadingSpinner />}
+      {loading && <LoadingBackdropSpinner />}
       {isEmpty && (
         <div className="flex flex-col items-center justify-center py-8 h-3/4">
           <VaquitaParachute />
@@ -85,7 +85,7 @@ export const ListGroups = ({
                     crypto={crypto}
                     name={name}
                     period={period}
-                    status={status}
+                    status={myGroups ? status : undefined}
                     onClick={() => {
                       const params = new URLSearchParams(searchParams);
                       params.set('groupId', id);
