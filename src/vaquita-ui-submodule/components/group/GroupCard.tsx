@@ -37,10 +37,12 @@ export function GroupCard(props: Props) {
     <div className="flex flex-col justify-between style-stand-out style-border px-5 pt-4 pb-6 rounded-lg gap-2">
       <div className="flex justify-between text-lg">
         <p className="text-2xl font-bold">{name}</p>
-        <div className="flex gap-1 items-center">
-          <div className={'style-border w-[20px] h-[20px] rounded-full ' + (status === GroupStatus.ACTIVE ? 'bg-success' : status === GroupStatus.PENDING ? 'bg-warning' : 'bg-opaque')} />
-          <p className="capitalize">{status}</p>
-        </div>
+        {status && (
+          <div className="flex gap-1 items-center">
+            <div className={'style-border w-[20px] h-[20px] rounded-full ' + (status === GroupStatus.ACTIVE ? 'bg-success' : status === GroupStatus.PENDING ? 'bg-warning' : 'bg-opaque')} />
+            <p className="capitalize">{status}</p>
+          </div>
+        )}
       </div>
       <div className="flex flex-col">
         <div className="flex justify-between text-lg">

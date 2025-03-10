@@ -36,7 +36,8 @@ export const GroupViewPage = ({
     joinGroup,
     disjoinGroup,
     depositGroupCollateral,
-    withdrawalGroupFunds,
+    withdrawalGroupCollateral,
+    withdrawalGroupInterest,
     withdrawalGroupEarnedRound,
   } = useGroup();
   const {
@@ -162,7 +163,8 @@ export const GroupViewPage = ({
         throw new Error('transaction error');
       }
       const amount = group.collateralAmount;
-      await withdrawalGroupFunds(group.id, address, tx, amount);
+      await withdrawalGroupCollateral(group.id, address, tx, amount);
+      await withdrawalGroupInterest(group.id, address, tx, 0);
       await refetch();
       showNotification(
         'Withdrawal successful! Your funds has been withdrawn.',
@@ -236,6 +238,7 @@ export const GroupViewPage = ({
               <Button
                 label="Join and deposit collateral"
                 size="large"
+                className="style-primary-button"
                 onClick={handleDepositCollateral}
               />
             )}

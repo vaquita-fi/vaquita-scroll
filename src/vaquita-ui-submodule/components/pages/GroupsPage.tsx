@@ -1,6 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
+import { useSearchParams } from 'next/navigation';
 import React, { useState } from 'react';
 import { RE_FETCH_INTERVAL } from '../../constants';
 import { useGroup } from '../../hooks';
@@ -22,8 +23,12 @@ export const GroupsPage = ({ address }: { address?: AddressType }) => {
     completed: false,
   });
   const { getGroups } = useGroup();
+  const searchParams = useSearchParams();
+  
+  const groupId = searchParams.get('groupId');
   const { isPending, isLoading, data } = useQuery({
     refetchInterval: RE_FETCH_INTERVAL,
+    enabled: !groupId,
     queryKey: [ 'groups', filters, address ],
     queryFn: () =>
       getGroups({
