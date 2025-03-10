@@ -1,7 +1,7 @@
-import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
-import React from "react";
-import { Button } from "../buttons";
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import React from 'react';
+import { Button } from '../buttons';
 
 const Left = () => (
   <svg
@@ -17,20 +17,20 @@ const Left = () => (
     />
   </svg>
 );
+
 export const TabTitleHeader = ({ text }: { text: string }) => {
   const router = useRouter();
-  const pathname = usePathname();
-
+  
   const handleBack = () => {
     router.back();
   };
-
+  
   return (
     <div className="text-primary-200 text-4xl text-center flex justify-between items-center h-20 min-h-20">
       <Button
         label={<Left />}
         className="style-primary-button"
-        style={{ borderRadius: "50%", width: 34, height: 34 }}
+        style={{ borderRadius: '50%', width: 34, height: 34 }}
         onClick={handleBack}
       />
       <p className="text-2xl font-bold flex-1 text-center text-black">{text}</p>

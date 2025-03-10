@@ -1,23 +1,13 @@
-import { getRelativeTime } from "@/vaquita-ui-submodule/helpers";
-import React from "react";
-import { GroupCrypto, GroupStatus } from "../../types";
-import { Summary } from "../Summary";
-import {
-  DateOutlineIcon,
-  LockOutlineIcon,
-  PeopleOutlineIcon,
-  RenewOutlineIcon,
-} from "../icons";
+import React from 'react';
+import { GroupCrypto, GroupStatus } from '../../types';
+import { DateOutlineIcon, LockOutlineIcon, PeopleOutlineIcon, RenewOutlineIcon } from '../icons';
 
 export const GroupSummary = ({
-  crypto,
-  name,
-  amount,
-  totalMembers,
-  period,
-  startsOnTimestamp,
-  status,
-}: {
+                               crypto,
+                               amount,
+                               totalMembers,
+                               period,
+                             }: {
   crypto: GroupCrypto;
   name: string;
   amount: number;
@@ -27,7 +17,7 @@ export const GroupSummary = ({
   status?: GroupStatus;
 }) => {
   const collateralAmount = amount * totalMembers;
-
+  
   return (
     <div className="flex flex-col gap-2">
       <div className="flex justify-between items-center">

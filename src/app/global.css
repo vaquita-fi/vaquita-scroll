@@ -34,3 +34,7 @@ div[data-rk] {
         }
     }
 }
+
+div[role="dialog"] {
+    padding-bottom: 0 !important;
+}
