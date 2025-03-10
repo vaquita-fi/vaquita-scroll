@@ -12,9 +12,8 @@ export enum GroupCrypto {
 
 export enum GroupPeriod {
   MONTHLY = 'monthly',
-  WEEKLY = 'weekly', 
+  WEEKLY = 'weekly',
   DAILY = 'daily',
-  
 }
 
 export interface GroupMember {

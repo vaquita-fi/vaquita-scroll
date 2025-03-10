@@ -1,13 +1,8 @@
-"use client";
+'use client';
 
-import { GroupCrypto, GroupStatus } from "../../types";
-import { Button } from "../buttons";
-import {
-  DateOutlineIcon,
-  LockOutlineIcon,
-  PeopleOutlineIcon,
-  RenewOutlineIcon,
-} from "../icons";
+import { GroupCrypto, GroupPeriod, GroupStatus } from '../../types';
+import { Button } from '../buttons';
+import { DateOutlineIcon, LockOutlineIcon, PeopleOutlineIcon, RenewOutlineIcon } from '../icons';
 
 interface Props {
   id: string;
@@ -17,7 +12,7 @@ interface Props {
   collateralAmount: number;
   totalMembers: number;
   slots: number;
-  period: "monthly" | "weekly" | "daily";
+  period: GroupPeriod;
   startsOnTimestamp: number;
   status: GroupStatus;
   onBack: () => void;
@@ -63,37 +58,37 @@ export function GroupHeader(props: Props) {
     crypto,
     onBack,
   } = props;
-
+  
   return (
     <div className="flex flex-col justify-between style-stand-out style-border px-5 pt-4 pb-6 rounded-lg gap-2">
       <div className="flex ">
         <Button
           label={<Left />}
           className="style-primary-button"
-          style={{ borderRadius: "50%", width: 34, height: 34 }}
+          style={{ borderRadius: '50%', width: 34, height: 34 }}
           onClick={onBack}
         />
         <p className="text-2xl font-bold flex-1 text-center">{name}</p>
         <Button
           label={<Share />}
           className="style-primary-button"
-          style={{ borderRadius: "50%", width: 34, height: 34 }}
+          style={{ borderRadius: '50%', width: 34, height: 34 }}
           onClick={() => {
             const url = window.location.href;
             const message = `It’s time to save with Vaquita! Join the ${name} group. ${url}`;
-
+            
             if (navigator.share) {
               navigator
                 .share({
-                  title: "Vaquita Group",
+                  title: 'Vaquita Group',
                   text: message,
                   url,
                 })
-                .then(() => console.log("Shared successfully"))
-                .catch((error) => console.error("Error sharing: ", error));
+                .then(() => console.log('Shared successfully'))
+                .catch((error) => console.error('Error sharing: ', error));
             } else {
               const fallbackUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
-              window.open(fallbackUrl, "_blank");
+              window.open(fallbackUrl, '_blank');
             }
           }}
         />
