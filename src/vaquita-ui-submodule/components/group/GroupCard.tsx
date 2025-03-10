@@ -1,8 +1,13 @@
-'use client';
+"use client";
 
-import { GroupCrypto, GroupStatus } from '../../types';
-import { Button } from '../buttons';
-import { DateOutlineIcon, LockOutlineIcon, PeopleOutlineIcon, RenewOutlineIcon } from '../icons';
+import { GroupCrypto, GroupStatus } from "../../types";
+import { Button } from "../buttons";
+import {
+  DateOutlineIcon,
+  LockOutlineIcon,
+  PeopleOutlineIcon,
+  RenewOutlineIcon,
+} from "../icons";
 
 interface Props {
   id: string;
@@ -12,14 +17,13 @@ interface Props {
   collateralAmount: number;
   totalMembers: number;
   slots: number;
-  period: 'monthly' | 'weekly' | 'all';
+  period: "monthly" | "weekly" | "daily";
   startsOnTimestamp: number;
   status?: GroupStatus;
   onClick?: (groupId: string) => void;
 }
 
 export function GroupCard(props: Props) {
-  
   const {
     name,
     amount,
@@ -32,14 +36,23 @@ export function GroupCard(props: Props) {
     onClick,
     status,
   } = props;
-  
+
   return (
     <div className="flex flex-col justify-between style-stand-out style-border px-5 pt-4 pb-6 rounded-lg gap-2">
       <div className="flex justify-between text-lg">
         <p className="text-2xl font-bold">{name}</p>
         {status && (
           <div className="flex gap-1 items-center">
-            <div className={'style-border w-[20px] h-[20px] rounded-full ' + (status === GroupStatus.ACTIVE ? 'bg-success' : status === GroupStatus.PENDING ? 'bg-warning' : 'bg-opaque')} />
+            <div
+              className={
+                "style-border w-[20px] h-[20px] rounded-full " +
+                (status === GroupStatus.ACTIVE
+                  ? "bg-success"
+                  : status === GroupStatus.PENDING
+                    ? "bg-warning"
+                    : "bg-opaque")
+              }
+            />
             <p className="capitalize">{status}</p>
           </div>
         )}
