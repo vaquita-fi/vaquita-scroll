@@ -120,7 +120,7 @@ export const GroupFiltersHead = ({ withStatus, filters, setFilters, withCreateGr
   } = useDisclosure();
   
   const toggleCheckbox = (key: keyof GroupFilters) => {
-    setFilters((prev) => ({ ...prev, [key]: !prev[key] }));
+    setFilters((prev) => ({ ...prev, pending: false, active: false, completed: false, [key]: !prev[key] }));
   };
   
   return (
