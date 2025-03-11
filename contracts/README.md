@@ -2,9 +2,19 @@
 
 Vaquita is a smart contract implementation of a ROSCA (Rotating Savings and Credit Association) with yield generation through Aave. It allows a group of players to pool funds together, take turns receiving the pooled amount, and earn interest on their locked collateral.
 
+### Architecture
+
+Vaquita has two implementations:
+
+1. **VaquitaL1**: For deployment on L1 networks (Ethereum, Sepolia) using Aave V3's standard Pool interface
+2. **VaquitaL2**: For deployment on L2 networks (Scroll, Scroll Sepolia) using Aave V3's optimized L2Pool interface
+
+Both implementations inherit from a common `VaquitaBase` contract that contains the core ROSCA functionality.
+
 ### New Features
 
 - **Aave Integration**: Funds are deposited into Aave to generate yield while locked in the contract
+- **L2 Optimization**: Optimized for L2 networks with reduced calldata size using Aave's L2 interfaces
 - **Incentive Mechanism**: Players who pay on time receive more interest, while late payers are penalized
 - **Random Position Assignment**: Player positions are randomly assigned using block data
 - **Cutoff Dates**: Each turn has a specific cutoff date based on the frequency of payments
@@ -21,7 +31,7 @@ Vaquita is a smart contract implementation of a ROSCA (Rotating Savings and Cred
 7. When the round completes, players can withdraw their collateral plus interest
 8. Interest distribution is based on payment behavior - on-time payments are rewarded, late payments are penalized
 
-### Deployment to Sepolia
+### Deployment to Sepolia (L1)
 
 To deploy the contract to the Sepolia testnet:
 
@@ -32,7 +42,21 @@ PRIVATE_KEY=your_private_key_here
 
 2. Deploy using Foundry:
 ```shell
-$ forge script script/DeployVaquitaSepolia.s.sol:DeployVaquitaSepolia --rpc-url sepolia --broadcast --verify
+$ forge script script/DeploySepolia.s.sol:DeploySepolia --rpc-url sepolia --broadcast --verify
+```
+
+### Deployment to Scroll Sepolia (L2)
+
+To deploy the contract to the Scroll Sepolia testnet:
+
+1. Create a `.env` file with your private key:
+```
+PRIVATE_KEY=your_private_key_here
+```
+
+2. Deploy using Foundry:
+```shell
+$ forge script script/DeployScrollSepolia.s.sol:DeployScrollSepolia --rpc-url scroll-sepolia --broadcast --verify
 ```
 
 ### Testing
@@ -101,7 +125,7 @@ $ anvil
 ### Deploy
 
 ```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
+$ forge script script/Deploy.s.sol:Deploy --rpc-url <your_rpc_url> --private-key <your_private_key>
 ```
 
 ### Cast

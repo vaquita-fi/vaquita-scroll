@@ -2,7 +2,7 @@
 pragma solidity ^0.8.20;
 
 import "forge-std/Test.sol";
-import "../src/Vaquita.sol";
+import "../src/VaquitaL1.sol";
 import "../src/interfaces/IAave.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
@@ -86,8 +86,8 @@ contract TestUSDC is ERC20 {
 }
 
 // Test contract to expose internal functions for testing
-contract VaquitaTestHelper is Vaquita {
-    constructor(address _aavePool) Vaquita(_aavePool) {}
+contract VaquitaL1TestHelper is VaquitaL1 {
+    constructor(address _aavePool) VaquitaL1(_aavePool) {}
     
     // Expose the internal _getRandomPosition function for testing
     function getRandomPosition(uint numberOfPlayers, uint roundId) public view returns (uint) {
@@ -95,8 +95,8 @@ contract VaquitaTestHelper is Vaquita {
     }
 }
 
-contract VaquitaTest is Test {
-    Vaquita public vaquita;
+contract VaquitaL1Test is Test {
+    VaquitaL1 public vaquita;
     TestUSDC public token;
     MockAavePool public aavePool;
     MockAToken public aToken;
@@ -116,8 +116,8 @@ contract VaquitaTest is Test {
         aavePool = new MockAavePool();
         aToken = new MockAToken(address(token));
         
-        // Deploy Vaquita with mock Aave pool
-        vaquita = new Vaquita(address(aavePool));
+        // Deploy VaquitaL1 with mock Aave pool
+        vaquita = new VaquitaL1(address(aavePool));
         
         // Register the token with its aToken
         vaquita.registerAToken(address(token), address(aToken));
@@ -144,14 +144,14 @@ contract VaquitaTest is Test {
         vm.prank(alice);
         vaquita.initializeRound(roundId, paymentAmount, IERC20(address(token)), numberOfPlayers, frequencyOfPayments);
         
-        (uint _paymentAmount, address _tokenAddress, uint _numberOfPlayers, , uint _availableSlots, uint _frequencyOfPayments, Vaquita.RoundStatus _status) = vaquita.getRoundInfo(roundId);
+        (uint _paymentAmount, address _tokenAddress, uint _numberOfPlayers, , uint _availableSlots, uint _frequencyOfPayments, VaquitaBase.RoundStatus _status) = vaquita.getRoundInfo(roundId);
         
         assertEq(_paymentAmount, paymentAmount);
         assertEq(_tokenAddress, address(token));
         assertEq(_numberOfPlayers, numberOfPlayers);
         assertEq(_availableSlots, numberOfPlayers - 1);
         assertEq(_frequencyOfPayments, frequencyOfPayments);
-        assertEq(uint(_status), uint(Vaquita.RoundStatus.Pending));
+        assertEq(uint(_status), uint(VaquitaBase.RoundStatus.Pending));
         
         // Check that alice's position was assigned
         uint alicePosition = vaquita.getPlayerPosition(roundId, alice);
@@ -165,7 +165,7 @@ contract VaquitaTest is Test {
         vm.prank(bob);
         vaquita.addPlayer(roundId);
         
-        (, , , , uint availableSlots, , Vaquita.RoundStatus status) = vaquita.getRoundInfo(roundId);
+        (, , , , uint availableSlots, , VaquitaBase.RoundStatus status) = vaquita.getRoundInfo(roundId);
         assertEq(availableSlots, 1);
         
         vm.prank(charlie);
@@ -173,7 +173,7 @@ contract VaquitaTest is Test {
         
         (, , , , availableSlots, , status) = vaquita.getRoundInfo(roundId);
         assertEq(availableSlots, 0);
-        assertEq(uint(status), uint(Vaquita.RoundStatus.Active));
+        assertEq(uint(status), uint(VaquitaBase.RoundStatus.Active));
     }
 
     function testPayTurn() public {
@@ -215,8 +215,8 @@ contract VaquitaTest is Test {
         vaquita.payTurn(roundId);
         
         // Check that the round is completed
-        (, , , , , , Vaquita.RoundStatus status) = vaquita.getRoundInfo(roundId);
-        assertEq(uint(status), uint(Vaquita.RoundStatus.Completed));
+        (, , , , , , VaquitaBase.RoundStatus status) = vaquita.getRoundInfo(roundId);
+        assertEq(uint(status), uint(VaquitaBase.RoundStatus.Completed));
     }
 
     function testWithdrawTurn() public {
@@ -339,7 +339,7 @@ contract VaquitaTest is Test {
     
     function testGetRandomPosition() public {
         // Create a test helper contract
-        VaquitaTestHelper testHelper = new VaquitaTestHelper(address(aavePool));
+        VaquitaL1TestHelper testHelper = new VaquitaL1TestHelper(address(aavePool));
         
         // Test parameters
         uint testNumberOfPlayers = 5;
@@ -364,7 +364,7 @@ contract VaquitaTest is Test {
     
     function testGetRandomPositionDistribution() public {
         // Create a test helper contract
-        VaquitaTestHelper testHelper = new VaquitaTestHelper(address(aavePool));
+        VaquitaL1TestHelper testHelper = new VaquitaL1TestHelper(address(aavePool));
         
         // Test parameters
         uint testNumberOfPlayers = 5;
@@ -414,4 +414,4 @@ contract VaquitaTest is Test {
         // Should return 0 (since position 1 is the player's own position)
         assertEq(vaquita._findNextTurn(0, 3, position), 0);
     }
-}
+} 

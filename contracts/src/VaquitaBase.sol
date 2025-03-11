@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "./interfaces/IAave.sol";
 
-contract Vaquita {
+abstract contract VaquitaBase {
     using SafeERC20 for IERC20;
 
     enum RoundStatus { Pending, Active, Completed }
@@ -41,9 +41,6 @@ contract Vaquita {
     }
 
     mapping(uint => Round) public _rounds;
-    
-    // Aave Pool contract for yield generation
-    IPool public immutable aavePool;
     
     // Mapping from token to aToken
     mapping(address => address) public tokenToAToken;
@@ -86,20 +83,8 @@ contract Vaquita {
         _;
     }
 
-    constructor(address _aavePool) {
-        aavePool = IPool(_aavePool);
+    constructor() {
         owner = msg.sender;
-    }
-
-    function registerAToken(address token, address aToken) external onlyOwner {
-        // Verify that aToken's underlying asset is the token
-        IAToken aTokenContract = IAToken(aToken);
-        if (aTokenContract.UNDERLYING_ASSET_ADDRESS() != token) {
-            revert InvalidAToken();
-        }
-        
-        tokenToAToken[token] = aToken;
-        emit ATokenRegistered(token, aToken);
     }
 
     function initializeRound(
@@ -299,7 +284,7 @@ contract Vaquita {
                 IAToken aToken = IAToken(aTokenAddress);
                 uint aTokenBalance = aToken.balanceOf(address(this));
                 if (aTokenBalance > 0) {
-                    aavePool.withdraw(address(round.token), aTokenBalance, address(this));
+                    _withdrawFromAave(round.token, aTokenBalance);
                 }
             }
             
@@ -365,41 +350,10 @@ contract Vaquita {
         return uint(randomSeed % numberOfPlayers);
     }
 
-    function _supplyToAave(IERC20 token, uint amount) internal {
-        address aTokenAddress = tokenToAToken[address(token)];
-        if (aTokenAddress != address(0)) {
-            // Approve Aave pool to spend the tokens
-            SafeERC20.forceApprove(token, address(aavePool), amount);
-            
-            // Supply to Aave
-            aavePool.supply(address(token), amount, address(this), 0);
-        }
-    }
-
-    function _withdrawFromAave(IERC20 token, uint amount) internal {
-        address aTokenAddress = tokenToAToken[address(token)];
-        if (aTokenAddress != address(0)) {
-            // Withdraw from Aave
-            aavePool.withdraw(address(token), amount, address(this));
-        }
-    }
-
-    function _calculateTotalInterest(IERC20 token, uint principalAmount) internal view returns (uint) {
-        address aTokenAddress = tokenToAToken[address(token)];
-        if (aTokenAddress == address(0)) {
-            return 0; // No aToken registered for this token
-        }
-        
-        // Get current aToken balance
-        IAToken aToken = IAToken(aTokenAddress);
-        uint aTokenBalance = aToken.balanceOf(address(this));
-        
-        // Interest is the difference between aToken balance and principal
-        if (aTokenBalance > principalAmount) {
-            return aTokenBalance - principalAmount;
-        }
-        return 0;
-    }
+    // Abstract functions to be implemented by L1 and L2 versions
+    function _supplyToAave(IERC20 token, uint amount) internal virtual;
+    function _withdrawFromAave(IERC20 token, uint amount) internal virtual;
+    function _calculateTotalInterest(IERC20 token, uint principalAmount) internal view virtual returns (uint);
 
     // Mapping to store pre-calculated interest amounts for each player
     mapping(uint => mapping(address => uint)) private _playerInterestAmounts;
@@ -510,4 +464,4 @@ contract Vaquita {
         emit OwnershipTransferred(owner, newOwner);
         owner = newOwner;
     }
-}
+} 

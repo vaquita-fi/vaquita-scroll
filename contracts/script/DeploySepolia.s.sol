@@ -2,9 +2,9 @@
 pragma solidity ^0.8.20;
 
 import "forge-std/Script.sol";
-import "../src/Vaquita.sol";
+import "../src/VaquitaL1.sol";
 
-contract DeployVaquitaSepolia is Script {
+contract DeploySepolia is Script {
     // Sepolia Aave v3 Pool address
     address AAVE_POOL_SEPOLIA = 0x6Ae43d3271ff6888e7Fc43Fd7321a503ff738951;
     
@@ -19,14 +19,17 @@ contract DeployVaquitaSepolia is Script {
         
         vm.startBroadcast(deployerPrivateKey);
         
-        // Deploy Vaquita with Aave V3 Pool address
-        Vaquita vaquita = new Vaquita(AAVE_POOL_SEPOLIA);
+        // Deploy VaquitaL1 with Aave V3 Pool address
+        VaquitaL1 vaquita = new VaquitaL1(AAVE_POOL_SEPOLIA);
         
         // Register USDC token with its corresponding aToken
         vaquita.registerAToken(USDC_TOKEN_SEPOLIA, AUSDC_TOKEN_SEPOLIA);
         
         vm.stopBroadcast();
         
-        console.log("Vaquita deployed at:", address(vaquita));
+        console.log("VaquitaL1 deployed at:", address(vaquita));
+        console.log("Using Pool at:", AAVE_POOL_SEPOLIA);
+        console.log("Using USDC at:", USDC_TOKEN_SEPOLIA);
+        console.log("Using aUSDC at:", AUSDC_TOKEN_SEPOLIA);
     }
 }
