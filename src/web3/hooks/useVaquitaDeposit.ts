@@ -42,7 +42,7 @@ export const useVaquitaDeposit = () => {
       console.info('approveTokens', { hash });
       const receipt = await client.waitForTransactionReceipt({
         hash,
-        confirmations: 5,
+        confirmations: 1,
       });
       console.info('approveTokens', { receipt });
       return true;
@@ -63,9 +63,10 @@ export const useVaquitaDeposit = () => {
       const numberOfPlayers = BigInt(group.totalMembers);
       const frequencyOfTurns = convertFrequencyToTimestamp(group.period);
       const tokenMintAddress = USDC_CONTRACT;
+      const collateralAmount = paymentAmount * (numberOfPlayers - BigInt(1));
       
       try {
-        const approved = await approveTokens(paymentAmount * BigInt(group.totalMembers));
+        const approved = await approveTokens(collateralAmount);
         if (!approved) {
           throw new Error('Token approval failed');
         }
@@ -85,7 +86,7 @@ export const useVaquitaDeposit = () => {
         console.info('depositCollateralAndCreate', { hash });
         const receipt = await client.waitForTransactionReceipt({
           hash,
-          confirmations: 5,
+          confirmations: 1,
         });
         console.info('depositCollateralAndCreate', { receipt });
         return { tx: hash, receipt, error: null, success: true };
@@ -105,9 +106,10 @@ export const useVaquitaDeposit = () => {
       console.info('depositCollateralAndJoin', { group });
       const groupId = BigInt(`0x${group.id}`);
       const paymentAmount = BigInt(group.amount * USDC_DECIMALS);
+      const collateralAmount = paymentAmount * (BigInt(group.totalMembers) - BigInt(1));
       
       try {
-        const approved = await approveTokens(paymentAmount * BigInt(group.totalMembers));
+        const approved = await approveTokens(collateralAmount);
         if (!approved) {
           throw new Error('Token approval failed');
         }
@@ -121,7 +123,7 @@ export const useVaquitaDeposit = () => {
         console.info('depositCollateralAndJoin', { hash });
         const receipt = await client.waitForTransactionReceipt({
           hash,
-          confirmations: 5,
+          confirmations: 1,
         });
         console.info('depositCollateralAndJoin', { receipt });
         return { tx: hash, receipt, error: null, success: true };
@@ -142,10 +144,11 @@ export const useVaquitaDeposit = () => {
       console.info('depositRoundPayment', { group, turn });
       const groupId = BigInt(`0x${group.id}`);
       const paymentAmount = BigInt(group.amount * USDC_DECIMALS);
+      const collateralAmount = paymentAmount * (BigInt(group.totalMembers) - BigInt(1));
       
       try {
         // First, approve the contract to spend tokens
-        const approved = await approveTokens(paymentAmount);
+        const approved = await approveTokens(collateralAmount);
         if (!approved) {
           throw new Error('Token approval failed');
         }
@@ -160,7 +163,7 @@ export const useVaquitaDeposit = () => {
         console.info('depositRoundPayment', { hash });
         const receipt = await client.waitForTransactionReceipt({
           hash,
-          confirmations: 5,
+          confirmations: 1,
         });
         console.info('depositRoundPayment', { receipt });
         return { tx: hash, error: null, success: true };
