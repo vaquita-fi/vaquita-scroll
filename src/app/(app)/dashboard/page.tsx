@@ -9,7 +9,7 @@ import { useAccount } from 'wagmi';
 
 const Page = () => {
   const { address } = useAccount();
-  
+
   if (!address) {
     return (
       <>
@@ -27,7 +27,7 @@ const Page = () => {
       </>
     );
   }
-  
+
   return (
     <>
       <MainHeader
@@ -44,7 +44,6 @@ const Page = () => {
           <MyWalletCard />
         </div> */}
         <Statistics />
-        {/*<Activity />*/}
       </div>
     </>
   );
