@@ -23,11 +23,11 @@ export const viewport = {
 };
 
 export const metadata: Metadata = {
-  title: 'Onchain App Template',
-  description: 'Built with OnchainKit',
+  title: 'Vaquita.fi',
+  description: 'El poder de Ahorrar en comunidad',
   openGraph: {
-    title: 'Onchain App Template',
-    description: 'Built with OnchainKit',
+    title: 'Vaquita.fi',
+    description: 'El poder de Ahorrar en comunidad',
     images: [ `${NEXT_PUBLIC_URL}/vibes/vibes-19.png` ],
   },
 };
