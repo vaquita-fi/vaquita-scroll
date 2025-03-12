@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.25;
 
 import "forge-std/Test.sol";
 import "../src/VaquitaL2.sol";
@@ -234,14 +234,14 @@ contract VaquitaL2Test is Test {
         vm.prank(alice);
         vaquita.initializeRound(roundId, paymentAmount, IERC20(address(token)), numberOfPlayers, frequencyOfPayments);
         
-        (uint _paymentAmount, address _tokenAddress, uint _numberOfPlayers, , uint _availableSlots, uint _frequencyOfPayments, VaquitaBase.RoundStatus _status) = vaquita.getRoundInfo(roundId);
+        (uint _paymentAmount, address _tokenAddress, uint _numberOfPlayers, , uint _availableSlots, uint _frequencyOfPayments, VaquitaL2.RoundStatus _status) = vaquita.getRoundInfo(roundId);
         
         assertEq(_paymentAmount, paymentAmount);
         assertEq(_tokenAddress, address(token));
         assertEq(_numberOfPlayers, numberOfPlayers);
         assertEq(_availableSlots, numberOfPlayers - 1);
         assertEq(_frequencyOfPayments, frequencyOfPayments);
-        assertEq(uint(_status), uint(VaquitaBase.RoundStatus.Pending));
+        assertEq(uint(_status), uint(VaquitaL2.RoundStatus.Pending));
         
         // Check that alice's position was assigned
         uint alicePosition = vaquita.getPlayerPosition(roundId, alice);
@@ -259,7 +259,7 @@ contract VaquitaL2Test is Test {
         vm.prank(bob);
         vaquita.addPlayer(roundId);
         
-        (, , , , uint availableSlots, , VaquitaBase.RoundStatus status) = vaquita.getRoundInfo(roundId);
+        (, , , , uint availableSlots, , VaquitaL2.RoundStatus status) = vaquita.getRoundInfo(roundId);
         assertEq(availableSlots, 1);
         
         vm.prank(charlie);
@@ -267,7 +267,7 @@ contract VaquitaL2Test is Test {
         
         (, , , , availableSlots, , status) = vaquita.getRoundInfo(roundId);
         assertEq(availableSlots, 0);
-        assertEq(uint(status), uint(VaquitaBase.RoundStatus.Active));
+        assertEq(uint(status), uint(VaquitaL2.RoundStatus.Active));
         
         // Verify L2Pool interaction
         uint expectedTotalLock = paymentAmount * (numberOfPlayers - 1) * numberOfPlayers;

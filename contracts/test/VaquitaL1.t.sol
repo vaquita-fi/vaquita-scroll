@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.25;
 
 import "forge-std/Test.sol";
 import "../src/VaquitaL1.sol";
@@ -144,14 +144,14 @@ contract VaquitaL1Test is Test {
         vm.prank(alice);
         vaquita.initializeRound(roundId, paymentAmount, IERC20(address(token)), numberOfPlayers, frequencyOfPayments);
         
-        (uint _paymentAmount, address _tokenAddress, uint _numberOfPlayers, , uint _availableSlots, uint _frequencyOfPayments, VaquitaBase.RoundStatus _status) = vaquita.getRoundInfo(roundId);
+        (uint _paymentAmount, address _tokenAddress, uint _numberOfPlayers, , uint _availableSlots, uint _frequencyOfPayments, VaquitaL1.RoundStatus _status) = vaquita.getRoundInfo(roundId);
         
         assertEq(_paymentAmount, paymentAmount);
         assertEq(_tokenAddress, address(token));
         assertEq(_numberOfPlayers, numberOfPlayers);
         assertEq(_availableSlots, numberOfPlayers - 1);
         assertEq(_frequencyOfPayments, frequencyOfPayments);
-        assertEq(uint(_status), uint(VaquitaBase.RoundStatus.Pending));
+        assertEq(uint(_status), uint(VaquitaL1.RoundStatus.Pending));
         
         // Check that alice's position was assigned
         uint alicePosition = vaquita.getPlayerPosition(roundId, alice);
@@ -165,7 +165,7 @@ contract VaquitaL1Test is Test {
         vm.prank(bob);
         vaquita.addPlayer(roundId);
         
-        (, , , , uint availableSlots, , VaquitaBase.RoundStatus status) = vaquita.getRoundInfo(roundId);
+        (, , , , uint availableSlots, , VaquitaL1.RoundStatus status) = vaquita.getRoundInfo(roundId);
         assertEq(availableSlots, 1);
         
         vm.prank(charlie);
@@ -173,7 +173,7 @@ contract VaquitaL1Test is Test {
         
         (, , , , availableSlots, , status) = vaquita.getRoundInfo(roundId);
         assertEq(availableSlots, 0);
-        assertEq(uint(status), uint(VaquitaBase.RoundStatus.Active));
+        assertEq(uint(status), uint(VaquitaL1.RoundStatus.Active));
     }
 
     function testPayTurn() public {
@@ -215,8 +215,8 @@ contract VaquitaL1Test is Test {
         vaquita.payTurn(roundId);
         
         // Check that the round is completed
-        (, , , , , , VaquitaBase.RoundStatus status) = vaquita.getRoundInfo(roundId);
-        assertEq(uint(status), uint(VaquitaBase.RoundStatus.Completed));
+        (, , , , , , VaquitaL1.RoundStatus status) = vaquita.getRoundInfo(roundId);
+        assertEq(uint(status), uint(VaquitaL1.RoundStatus.Completed));
     }
 
     function testWithdrawTurn() public {

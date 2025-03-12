@@ -9,7 +9,7 @@ Vaquita has two implementations:
 1. **VaquitaL1**: For deployment on L1 networks (Ethereum, Sepolia) using Aave V3's standard Pool interface
 2. **VaquitaL2**: For deployment on L2 networks (Scroll, Scroll Sepolia) using Aave V3's optimized L2Pool interface
 
-Both implementations inherit from a common `VaquitaBase` contract that contains the core ROSCA functionality.
+Each implementation contains the complete ROSCA functionality with specific adaptations for the respective network.
 
 ### New Features
 

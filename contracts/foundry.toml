@@ -4,7 +4,7 @@ out = "out"
 test = "test"
 libs = ["lib"]
 fs_permissions = [{ access = "read", path = "./" }]
-solc = "0.8.20"
+solc = "0.8.25"
 evm_version = 'paris'
 
 [rpc_endpoints]
