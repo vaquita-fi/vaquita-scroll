@@ -6,7 +6,6 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "./interfaces/IL2Pool.sol";
-import "./interfaces/IL2Encoder.sol";
 import "./interfaces/IAave.sol";
 
 /**
@@ -51,7 +50,7 @@ contract VaquitaL2Upgradeable is Initializable, OwnableUpgradeable {
     mapping(uint => Round) internal _rounds;
     
     // Mapping from token to aToken
-    mapping(address => address) public tokenToAToken;
+    mapping(address => address) public aTokens;
     
     // Protocol fees accumulated per token
     mapping(address => uint) public protocolFees;
@@ -62,11 +61,6 @@ contract VaquitaL2Upgradeable is Initializable, OwnableUpgradeable {
     // Aave L2Pool contract for yield generation
     IL2Pool public aavePool;
     
-    // L2Encoder for parameter encoding
-    IL2Encoder public l2Encoder;
-    
-    // Mapping from token to reserve ID
-    mapping(address => uint16) public tokenToReserveId;
 
     error RoundAlreadyExists();
     error RoundNotPending();
@@ -83,7 +77,6 @@ contract VaquitaL2Upgradeable is Initializable, OwnableUpgradeable {
     error InvalidAToken();
     error NotOwner();
     error ZeroAddress();
-    error InvalidReserveId();
 
     event RoundInitialized(uint indexed roundId, address initializer);
     event PlayerAdded(uint indexed roundId, address player, uint position);
@@ -93,7 +86,6 @@ contract VaquitaL2Upgradeable is Initializable, OwnableUpgradeable {
     event ATokenRegistered(address token, address aToken);
     event ProtocolFeeWithdrawn(address token, uint amount);
     // OwnershipTransferred event is already defined in OwnableUpgradeable
-    event ReserveIdRegistered(address token, uint16 reserveId);
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -103,32 +95,27 @@ contract VaquitaL2Upgradeable is Initializable, OwnableUpgradeable {
     /**
      * @dev Initializes the contract
      * @param _aavePool Address of the Aave L2Pool contract
-     * @param _l2Encoder Address of the L2Encoder contract
      */
-    function initialize(address _aavePool, address _l2Encoder) external initializer {
+    function initialize(address _aavePool) external initializer {
         __Ownable_init(msg.sender);
         aavePool = IL2Pool(_aavePool);
-        l2Encoder = IL2Encoder(_l2Encoder);
     }
 
     /**
-     * @dev Registers an aToken for a token with its reserve ID
+     * @dev Registers an aToken for a token
      * @param token Address of the token
      * @param aToken Address of the aToken
-     * @param reserveId Reserve ID of the token in Aave
      */
-    function registerAToken(address token, address aToken, uint16 reserveId) external onlyOwner {
+    function registerAToken(address token, address aToken) external onlyOwner {
         // Verify that aToken's underlying asset is the token
         IAToken aTokenContract = IAToken(aToken);
         if (aTokenContract.UNDERLYING_ASSET_ADDRESS() != token) {
             revert InvalidAToken();
         }
         
-        tokenToAToken[token] = aToken;
-        tokenToReserveId[token] = reserveId;
+        aTokens[token] = aToken;
         
         emit ATokenRegistered(token, aToken);
-        emit ReserveIdRegistered(token, reserveId);
     }
 
     /**
@@ -347,7 +334,7 @@ contract VaquitaL2Upgradeable is Initializable, OwnableUpgradeable {
             round.totalInterestEarned = _calculateTotalInterest(round.token, round.totalAmountLocked);
             
             // Withdraw all funds from Aave including interest
-            address aTokenAddress = tokenToAToken[address(round.token)];
+            address aTokenAddress = aTokens[address(round.token)];
             if (aTokenAddress != address(0)) {
                 IAToken aToken = IAToken(aTokenAddress);
                 uint aTokenBalance = aToken.balanceOf(address(this));
@@ -449,16 +436,19 @@ contract VaquitaL2Upgradeable is Initializable, OwnableUpgradeable {
      * @param amount Amount to supply
      */
     function _supplyToAave(IERC20 token, uint amount) internal {
-        address aTokenAddress = tokenToAToken[address(token)];
-        uint16 reserveId = tokenToReserveId[address(token)];
+        address aTokenAddress = aTokens[address(token)];
         
         if (aTokenAddress != address(0)) {
             // Approve Aave pool to spend the tokens
             SafeERC20.forceApprove(token, address(aavePool), amount);
             
-            // Encode parameters and supply to Aave
-            bytes32 args = l2Encoder.encodeSupplyParams(reserveId, amount, 0);
-            aavePool.supply(args);
+            // Supply to Aave
+            aavePool.supply(
+                address(token),
+                amount,
+                address(this), // onBehalfOf
+                0 // referralCode
+            );
         }
     }
 
@@ -468,13 +458,15 @@ contract VaquitaL2Upgradeable is Initializable, OwnableUpgradeable {
      * @param amount Amount to withdraw
      */
     function _withdrawFromAave(IERC20 token, uint amount) internal {
-        address aTokenAddress = tokenToAToken[address(token)];
-        uint16 reserveId = tokenToReserveId[address(token)];
+        address aTokenAddress = aTokens[address(token)];
         
         if (aTokenAddress != address(0)) {
-            // Encode parameters and withdraw from Aave
-            bytes32 args = l2Encoder.encodeWithdrawParams(reserveId, amount);
-            aavePool.withdraw(args);
+            // Withdraw from Aave
+            aavePool.withdraw(
+                address(token),
+                amount,
+                address(this) // to
+            );
         }
     }
 
@@ -485,7 +477,7 @@ contract VaquitaL2Upgradeable is Initializable, OwnableUpgradeable {
      * @return Total interest earned
      */
     function _calculateTotalInterest(IERC20 token, uint principalAmount) internal view returns (uint) {
-        address aTokenAddress = tokenToAToken[address(token)];
+        address aTokenAddress = aTokens[address(token)];
         if (aTokenAddress == address(0)) {
             return 0; // No aToken registered for this token
         }

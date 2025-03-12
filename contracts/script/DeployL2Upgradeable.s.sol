@@ -12,19 +12,16 @@ import {VaquitaL2ProxyAdmin} from "../src/VaquitaL2ProxyAdmin.sol";
  */
 contract DeployL2Upgradeable is Script {
     // Scroll Sepolia Aave v3 L2Pool address
-    address constant AAVE_L2POOL_SCROLL_SEPOLIA = vm.envAddress("L2_AAVE_POOL");
-    
-    // Scroll Sepolia Aave v3 L2Encoder address
-    address constant AAVE_L2ENCODER_SCROLL_SEPOLIA = vm.envAddress("L2_AAVE_ENCODER");
+    address immutable AAVE_L2POOL_SCROLL_SEPOLIA = vm.envAddress("L2_AAVE_POOL");
     
     // Scroll Sepolia USDC token address
-    address constant USDC_TOKEN_SCROLL_SEPOLIA = vm.envAddress("L2_USDC_TOKEN");
+    address immutable USDC_TOKEN_SCROLL_SEPOLIA = vm.envAddress("L2_USDC_TOKEN");
     
     // Scroll Sepolia aUSDC token address (Aave V3)
-    address constant AUSDC_TOKEN_SCROLL_SEPOLIA = vm.envAddress("L2_AUSDC_TOKEN");
+    address immutable AUSDC_TOKEN_SCROLL_SEPOLIA = vm.envAddress("L2_AUSDC_TOKEN");
     
     // Scroll Sepolia USDC reserve ID
-    uint16 constant USDC_RESERVE_ID_SCROLL_SEPOLIA = uint16(vm.envUint("L2_USDC_RESERVE_ID"));
+    uint16 immutable USDC_RESERVE_ID_SCROLL_SEPOLIA = uint16(vm.envUint("L2_USDC_RESERVE_ID"));
 
     function run() public returns (address proxy, address implementation, address proxyAdmin) {
         // Get deployer private key from environment
@@ -42,8 +39,7 @@ contract DeployL2Upgradeable is Script {
         // Get initialization data
         bytes memory initData = abi.encodeWithSelector(
             VaquitaL2Upgradeable.initialize.selector,
-            AAVE_L2POOL_SCROLL_SEPOLIA,
-            AAVE_L2ENCODER_SCROLL_SEPOLIA
+            AAVE_L2POOL_SCROLL_SEPOLIA
         );
         
         // Deploy proxy
@@ -56,11 +52,10 @@ contract DeployL2Upgradeable is Script {
         // Get the proxy as VaquitaL2Upgradeable for interaction
         VaquitaL2Upgradeable vaquitaL2 = VaquitaL2Upgradeable(address(vaquitaL2Proxy));
         
-        // Register USDC token with its corresponding aToken and reserve ID
+        // Register USDC token with its corresponding aToken
         vaquitaL2.registerAToken(
             USDC_TOKEN_SCROLL_SEPOLIA, 
-            AUSDC_TOKEN_SCROLL_SEPOLIA, 
-            USDC_RESERVE_ID_SCROLL_SEPOLIA
+            AUSDC_TOKEN_SCROLL_SEPOLIA
         );
         
         // End broadcast
@@ -71,7 +66,6 @@ contract DeployL2Upgradeable is Script {
         console.log("VaquitaL2ProxyAdmin deployed at:", address(admin));
         console.log("VaquitaL2Proxy deployed at:", address(vaquitaL2Proxy));
         console.log("Using L2Pool at:", AAVE_L2POOL_SCROLL_SEPOLIA);
-        console.log("Using L2Encoder at:", AAVE_L2ENCODER_SCROLL_SEPOLIA);
         console.log("Using USDC at:", USDC_TOKEN_SCROLL_SEPOLIA);
         console.log("Using aUSDC at:", AUSDC_TOKEN_SCROLL_SEPOLIA);
         console.log("Using USDC Reserve ID:", USDC_RESERVE_ID_SCROLL_SEPOLIA);

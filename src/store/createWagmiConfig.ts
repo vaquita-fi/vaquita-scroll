@@ -1,11 +1,8 @@
 'use client';
 
 import { createConfig, http } from 'wagmi';
-import * as viemChains from 'viem/chains';
-import { getChainByName } from '../web3/utils/crypto';
 import { metaMask } from 'wagmi/connectors';
-
-const network = getChainByName(viemChains, process.env.NEXT_PUBLIC_NETWORK!);
+import { scrollSepolia, sepolia } from 'wagmi/chains';
 
 export function createWagmiConfig(rpcUrl: string, projectId?: string) {
   // Keep this till we fully deprecated RK inside the template
@@ -14,13 +11,14 @@ export function createWagmiConfig(rpcUrl: string, projectId?: string) {
   }
 
   return createConfig({
-    chains: [network],
+    chains: [scrollSepolia, sepolia],
     connectors: [
       metaMask(),
     ],
     ssr: true,
     transports: {
-      [network.id]: http(rpcUrl),
+      [sepolia.id]: http(`https://eth-sepolia.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`),
+      [scrollSepolia.id]: http(`https://scroll-sepolia.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`),
     },
   });
 }

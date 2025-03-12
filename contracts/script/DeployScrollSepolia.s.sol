@@ -14,17 +14,12 @@ contract DeployScrollSepolia is Script {
     // Scroll Sepolia Aave v3 L2Pool address
     address constant AAVE_L2POOL_SCROLL_SEPOLIA = 0x48914C788295b5db23aF2b5F0B3BE775C4eA9440;
     
-    // Scroll Sepolia Aave v3 L2Encoder address
-    address constant AAVE_L2ENCODER_SCROLL_SEPOLIA = 0x3Bb33c67908D0d58F8d7349cBe726ff3b059e0fC;
-    
     // Scroll Sepolia USDC token address
     address constant USDC_TOKEN_SCROLL_SEPOLIA = 0x2C9678042D52B97D27f2bD2947F7111d93F3dD0D;
     
     // Scroll Sepolia aUSDC token address (Aave V3)
     address constant AUSDC_TOKEN_SCROLL_SEPOLIA = 0x6E4A1BcBd3C3038e6957207cadC1A17092DC7ba3;
     
-    // Scroll Sepolia USDC reserve ID
-    uint16 constant USDC_RESERVE_ID_SCROLL_SEPOLIA = 2;
 
     function run() public returns (address proxy, address implementation, address proxyAdmin) {
         // Get deployer private key from environment
@@ -42,8 +37,7 @@ contract DeployScrollSepolia is Script {
         // Get initialization data
         bytes memory initData = abi.encodeWithSelector(
             VaquitaL2Upgradeable.initialize.selector,
-            AAVE_L2POOL_SCROLL_SEPOLIA,
-            AAVE_L2ENCODER_SCROLL_SEPOLIA
+            AAVE_L2POOL_SCROLL_SEPOLIA
         );
         
         // Deploy proxy
@@ -59,8 +53,7 @@ contract DeployScrollSepolia is Script {
         // Register USDC token with its corresponding aToken and reserve ID
         vaquitaL2.registerAToken(
             USDC_TOKEN_SCROLL_SEPOLIA, 
-            AUSDC_TOKEN_SCROLL_SEPOLIA, 
-            USDC_RESERVE_ID_SCROLL_SEPOLIA
+            AUSDC_TOKEN_SCROLL_SEPOLIA
         );
         
         // End broadcast
@@ -71,10 +64,8 @@ contract DeployScrollSepolia is Script {
         console.log("VaquitaL2ProxyAdmin deployed at:", address(admin));
         console.log("VaquitaL2Proxy deployed at:", address(vaquitaL2Proxy));
         console.log("Using L2Pool at:", AAVE_L2POOL_SCROLL_SEPOLIA);
-        console.log("Using L2Encoder at:", AAVE_L2ENCODER_SCROLL_SEPOLIA);
         console.log("Using USDC at:", USDC_TOKEN_SCROLL_SEPOLIA);
         console.log("Using aUSDC at:", AUSDC_TOKEN_SCROLL_SEPOLIA);
-        console.log("Using USDC Reserve ID:", USDC_RESERVE_ID_SCROLL_SEPOLIA);
         
         return (address(vaquitaL2Proxy), address(vaquitaL2Implementation), address(admin));
     }

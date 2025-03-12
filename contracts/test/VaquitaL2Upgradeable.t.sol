@@ -10,7 +10,6 @@ import {ITransparentUpgradeableProxy} from "@openzeppelin/contracts/proxy/transp
 import {MockERC20} from "./mocks/MockERC20.sol";
 import {MockAToken} from "./mocks/MockAToken.sol";
 import {MockL2Pool} from "./mocks/MockL2Pool.sol";
-import {MockL2Encoder} from "./mocks/MockL2Encoder.sol";
 
 contract VaquitaL2UpgradeableTest is Test {
     VaquitaL2Upgradeable public vaquitaL2Implementation;
@@ -21,7 +20,6 @@ contract VaquitaL2UpgradeableTest is Test {
     MockERC20 public token;
     MockAToken public aToken;
     MockL2Pool public aavePool;
-    MockL2Encoder public l2Encoder;
     
     address public owner = address(1);
     address public player1 = address(2);
@@ -32,13 +30,11 @@ contract VaquitaL2UpgradeableTest is Test {
     uint256 public constant ROUND_ID = 1;
     uint256 public constant NUM_PLAYERS = 3;
     uint256 public constant FREQUENCY = 7 days;
-    uint16 public constant RESERVE_ID = 1;
     
     function setUp() public {
         // Deploy mock contracts
         token = new MockERC20("Test Token", "TEST", 18);
         aavePool = new MockL2Pool();
-        l2Encoder = new MockL2Encoder();
         aToken = new MockAToken(address(token));
         
         // Setup accounts
@@ -57,8 +53,7 @@ contract VaquitaL2UpgradeableTest is Test {
         // Prepare initialization data
         bytes memory initData = abi.encodeWithSelector(
             VaquitaL2Upgradeable.initialize.selector,
-            address(aavePool),
-            address(l2Encoder)
+            address(aavePool)
         );
         
         // Deploy proxy
@@ -73,13 +68,12 @@ contract VaquitaL2UpgradeableTest is Test {
         
         // Register aToken
         vm.prank(owner);
-        vaquitaL2.registerAToken(address(token), address(aToken), RESERVE_ID);
+        vaquitaL2.registerAToken(address(token), address(aToken));
     }
     
     function testInitialization() public view {
         assertEq(vaquitaL2.getL2Pool(), address(aavePool));
-        assertEq(vaquitaL2.tokenToAToken(address(token)), address(aToken));
-        assertEq(vaquitaL2.tokenToReserveId(address(token)), RESERVE_ID);
+        assertEq(vaquitaL2.aTokens(address(token)), address(aToken));
     }
     
     function testInitializeRound() public {
