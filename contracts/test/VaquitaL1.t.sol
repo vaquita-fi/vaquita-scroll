@@ -55,7 +55,8 @@ contract MockAToken is IAToken, ERC20 {
         return _underlyingAsset;
     }
     
-    function scaledBalanceOf(address user) external view override returns (uint) {
+    // This function is not in the IAToken interface, so we remove the override keyword
+    function scaledBalanceOf(address user) external view returns (uint) {
         return balanceOf(user);
     }
     

@@ -5,27 +5,22 @@ import "./IAave.sol";
 
 /**
  * @title IL2Pool
- * @author Aave
- * @notice Defines the basic interface for an Aave V3 L2 Pool with optimized calldata.
+ * @dev Interface for the Aave L2Pool contract
  */
 interface IL2Pool {
     /**
      * @notice Supplies an `amount` of underlying asset into the reserve, receiving in return overlying aTokens.
      * - E.g. User supplies 100 USDC and gets in return 100 aUSDC
-     * @param args Encoded arguments for supply:
-     *   - bits 0-15: uint16 assetId - the index of the asset in the reservesList
-     *   - bits 16-143: uint128 amount - cast to 256 bits at decode time
-     *   - bits 144-159: uint16 referralCode - used for 3rd party integrations
+     * @param args The encoded parameters
      */
     function supply(bytes32 args) external;
 
     /**
      * @notice Withdraws an `amount` of underlying asset from the reserve, burning the equivalent aTokens owned
-     * @param args Encoded arguments for withdraw:
-     *   - bits 0-15: uint16 assetId - the index of the asset in the reservesList
-     *   - bits 16-143: uint128 amount - cast to 256 bits at decode time
+     * - E.g. User has 100 aUSDC, calls withdraw and receives 100 USDC, burning the 100 aUSDC
+     * @param args The encoded parameters
      */
-    function withdraw(bytes32 args) external returns (uint256);
+    function withdraw(bytes32 args) external;
 
     /**
      * @notice Returns the normalized income of the reserve

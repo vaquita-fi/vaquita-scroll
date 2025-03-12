@@ -35,7 +35,7 @@ contract MockL2Pool is IL2Pool {
         }
     }
     
-    function withdraw(bytes32 args) external override returns (uint256) {
+    function withdraw(bytes32 args) external override {
         // Extract parameters from args
         uint16 assetId = uint16(uint256(args));
         uint256 amount = uint256(uint128(uint256(args) >> 16));
@@ -56,8 +56,6 @@ contract MockL2Pool is IL2Pool {
         
         // Transfer tokens from this contract to recipient
         IERC20(asset).transfer(msg.sender, amount);
-        
-        return amount;
     }
     
     function getReserveNormalizedIncome(address) external pure override returns (uint) {
@@ -134,7 +132,8 @@ contract MockAToken is IAToken, ERC20 {
         return _underlyingAsset;
     }
     
-    function scaledBalanceOf(address user) external view override returns (uint) {
+    // This function is not in the IAToken interface, so we remove the override keyword
+    function scaledBalanceOf(address user) external view returns (uint) {
         return balanceOf(user);
     }
     

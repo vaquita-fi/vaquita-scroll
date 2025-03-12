@@ -57,22 +57,15 @@ interface IPool {
  */
 interface IAToken {
     /**
-     * @notice Returns the address of the underlying asset of this aToken
+     * @dev Returns the address of the underlying asset of this aToken
      * @return The address of the underlying asset
      */
     function UNDERLYING_ASSET_ADDRESS() external view returns (address);
 
     /**
-     * @notice Returns the scaled balance of the user.
-     * @param user The address of the user
-     * @return The scaled balance of the user
+     * @dev Returns the balance of the account
+     * @param account The address of the account
+     * @return The balance of the account
      */
-    function scaledBalanceOf(address user) external view returns (uint256);
-
-    /**
-     * @notice Returns the balance of the user
-     * @param user The address of the user
-     * @return The balance of the user
-     */
-    function balanceOf(address user) external view returns (uint256);
+    function balanceOf(address account) external view returns (uint256);
 }

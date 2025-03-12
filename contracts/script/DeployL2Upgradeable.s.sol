@@ -7,24 +7,24 @@ import {VaquitaL2Proxy} from "../src/VaquitaL2Proxy.sol";
 import {VaquitaL2ProxyAdmin} from "../src/VaquitaL2ProxyAdmin.sol";
 
 /**
- * @title DeployScrollSepolia
+ * @title DeployL2Upgradeable
  * @dev Script to deploy VaquitaL2Upgradeable with proxy and proxy admin
  */
-contract DeployScrollSepolia is Script {
+contract DeployL2Upgradeable is Script {
     // Scroll Sepolia Aave v3 L2Pool address
-    address constant AAVE_L2POOL_SCROLL_SEPOLIA = 0x48914C788295b5db23aF2b5F0B3BE775C4eA9440;
+    address constant AAVE_L2POOL_SCROLL_SEPOLIA = vm.envAddress("L2_AAVE_POOL");
     
     // Scroll Sepolia Aave v3 L2Encoder address
-    address constant AAVE_L2ENCODER_SCROLL_SEPOLIA = 0x3Bb33c67908D0d58F8d7349cBe726ff3b059e0fC;
+    address constant AAVE_L2ENCODER_SCROLL_SEPOLIA = vm.envAddress("L2_AAVE_ENCODER");
     
     // Scroll Sepolia USDC token address
-    address constant USDC_TOKEN_SCROLL_SEPOLIA = 0x2C9678042D52B97D27f2bD2947F7111d93F3dD0D;
+    address constant USDC_TOKEN_SCROLL_SEPOLIA = vm.envAddress("L2_USDC_TOKEN");
     
     // Scroll Sepolia aUSDC token address (Aave V3)
-    address constant AUSDC_TOKEN_SCROLL_SEPOLIA = 0x6E4A1BcBd3C3038e6957207cadC1A17092DC7ba3;
+    address constant AUSDC_TOKEN_SCROLL_SEPOLIA = vm.envAddress("L2_AUSDC_TOKEN");
     
     // Scroll Sepolia USDC reserve ID
-    uint16 constant USDC_RESERVE_ID_SCROLL_SEPOLIA = 2;
+    uint16 constant USDC_RESERVE_ID_SCROLL_SEPOLIA = uint16(vm.envUint("L2_USDC_RESERVE_ID"));
 
     function run() public returns (address proxy, address implementation, address proxyAdmin) {
         // Get deployer private key from environment
