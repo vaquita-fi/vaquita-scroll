@@ -1,7 +1,6 @@
 'use client';
 
-import LoginButton from '@/components/LoginButton';
-import SignupButton from '@/components/SignupButton';
+import ConnectButton from '@/components/ConnectButton';
 import { MainHeader, MorePage } from '@/vaquita-ui-submodule/components';
 import React from 'react';
 import { useAccount } from 'wagmi';
@@ -14,8 +13,7 @@ const Page = () => {
       <MainHeader
         walletButtons={
           <>
-            <SignupButton />
-            {!address && <LoginButton />}
+            <ConnectButton />
           </>
         }
       />
