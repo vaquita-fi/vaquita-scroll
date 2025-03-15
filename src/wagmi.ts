@@ -23,15 +23,11 @@ export function useWagmiConfig() {
       [
         {
           groupName: 'Recommended Wallet',
-          wallets: [coinbaseWallet],
-        },
-        {
-          groupName: 'Other Wallets',
-          wallets: [rainbowWallet, metaMaskWallet],
-        },
+          wallets: [metaMaskWallet],
+        }
       ],
       {
-        appName: 'onchainkit',
+        appName: 'Vaquita',
         projectId,
       },
     );

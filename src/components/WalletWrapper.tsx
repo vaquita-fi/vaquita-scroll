@@ -5,10 +5,7 @@ import {
   ConnectWallet,
   Wallet,
   WalletDropdown,
-  WalletDropdownBasename,
   WalletDropdownDisconnect,
-  WalletDropdownFundLink,
-  WalletDropdownLink,
 } from '@coinbase/onchainkit/wallet';
 import React from 'react';
 
@@ -40,11 +37,6 @@ export default function WalletWrapper({
             <Address />
             <EthBalance />
           </Identity>
-          <WalletDropdownBasename />
-          <WalletDropdownLink icon="wallet" href="https://wallet.coinbase.com">
-            Go to Wallet Dashboard
-          </WalletDropdownLink>
-          <WalletDropdownFundLink />
           <WalletDropdownDisconnect />
         </WalletDropdown>
       </Wallet>
