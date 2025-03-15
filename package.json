@@ -1,7 +1,7 @@
 {
   "name": "vaquita-base",
   "private": true,
-  "version": "0.1.5",
+  "version": "0.1.6",
   "scripts": {
     "build": "git submodule set-url src/vaquita-ui-submodule https://${GIT_AUTH_TOKEN}@github.com/vaquita-fi/vaquita-ui-submodule.git && git submodule update --init --recursive && next build",
     "check": "biome check --write .",
