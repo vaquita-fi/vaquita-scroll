@@ -1,6 +1,7 @@
 'use client';
 
-import ConnectButton from '@/components/ConnectButton';
+import LoginButton from '@/components/LoginButton';
+import SignupButton from '@/components/SignupButton';
 import { Statistics } from '@/vaquita-ui-submodule/components/dashboard/Statistics';
 import { MainHeader } from '@/vaquita-ui-submodule/components/header/MainHeader';
 import React from 'react';
@@ -15,7 +16,8 @@ const Page = () => {
         <MainHeader
           walletButtons={
             <>
-              <ConnectButton />
+              <SignupButton />
+              {!address && <LoginButton />}
             </>
           }
         />
@@ -31,7 +33,8 @@ const Page = () => {
       <MainHeader
         walletButtons={
           <>
-            <ConnectButton />
+            <SignupButton />
+            {!address && <LoginButton />}
           </>
         }
       />

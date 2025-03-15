@@ -2,7 +2,7 @@
 
 import '@/vaquita-ui-submodule/styles/commons.css';
 import LoginButton from '@/components/LoginButton';
-import ConnectButton from '@/components/ConnectButton';
+import SignupButton from '@/components/SignupButton';
 import { MainLayout } from '@/vaquita-ui-submodule/components';
 import './styles.css';
 import React from 'react';
@@ -14,7 +14,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     <MainLayout
       walletButtons={
         <>
-          <ConnectButton />
+          <SignupButton />
+          {!address && <LoginButton />}
         </>
       }
     >
