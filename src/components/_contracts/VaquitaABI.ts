@@ -675,6 +675,6 @@ const abi = [
     "name": "ZeroAddress",
     "inputs": []
   }
-];
+] as const;
 
 export default abi;
