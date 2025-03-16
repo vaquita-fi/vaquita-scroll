@@ -8,8 +8,9 @@ import {ITransparentUpgradeableProxy} from "@openzeppelin/contracts/proxy/transp
 
 contract UpgradeScrollSepolia is Script {
     // Existing deployment addresses
-    address constant PROXY = 0x97b6d74cEc11A1a86AF8655b59e075b12144e280;
-    address constant PROXY_ADMIN = 0x6A4e6Aa186A64B03D204A82b33927D0dfc5d525f;
+    address PROXY = vm.envAddress("L2_PROXY");
+    address PROXY_ADMIN = vm.envAddress("L2_PROXY_ADMIN");
+    address OWNER = vm.envAddress("L2_OWNER");
 
     function run() public returns (address implementation) {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");

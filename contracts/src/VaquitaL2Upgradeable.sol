@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.25;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin-contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin-contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin-contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin-contracts-upgradeable/proxy/utils/Initializable.sol";
 import "./interfaces/IL2Pool.sol";
 import "./interfaces/IAave.sol";
 
@@ -616,7 +616,7 @@ contract VaquitaL2Upgradeable is Initializable, OwnableUpgradeable {
      * @return A random position
      */
     function _getRandomPosition(uint numberOfPlayers, uint roundId) internal view returns (uint) {
-        uint randomSeed = uint(keccak256(abi.encodePacked(block.timestamp, block.prevrandao, msg.sender, roundId)));
+        uint randomSeed = uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, roundId)));
         return uint(randomSeed % numberOfPlayers);
     }
 
