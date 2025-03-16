@@ -20,7 +20,7 @@ const Page = () => {
           </>
         }
       />
-      <Home />
+      <Home address={address}/>
       {/* <GroupsPage address={address} /> */}
     </>
   );
