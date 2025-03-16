@@ -33,7 +33,7 @@ export const useVaquitaWithdrawal = () => {
           confirmations: 5,
         });
         console.info({ receipt });
-        return { tx: hash, error: null, success: true };
+        return { tx: hash, error: null, success: receipt.status === "success" };
       } catch (error) {
         console.error({ error });
         return { tx: '', error, success: false };
@@ -60,7 +60,7 @@ export const useVaquitaWithdrawal = () => {
           confirmations: 5,
         });
         console.info({ receipt });
-        return { tx: hash, error: null, success: true };
+        return { tx: hash, error: null, success: receipt.status === "success" }
       } catch (error) {
         console.error({ error });
         return { tx: '', error, success: false };

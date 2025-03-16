@@ -1,114 +1,24 @@
 const abi = [
   {
     "type": "constructor",
-    "inputs": [
-      {
-        "name": "_aavePool",
-        "type": "address",
-        "internalType": "address"
-      }
-    ],
+    "inputs": [],
     "stateMutability": "nonpayable"
   },
   {
     "type": "function",
-    "name": "_findNextTurn",
-    "inputs": [
-      {
-        "name": "number",
-        "type": "uint256",
-        "internalType": "uint256"
-      },
-      {
-        "name": "numberOfPlayers",
-        "type": "uint256",
-        "internalType": "uint256"
-      },
-      {
-        "name": "position",
-        "type": "uint256",
-        "internalType": "uint256"
-      }
-    ],
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256",
-        "internalType": "uint256"
-      }
-    ],
-    "stateMutability": "pure"
-  },
-  {
-    "type": "function",
-    "name": "_rounds",
+    "name": "aTokens",
     "inputs": [
       {
         "name": "",
-        "type": "uint256",
-        "internalType": "uint256"
-      }
-    ],
-    "outputs": [
-      {
-        "name": "paymentAmount",
-        "type": "uint256",
-        "internalType": "uint256"
-      },
-      {
-        "name": "token",
         "type": "address",
-        "internalType": "contract IERC20"
-      },
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
       {
-        "name": "numberOfPlayers",
-        "type": "uint256",
-        "internalType": "uint256"
-      },
-      {
-        "name": "totalAmountLocked",
-        "type": "uint256",
-        "internalType": "uint256"
-      },
-      {
-        "name": "availableSlots",
-        "type": "uint256",
-        "internalType": "uint256"
-      },
-      {
-        "name": "frequencyOfPayments",
-        "type": "uint256",
-        "internalType": "uint256"
-      },
-      {
-        "name": "status",
-        "type": "uint8",
-        "internalType": "enum Vaquita.RoundStatus"
-      },
-      {
-        "name": "startTimestamp",
-        "type": "uint256",
-        "internalType": "uint256"
-      },
-      {
-        "name": "endTimestamp",
-        "type": "uint256",
-        "internalType": "uint256"
-      },
-      {
-        "name": "totalInterestEarned",
-        "type": "uint256",
-        "internalType": "uint256"
-      },
-      {
-        "name": "protocolFee",
-        "type": "uint256",
-        "internalType": "uint256"
-      },
-      {
-        "name": "protocolFeeTaken",
-        "type": "bool",
-        "internalType": "bool"
+        "name": "",
+        "type": "address",
+        "internalType": "address"
       }
     ],
     "stateMutability": "view"
@@ -121,7 +31,7 @@ const abi = [
       {
         "name": "",
         "type": "address",
-        "internalType": "contract IPool"
+        "internalType": "contract IL2Pool"
       }
     ],
     "stateMutability": "view"
@@ -138,6 +48,19 @@ const abi = [
     ],
     "outputs": [],
     "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "getL2Pool",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
   },
   {
     "type": "function",
@@ -163,7 +86,7 @@ const abi = [
       {
         "name": "",
         "type": "uint8",
-        "internalType": "enum Vaquita.PaymentStatus"
+        "internalType": "enum VaquitaL2Upgradeable.PaymentStatus"
       }
     ],
     "stateMutability": "view"
@@ -236,7 +159,7 @@ const abi = [
       {
         "name": "status",
         "type": "uint8",
-        "internalType": "enum Vaquita.RoundStatus"
+        "internalType": "enum VaquitaL2Upgradeable.RoundStatus"
       }
     ],
     "stateMutability": "view"
@@ -264,6 +187,19 @@ const abi = [
       }
     ],
     "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "initialize",
+    "inputs": [
+      {
+        "name": "_aavePool",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
   },
   {
     "type": "function",
@@ -363,22 +299,10 @@ const abi = [
   },
   {
     "type": "function",
-    "name": "tokenToAToken",
-    "inputs": [
-      {
-        "name": "",
-        "type": "address",
-        "internalType": "address"
-      }
-    ],
-    "outputs": [
-      {
-        "name": "",
-        "type": "address",
-        "internalType": "address"
-      }
-    ],
-    "stateMutability": "view"
+    "name": "renounceOwnership",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
   },
   {
     "type": "function",
@@ -478,6 +402,19 @@ const abi = [
         "type": "uint256",
         "indexed": false,
         "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "Initialized",
+    "inputs": [
+      {
+        "name": "version",
+        "type": "uint64",
+        "indexed": false,
+        "internalType": "uint64"
       }
     ],
     "anonymous": false
@@ -590,7 +527,7 @@ const abi = [
         "name": "status",
         "type": "uint8",
         "indexed": false,
-        "internalType": "enum Vaquita.PaymentStatus"
+        "internalType": "enum VaquitaL2Upgradeable.PaymentStatus"
       }
     ],
     "anonymous": false
@@ -642,6 +579,11 @@ const abi = [
   },
   {
     "type": "error",
+    "name": "InvalidInitialization",
+    "inputs": []
+  },
+  {
+    "type": "error",
     "name": "InvalidPosition",
     "inputs": []
   },
@@ -652,8 +594,35 @@ const abi = [
   },
   {
     "type": "error",
+    "name": "NotInitializing",
+    "inputs": []
+  },
+  {
+    "type": "error",
     "name": "NotOwner",
     "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "OwnableInvalidOwner",
+    "inputs": [
+      {
+        "name": "owner",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "OwnableUnauthorizedAccount",
+    "inputs": [
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
   },
   {
     "type": "error",
@@ -706,6 +675,6 @@ const abi = [
     "name": "ZeroAddress",
     "inputs": []
   }
-] as const;
+];
 
 export default abi;

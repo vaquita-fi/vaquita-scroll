@@ -39,6 +39,7 @@ contract VaquitaL2Upgradeable is Initializable, OwnableUpgradeable {
         mapping(address => uint) paidTurns;
         mapping(address => bool) withdrawnTurns;
         mapping(address => uint) positions;
+        mapping(uint => bool) takenPositions;  // New mapping to track taken positions
         uint startTimestamp;
         uint endTimestamp;
         mapping(uint => Turn) turns;
@@ -156,6 +157,7 @@ contract VaquitaL2Upgradeable is Initializable, OwnableUpgradeable {
         
         round.players.push(msg.sender);
         round.positions[msg.sender] = position;
+        round.takenPositions[position] = true;
         round.totalAmountLocked += amountToLock;
         round.availableSlots--;
 
@@ -187,17 +189,19 @@ contract VaquitaL2Upgradeable is Initializable, OwnableUpgradeable {
         uint amountToLock = round.paymentAmount * (round.numberOfPlayers - 1);
         round.token.safeTransferFrom(msg.sender, address(this), amountToLock);
 
-        // Generate random position for the player
+        // Find an available position starting from a random position
         uint position = _getRandomPosition(round.numberOfPlayers, roundId);
+        uint originalPosition = position;
+        bool positionFound = false;
         
-        // Ensure position is not already taken
-        for (uint i = 0; i < round.players.length; i++) {
-            if (round.positions[round.players[i]] == position) {
-                // If position is taken, find the next available one
-                position = (position + 1) % round.numberOfPlayers;
-                i = 0; // restart the check
+        do {
+            if (!round.takenPositions[position]) {
+                round.takenPositions[position] = true;
+                positionFound = true;
+                break;
             }
-        }
+            position = (position + 1) % round.numberOfPlayers;
+        } while (position != originalPosition);
 
         round.players.push(msg.sender);
         round.positions[msg.sender] = position;
@@ -326,6 +330,9 @@ contract VaquitaL2Upgradeable is Initializable, OwnableUpgradeable {
         if (round.withdrawnFunds[msg.sender]) {
             revert FundsAlreadyWithdrawn();
         }
+        
+        // Clear position when withdrawing funds
+        round.takenPositions[round.positions[msg.sender]] = false;
         
         // If this is the first withdrawal, calculate and distribute interest
         if (!round.protocolFeeTaken) {

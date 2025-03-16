@@ -89,7 +89,7 @@ export const useVaquitaDeposit = () => {
           confirmations: 1,
         });
         console.info('depositCollateralAndCreate', { receipt });
-        return { tx: hash, receipt, error: null, success: true };
+        return { tx: hash, receipt, error: null, success: receipt.status === "success" };
       } catch (error) {
         console.error('Error in depositCollateralAndCreate:', error);
         return { tx: '', receipt: null, error, success: false };
@@ -126,7 +126,7 @@ export const useVaquitaDeposit = () => {
           confirmations: 1,
         });
         console.info('depositCollateralAndJoin', { receipt });
-        return { tx: hash, receipt, error: null, success: true };
+        return { tx: hash, receipt, error: null, success: receipt.status === "success" };
       } catch (error) {
         console.error('Error in depositCollateralAndJoin:', error);
         return { tx: '', receipt: null, error, success: false };
@@ -166,7 +166,7 @@ export const useVaquitaDeposit = () => {
           confirmations: 1,
         });
         console.info('depositRoundPayment', { receipt });
-        return { tx: hash, error: null, success: true };
+        return { tx: hash, error: null, success: receipt.status === "success" };
       } catch (error) {
         console.error('Error in depositRoundPayment:', error);
         return { tx: '', error, success: false };
