@@ -626,6 +626,11 @@ const abi = [
   },
   {
     "type": "error",
+    "name": "PositionNotFound",
+    "inputs": []
+  },
+  {
+    "type": "error",
     "name": "RoundAlreadyExists",
     "inputs": []
   },

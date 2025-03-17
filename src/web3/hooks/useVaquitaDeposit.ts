@@ -13,7 +13,7 @@ const VAQUITA_CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_VAQUITA_CONTRACT_ADDRES
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const convertFrequencyToTimestamp: any = (period: any): bigint => {
   const SECONDS_PER_DAY = 86400; // 24 hours * 60 minutes * 60 seconds
-  const frequencyInDays = period === 'weekly' ? 7 : 30;
+  const frequencyInDays = period === 'daily' ? 1 : (period === 'weekly' ? 7 : 30);
   const frequencyInSeconds = frequencyInDays * SECONDS_PER_DAY;
   return BigInt(frequencyInSeconds);
 };

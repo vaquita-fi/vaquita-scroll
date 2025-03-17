@@ -78,6 +78,7 @@ contract VaquitaL2Upgradeable is Initializable, OwnableUpgradeable {
     error InvalidAToken();
     error NotOwner();
     error ZeroAddress();
+    error PositionNotFound();
 
     event RoundInitialized(uint indexed roundId, address initializer);
     event PlayerAdded(uint indexed roundId, address player, uint position);
@@ -202,6 +203,10 @@ contract VaquitaL2Upgradeable is Initializable, OwnableUpgradeable {
             }
             position = (position + 1) % round.numberOfPlayers;
         } while (position != originalPosition);
+
+        if (!positionFound) {
+            revert PositionNotFound();
+        }
 
         round.players.push(msg.sender);
         round.positions[msg.sender] = position;
