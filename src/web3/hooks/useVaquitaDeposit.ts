@@ -144,11 +144,10 @@ export const useVaquitaDeposit = () => {
       console.info('depositRoundPayment', { group, turn });
       const groupId = BigInt(`0x${group.id}`);
       const paymentAmount = BigInt(group.amount * USDC_DECIMALS);
-      const collateralAmount = paymentAmount * (BigInt(group.totalMembers) - BigInt(1));
       
       try {
         // First, approve the contract to spend tokens
-        const approved = await approveTokens(collateralAmount);
+        const approved = await approveTokens(paymentAmount);
         if (!approved) {
           throw new Error('Token approval failed');
         }
