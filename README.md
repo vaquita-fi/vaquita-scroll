@@ -2,14 +2,14 @@
 
 ![Texto alternativo](/vaquina.png)
 
-Protocol Vaquinha is a community savings protocol inspired by the traditional Andean savings system known as Pasanaku. This protocol leverages blockchain technology to solve trust issues, allowing users to organize and participate in group savings systems with complete transparency and security. Vaquinha Protocol scales these traditional systems to the digital world, providing global access to communities that need reliable shared savings solutions.
+Protocol Vaquinha is a community savings protocol inspired by the traditional Andean savings system known as Pasanaku. This protocol leverages blockchain technology to solve trust issues, allowing users to organize and participate in group savings systems with complete transparency and security. Vaquita Protocol scales these traditional systems to the digital world, providing global access to communities that need reliable shared savings solutions.
 
 ## 🌐 Resources
 
-- 🚀 **Demo:** Check out the live demo of the project [here](https://vaquita-op.vercel.app/)
-- 📂 **Repository:** Access the project repo [here](https://github.com/Vaquita-Fi/vaquita-op)
-- 🎥 **Pitch Deck:** This is the pitch deck for the project, providing a concise overview of its key elements. It helps to understand the problem, solution, business model, and overall impact more clearly. [Watch the Pitch Deck](https://www.loom.com/share/15fc8cf534db4c16beb92dab2e8d7879?sid=e9c3014d-ae1e-44f1-90dc-107cba3aa933)
-- 💻 **Optimism Sepolia contract:** `0x1250e296dEfbe47fbFd5c3eD1B8194120f21497B` — View the [Vaquinha Program](https://optimism-sepolia.blockscout.com/address/0x1250e296dEfbe47fbFd5c3eD1B8194120f21497B).
+- 🚀 **Demo:** Check out the live demo of the project [here](https://scroll.vaquita.fi/)
+- 📂 **Repository:** Access the project repo [here](https://github.com/Vaquita-Fi/vaquita-scroll)
+- 🎥 **Pitch Deck:** This is the pitch deck for the project, providing a concise overview of its key elements. It helps to understand the problem, solution, business model, and overall impact more clearly. [Watch the Pitch Deck](https://www.loom.com/share/be6c6954782e4445821939e9abac9cae?sid=bb914012-fea0-475d-88a1-629201a30d8c)
+- 💻 **Optimism Sepolia contract:** `0xCEFfc2bB0930C18D553185a2acd7cf06593461AC` — View the [Vaquita Contract](https://sepolia.scrollscan.com/address/0xCEFfc2bB0930C18D553185a2acd7cf06593461AC).
 
   **Methods:**
 
@@ -17,8 +17,8 @@ Protocol Vaquinha is a community savings protocol inspired by the traditional An
   - 🙋‍♂️ `addPlayer`: Adds a player to the round and their collateral.
   - 💰 `payTurn`: Pays the current turn in the round.
 
-- 💸 **Faucet USDC:** Use the [USDC Faucet](https://optimism-sepolia.blockscout.com/token/0x00D2d1162c689179e8bA7a3b936f80A010A0b5CF?tab=read_write_contract).
-- 💡 **Faucet ETH Sepolia:** Use the [ETH Sepolia Faucet](https://faucet.quicknode.com/optimism/sepolia).
+- 💸 **Faucet USDC:** Use the [USDC Faucet](https://faucet.circle.com).
+- 💡 **Faucet ETH Scroll Sepolia:** Use the [ETH Scroll Sepolia Faucet](https://docs.scroll.io/en/user-guide/faucet/#scroll-sepolia-faucets).
 
 ## Setup
 
