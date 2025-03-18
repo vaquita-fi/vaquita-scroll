@@ -26,6 +26,7 @@ export const useVaquitaWithdrawal = () => {
           abi: contract.abi,
           functionName: 'withdrawTurn',
           args: [ groupId ],
+          gas: 3000000n,
         });
         console.info({ hash });
         const receipt = await client.waitForTransactionReceipt({
@@ -53,6 +54,7 @@ export const useVaquitaWithdrawal = () => {
           abi: contract.abi,
           functionName: 'withdrawFunds',
           args: [ groupId ],
+          gas: 3000000n,
         });
         console.info({ hash });
         const receipt = await client.waitForTransactionReceipt({

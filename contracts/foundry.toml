@@ -6,6 +6,7 @@ libs = ["lib"]
 fs_permissions = [{ access = "read", path = "./" }]
 solc = "0.8.25"
 evm_version = 'paris'
+gas_limit = 300000000
 
 remappings = [
     "@openzeppelin-contracts/=lib/openzeppelin-contracts/contracts/",

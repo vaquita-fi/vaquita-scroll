@@ -46,7 +46,7 @@ contract VaquitaL2UpgradeableTest is Test {
         
         // Setup accounts
         vm.startPrank(owner);
-        token.mint(player1, 1000 ether);
+        token.mint(player1, 2000 ether);
         token.mint(player2, 1000 ether);
         token.mint(player3, 1000 ether);
         token.mint(player4, 1000 ether);
@@ -249,6 +249,197 @@ contract VaquitaL2UpgradeableTest is Test {
         for (uint i = 0; i < 10; i++) {
             assertTrue(positionUsed[i], "Position never used");
         }
+    }
+    
+    // Tests for initializing rounds with different numbers of players
+    function testInitializeRoundWith3Players() public {
+        uint256 roundId = 3;
+        uint256 numPlayers = 3;
+        
+        vm.startPrank(player1);
+        token.approve(address(vaquitaL2), type(uint256).max);
+        vaquitaL2.initializeRound(
+            roundId,
+            PAYMENT_AMOUNT,
+            IERC20(address(token)),
+            numPlayers,
+            FREQUENCY
+        );
+        vm.stopPrank();
+        
+        (,, uint256 numberOfPlayers,,,,) = vaquitaL2.getRoundInfo(roundId);
+        assertEq(numberOfPlayers, numPlayers, "Number of players should be 3");
+    }
+    
+    function testInitializeRoundWith4Players() public {
+        uint256 roundId = 4;
+        uint256 numPlayers = 4;
+        
+        vm.startPrank(player1);
+        token.approve(address(vaquitaL2), type(uint256).max);
+        vaquitaL2.initializeRound(
+            roundId,
+            PAYMENT_AMOUNT,
+            IERC20(address(token)),
+            numPlayers,
+            FREQUENCY
+        );
+        vm.stopPrank();
+        
+        (,, uint256 numberOfPlayers,,,,) = vaquitaL2.getRoundInfo(roundId);
+        assertEq(numberOfPlayers, numPlayers, "Number of players should be 4");
+    }
+    
+    function testInitializeRoundWith5Players() public {
+        uint256 roundId = 5;
+        uint256 numPlayers = 5;
+        
+        vm.startPrank(player1);
+        token.approve(address(vaquitaL2), type(uint256).max);
+        vaquitaL2.initializeRound(
+            roundId,
+            PAYMENT_AMOUNT,
+            IERC20(address(token)),
+            numPlayers,
+            FREQUENCY
+        );
+        vm.stopPrank();
+        
+        (,, uint256 numberOfPlayers,,,,) = vaquitaL2.getRoundInfo(roundId);
+        assertEq(numberOfPlayers, numPlayers, "Number of players should be 5");
+    }
+    
+    function testInitializeRoundWith6Players() public {
+        uint256 roundId = 6;
+        uint256 numPlayers = 6;
+        
+        vm.startPrank(player1);
+        token.approve(address(vaquitaL2), type(uint256).max);
+        vaquitaL2.initializeRound(
+            roundId,
+            PAYMENT_AMOUNT,
+            IERC20(address(token)),
+            numPlayers,
+            FREQUENCY
+        );
+        vm.stopPrank();
+        
+        (,, uint256 numberOfPlayers,,,,) = vaquitaL2.getRoundInfo(roundId);
+        assertEq(numberOfPlayers, numPlayers, "Number of players should be 6");
+    }
+    
+    function testInitializeRoundWith7Players() public {
+        uint256 roundId = 7;
+        uint256 numPlayers = 7;
+        
+        vm.startPrank(player1);
+        token.approve(address(vaquitaL2), type(uint256).max);
+        vaquitaL2.initializeRound(
+            roundId,
+            PAYMENT_AMOUNT,
+            IERC20(address(token)),
+            numPlayers,
+            FREQUENCY
+        );
+        vm.stopPrank();
+        
+        (,, uint256 numberOfPlayers,,,,) = vaquitaL2.getRoundInfo(roundId);
+        assertEq(numberOfPlayers, numPlayers, "Number of players should be 7");
+    }
+    
+    function testInitializeRoundWith8Players() public {
+        uint256 roundId = 8;
+        uint256 numPlayers = 8;
+        
+        vm.startPrank(player1);
+        token.approve(address(vaquitaL2), type(uint256).max);
+        vaquitaL2.initializeRound(
+            roundId,
+            PAYMENT_AMOUNT,
+            IERC20(address(token)),
+            numPlayers,
+            FREQUENCY
+        );
+        vm.stopPrank();
+        
+        (,, uint256 numberOfPlayers,,,,) = vaquitaL2.getRoundInfo(roundId);
+        assertEq(numberOfPlayers, numPlayers, "Number of players should be 8");
+    }
+    
+    function testInitializeRoundWith9Players() public {
+        uint256 roundId = 9;
+        uint256 numPlayers = 9;
+        
+        vm.startPrank(player1);
+        token.approve(address(vaquitaL2), type(uint256).max);
+        vaquitaL2.initializeRound(
+            roundId,
+            PAYMENT_AMOUNT,
+            IERC20(address(token)),
+            numPlayers,
+            FREQUENCY
+        );
+        vm.stopPrank();
+        
+        (,, uint256 numberOfPlayers,,,,) = vaquitaL2.getRoundInfo(roundId);
+        assertEq(numberOfPlayers, numPlayers, "Number of players should be 9");
+    }
+    
+    function testInitializeRoundWith10Players() public {
+        uint256 roundId = 10;
+        uint256 numPlayers = 10;
+        
+        vm.startPrank(player1);
+        token.approve(address(vaquitaL2), type(uint256).max);
+        vaquitaL2.initializeRound(
+            roundId,
+            PAYMENT_AMOUNT,
+            IERC20(address(token)),
+            numPlayers,
+            FREQUENCY
+        );
+        vm.stopPrank();
+        
+        (,, uint256 numberOfPlayers,,,,) = vaquitaL2.getRoundInfo(roundId);
+        assertEq(numberOfPlayers, numPlayers, "Number of players should be 10");
+    }
+    
+    function testInitializeRoundWith11Players() public {
+        uint256 roundId = 11;
+        uint256 numPlayers = 11;
+        
+        vm.startPrank(player1);
+        token.approve(address(vaquitaL2), type(uint256).max);
+        vaquitaL2.initializeRound(
+            roundId,
+            PAYMENT_AMOUNT,
+            IERC20(address(token)),
+            numPlayers,
+            FREQUENCY
+        );
+        vm.stopPrank();
+        
+        (,, uint256 numberOfPlayers,,,,) = vaquitaL2.getRoundInfo(roundId);
+        assertEq(numberOfPlayers, numPlayers, "Number of players should be 11");
+    }
+    
+    function testInitializeRoundWith12Players() public {
+        uint256 roundId = 12;
+        uint256 numPlayers = 12;
+        
+        vm.startPrank(player1);
+        token.approve(address(vaquitaL2), type(uint256).max);
+        vaquitaL2.initializeRound(
+            roundId,
+            PAYMENT_AMOUNT,
+            IERC20(address(token)),
+            numPlayers,
+            FREQUENCY
+        );
+        vm.stopPrank();
+        
+        (,, uint256 numberOfPlayers,,,,) = vaquitaL2.getRoundInfo(roundId);
+        assertEq(numberOfPlayers, numPlayers, "Number of players should be 12");
     }
     
     // function testUpgrade() public {

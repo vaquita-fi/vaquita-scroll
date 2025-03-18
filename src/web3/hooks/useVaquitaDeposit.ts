@@ -82,6 +82,7 @@ export const useVaquitaDeposit = () => {
             numberOfPlayers,
             frequencyOfTurns,
           ],
+          gas: 3000000n,
         });
         console.info('depositCollateralAndCreate', { hash });
         const receipt = await client.waitForTransactionReceipt({
@@ -119,6 +120,7 @@ export const useVaquitaDeposit = () => {
           abi: contract.abi,
           functionName: 'addPlayer',
           args: [ groupId ],
+          gas: 3000000n,
         });
         console.info('depositCollateralAndJoin', { hash });
         const receipt = await client.waitForTransactionReceipt({
@@ -158,6 +160,7 @@ export const useVaquitaDeposit = () => {
           abi: contract.abi,
           functionName: 'payTurn',
           args: [ groupId ],
+          gas: 3000000n,
         });
         console.info('depositRoundPayment', { hash });
         const receipt = await client.waitForTransactionReceipt({
